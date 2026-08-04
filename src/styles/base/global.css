@@ -1,0 +1,26 @@
+:root {
+    --color-background: #111827;
+    --color-primary: #10b981;
+    --color-accent: #ff7300;
+
+    --color-protein: #ff4b4b;
+    --color-fats: #f59e0b;
+    --color-carbs: #34d399;
+
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #9ca3af;
+
+    --font-main: "Inter", system-ui, sans-serif;
+
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 4rem;
+}
+
+body {
+    font-family: var(--font-main);
+    color: var(--color-text-primary);
+    background-color: var(--color-background);
+}
