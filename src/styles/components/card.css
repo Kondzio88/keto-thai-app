@@ -1,0 +1,112 @@
+.card {
+    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.card__image-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+}
+
+.card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card__badge {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    background-color: var(--color-background);
+    color: var(--color-accent);
+    padding: 4px 8px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    border: 1px solid var(--color-accent);
+}
+
+.card__content {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Pozwala karcie wypełnić wysokość grida */
+}
+
+.card__title {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-md);
+    font-weight: 600;
+}
+
+/* System wyświetlania Makroskładników */
+.card__macros {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: auto; /* Zawsze spycha makra na sam dół karty */
+}
+
+.macro {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: var(--spacing-sm) 0;
+    border-radius: 4px;
+    border-bottom: 2px solid transparent; /* Miejsce na kolor */
+}
+
+.macro__label {
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+}
+
+.macro__value {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* Wykorzystanie naszych globalnych zmiennych z bazy */
+.macro--protein {
+    border-color: var(--color-protein);
+}
+.macro--fats {
+    border-color: var(--color-fats);
+}
+.macro--carbs {
+    border-color: var(--color-carbs);
+}
+
+.macro__icon {
+    width: 20px;
+    height: 20px;
+    margin-bottom: var(--spacing-xs);
+}
+
+.macro--protein .macro__icon {
+    color: var(--color-protein);
+}
+
+.macro--fats .macro__icon {
+    color: var(--color-fats);
+}
+
+.macro--carbs .macro__icon {
+    color: var(--color-carbs);
+}

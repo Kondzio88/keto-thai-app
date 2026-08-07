@@ -1,9 +1,22 @@
 import { renderHome } from './pages/home.js';
+import { renderRecipes } from './pages/recipes.js';
+import { renderOnboarding, initOnboarding } from './pages/onboarding.js';
 
 export const routes = {
-    '/': renderHome,
-    '/dashboard': () => '<h1>Dashboard - Your Progress</h1>',
-    '/recipes': () => '<h1>Recipes - Keto Meals</h1>',
-    '/knowledge': () => '<h1>Knowledge Base</h1>',
-    '/contact': () => '<h1>Contact Coach</h1>'
+    '/': {
+        render: renderHome
+    },
+    '/dashboard': {
+        render: renderOnboarding,
+        init: initOnboarding // Ta funkcja odpali się tuż po wyrenderowaniu formularza!
+    },
+    '/recipes': {
+        render: renderRecipes
+    },
+    '/knowledge': {
+        render: () => '<h1>Knowledge Base</h1>'
+    },
+    '/contact': {
+        render: () => '<h1>Contact Coach</h1>'
+    }
 };

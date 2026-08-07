@@ -1,0 +1,31 @@
+.page-container{
+    padding-top: 100px;
+    padding-bottom: var(--spacing-xl);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 90%;
+}
+
+.page-header{
+    margin-bottom: var(--spacing-lg);
+    border-left: 4px solid var(--color-accent);
+    padding-left: var(--spacing-md);
+}
+
+.page-header__title{
+    font-family: 'Oswald',sans-serif;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
+
+.page-header__desc{
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+}
+
+.grid-layout{
+    display: grid;
+    gap: var(--spacing-lg);
+    grid-template-columns: repeat(auto-fill,minmax(300px ,1fr));
+}

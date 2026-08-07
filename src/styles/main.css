@@ -3,3 +3,6 @@
 @import "./components/button.css";
 @import "./pages/home.css";
 @import "./components/header.css";
+@import "./base/layout.css";
+@import "./components/card.css";
+@import "./components/form.css"

@@ -4,9 +4,17 @@ const appContainer = document.getElementById('app');
 
 const renderContent = () => {
     const path = window.location.pathname;
-    const routeHandler = routes[path] || routes['/'];
+    const route = routes[path] || routes['/'];
 
-    appContainer.innerHTML = routeHandler();
+    appContainer.innerHTML = route.render();
+
+    if(window.lucide){
+        window.lucide.createIcons();
+    }
+
+    if(route.init){
+        route.init()
+    }
 };
 
 export const navigateTo = (url) => {
