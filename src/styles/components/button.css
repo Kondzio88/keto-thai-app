@@ -19,7 +19,7 @@
 .btn--primary:hover {
     background-color: #e66800;
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(255, 115, 0, 0.3);
+    box-shadow: 0 10px 20px rgba(var(--color-accent-rgb), 0.3);;
 }
 
 .btn--secondary {

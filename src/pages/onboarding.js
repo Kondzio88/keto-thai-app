@@ -1,5 +1,6 @@
 import { html } from "../utils/template.js";
 import { saveUser } from "../services/userService.js";
+import { generateDietPlan } from "../services/calculatorService.js";
 
 export const renderOnboarding = () => {
     return html` <form class="form" id="onboarding-form">
@@ -60,13 +61,15 @@ export const handleOnboardingSubmit = (event) => {
     };
 
     saveUser(userProfile);
-    
+
+    const dietPlan = generateDietPlan(userProfile);
+    console.log(dietPlan);
 };
 
 export const initOnboarding = () => {
-    const formElement = document.getElementById('onboarding-form')
+    const formElement = document.getElementById("onboarding-form");
 
-    if(formElement){
-        formElement.addEventListener('submit',handleOnboardingSubmit)
+    if (formElement) {
+        formElement.addEventListener("submit", handleOnboardingSubmit);
     }
-}
+};

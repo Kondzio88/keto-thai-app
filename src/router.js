@@ -1,19 +1,19 @@
-import { routes } from './routes.js';
+import { routes } from "./routes.js";
 
-const appContainer = document.getElementById('app');
+const appContainer = document.getElementById("app");
 
 const renderContent = () => {
     const path = window.location.pathname;
-    const route = routes[path] || routes['/'];
+    const route = routes[path] || routes["/"];
 
     appContainer.innerHTML = route.render();
 
-    if(window.lucide){
+    if (window.lucide) {
         window.lucide.createIcons();
     }
 
-    if(route.init){
-        route.init()
+    if (route.init) {
+        route.init();
     }
 };
 
@@ -23,14 +23,14 @@ export const navigateTo = (url) => {
 };
 
 export const initRouter = () => {
-    document.body.addEventListener('click', (event) => {
-        if (event.target.matches('[data-link]')) {
+    document.body.addEventListener("click", (event) => {
+        if (event.target.matches("[data-link]")) {
             event.preventDefault();
             navigateTo(event.target.href);
         }
     });
 
-    window.addEventListener('popstate', renderContent);
+    window.addEventListener("popstate", renderContent);
 
     renderContent();
 };
