@@ -37,3 +37,26 @@
     max-width: 800px;
     margin: 2rem auto;
 }
+
+.page-actions {
+    display: flex; 
+    justify-content: center; 
+    margin-top: var(--spacing-xl); 
+    padding-bottom: var(--spacing-xl); 
+}
+
+/* Jeśli jeszcze nie masz ostylowanego samego przycisku usuwania, możesz dodać to: */
+.btn-delete {
+    background-color: transparent;
+    color: var(--color-protein); 
+    border: 1px solid var(--color-protein);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+    background-color: var(--color-protein);
+    color: #ffffff;
+}

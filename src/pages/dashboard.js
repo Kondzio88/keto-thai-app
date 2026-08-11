@@ -39,16 +39,25 @@ export const renderDashboard = () => {
 
                 <div class="bento-card bento-card--chart">
                     <span class="bento-card__title">Rozkład Makroskładników</span>
-                    <canvas id="macro-chart"></canvas>
+                    <div class="chart-wrapper">
+                        <canvas id="macro-chart"></canvas>
+                        <i data-lucide="flame" class="chart-center-icon"></i>
+                    </div>
                 </div>
 
                 <div class="bento-card bento-card--chart">
                     <span class="bento-card__title">Historia Wagi</span>
-                    <canvas id="weight-chart"></canvas>
+                    <div class="line-chart-wrapper">
+                        <canvas id="weight-chart"></canvas>
+                    </div>
                 </div>
 
-                <button class="btn btn-delete" id="btn-delete">Skasuj dane</button>
             </div>
+            
+            <div class="page-actions">
+                <button class="btn btn-delete" id="btn-delete">Skasuj dane aplikacji</button>
+            </div>
+
         </div>
     `;
 };
@@ -66,6 +75,90 @@ export const initDashboard = () => {
     const carbs = document.getElementById("carbs-value");
 
     const btnDelete = document.getElementById("btn-delete");
+
+    const macroChart = document.getElementById("macro-chart");
+
+    new Chart(macroChart, {
+        type: "doughnut",
+        data: {
+            labels: ["Białko", "Tłuszcze", "Węglowodany"],
+            backgroundColor: ["#ff4b4b", "#f59e0b", "#34d399"],
+            datasets: [
+                {
+                    data: [dietPlan.proteins, dietPlan.fats, dietPlan.carbs],
+                    backgroundColor: ["#ff4b4b", "#f59e0b", "#34d399"],
+                },
+            ],
+        },
+        options: {
+            maintainAspectRatio: false,
+            cutout: "60%",
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        color: "#f9fafb",
+                        padding: 20,
+                        usePointStyle: true,
+                        font: {
+                            size: 14,
+                            family: '"Inter", sans-serif',
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    const weightChartsCanvas = document.getElementById("weight-chart");
+
+    const dates = userProfile.weightHistory.map((entry) => entry.date);
+    const weights = userProfile.weightHistory.map((entry) => entry.weight);
+
+    new Chart(weightChartsCanvas, {
+        type: "line",
+        data: {
+            labels: dates,
+            datasets: [
+                {
+                    // POPRAWKA 1: Dodane "s"
+                    label: "Moja waga (kg)",
+                    data: weights,
+                    borderColor: "#10b981",
+                    backgroundColor: "rgba(16,185,129,0.1)",
+                    borderWidth: 3,
+                    tension: 0.3,
+                    fill: true,
+                },
+            ],
+        },
+        options: {
+            maintainAspectRatio: false, // POPRAWKA 2: Usunięte "n" na końcu
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#f9fafb",
+                        font: {
+                            family: '"Inter", sans-serif',
+                        },
+                    },
+                },
+            },
+            // POPRAWKA 3: scales musi być W ŚRODKU options!
+            scales: {
+                y: {
+                    grid: {
+                        color: "rgba(255,255,255,0.1)",
+                    },
+                    ticks: { color: "#9ca3af" },
+                },
+                x: {
+                    grid: { color: "rgba(255,255,255,0.1)" }, // POPRAWKA 4: Domknięty nawias po 0.1
+                    ticks: { color: "#9ca3af" },
+                },
+            },
+        }, // <- Tu dopiero zamykamy options
+    });
 
     caloriesLimit.textContent = dietPlan.calories;
     proteins.textContent = dietPlan.proteins;

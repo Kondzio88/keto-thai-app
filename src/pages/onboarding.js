@@ -52,7 +52,10 @@ export const handleOnboardingSubmit = (event) => {
 
     const formData = new FormData(formElement);
 
+    const today = new Date().toISOString().split("T")[0];
+
     const userProfile = {
+        weightHistory: [{ date: today, weight: Number(formData.get("weight")) }],
         gender: formData.get("gender"),
         age: Number(formData.get("age")),
         height: Number(formData.get("height")),
@@ -63,7 +66,7 @@ export const handleOnboardingSubmit = (event) => {
 
     saveUser(userProfile);
 
-    navigateTo('/dashboard')
+    navigateTo("/dashboard");
 };
 
 export const initOnboarding = () => {

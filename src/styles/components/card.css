@@ -111,10 +111,9 @@
     color: var(--color-carbs);
 }
 
-
 /* BENTO CARDS CSS FOR DASHBOARD.js */
 
-.bento-card{
+.bento-card {
     background-color: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 24px;
@@ -123,39 +122,46 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition:transform 0.2s ease,border-color 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
 }
 
-.bento-card:hover{
+.bento-card:hover {
     transform: translateY(-5px);
     border-color: var(--color-accent);
 }
 
-.bento-card--accent{
+.bento-card--accent {
     grid-column: span 2;
     background-color: var(--color-accent);
     color: var(--color-text-primary);
-    border:none;
+    border: none;
 }
 
-.bento-card--chart{
+.bento-card--chart {
     grid-column: span 2;
     min-height: 250px;
 }
 
-.bento-card__title{
-    font-size: 1.1rem;
+.bento-card__title {
+    font-size: 1.2rem;
     font-weight: 500;
     color: var(--color-text-secondary);
     margin-bottom: var(--spacing-md);
 }
 
-.bento-card--accent , .brnto-card__title{
+.bento-card--accent,
+.brnto-card__title {
     color: var(--color-text-primary);
     opacity: 0.9;
 }
 
-.bento-card__value{
+.bento-card--accent .bento-card__title{
+    color:var(--color-text-primary);
+}
+
+.bento-card__value {
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--color-text-primary);
@@ -173,11 +179,41 @@
 }
 
 .bento-card--fats .bento-card__icon,
-.bento-card--fats .bento-card__value{
-color: var(--color-fats);
+.bento-card--fats .bento-card__value {
+    color: var(--color-fats);
 }
 
 .bento-card--carbs .bento-card__icon,
-.bento-card--carbs .bento-card__value{
-color: var(--color-carbs);
+.bento-card--carbs .bento-card__value {
+    color: var(--color-carbs);
 }
+
+/* CHART STYLES */
+
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    margin-top: var(--spacing-md);
+}
+
+.chart-center-icon {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+    width: 48px;
+    height: 48px;
+    color: #ff0404;
+    opacity:0.5
+}
+
+.line-chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 250px; 
+    margin-top: var(--spacing-md);
+}
+
