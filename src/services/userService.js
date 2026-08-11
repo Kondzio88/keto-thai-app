@@ -21,5 +21,5 @@ export const getUser = () => {
 };
 
 export const clearUser = () => {
-    localStorage.removeItem('keto_thai')
+    localStorage.removeItem('keto_user')
 }
