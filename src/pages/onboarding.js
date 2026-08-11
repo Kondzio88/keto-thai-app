@@ -1,6 +1,7 @@
 import { html } from "../utils/template.js";
 import { saveUser } from "../services/userService.js";
 import { generateDietPlan } from "../services/calculatorService.js";
+import { navigateTo } from "../router.js";
 
 export const renderOnboarding = () => {
     return html` <form class="form" id="onboarding-form">
@@ -62,8 +63,7 @@ export const handleOnboardingSubmit = (event) => {
 
     saveUser(userProfile);
 
-    const dietPlan = generateDietPlan(userProfile);
-    console.log(dietPlan);
+    navigateTo('/dashboard')
 };
 
 export const initOnboarding = () => {

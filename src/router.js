@@ -1,9 +1,21 @@
 import { routes } from "./routes.js";
+import { getUser } from "./services/userService.js";
 
 const appContainer = document.getElementById("app");
 
 const renderContent = () => {
-    const path = window.location.pathname;
+    const user = getUser()
+
+    let path = window.location.pathname;
+
+    if(!user && (path !== '/onboarding' && path !== '/')){
+        path = '/onboarding'
+        window.history.replaceState(null, null, path)
+    }else if(user && path === '/onboarding'){
+        path = '/dashboard'
+        window.history.replaceState(null, null, path)
+    }
+
     const route = routes[path] || routes["/"];
 
     appContainer.innerHTML = route.render();

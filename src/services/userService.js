@@ -19,3 +19,7 @@ export const getUser = () => {
         return null;
     }
 };
+
+export const clearUser = () => {
+    localStorage.removeItem('keto_thai')
+}

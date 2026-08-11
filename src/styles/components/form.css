@@ -1,27 +1,26 @@
-.form{
+.form {
     display: flex;
     flex-direction: column;
-    gap:1.5rem;
+    gap: 1.5rem;
     max-width: 400px;
     margin: 0 auto;
-    padding-top: 120px;
-    padding-bottom: 40px;
+    padding: 120px 10px 40px 10px;
     font-family: var(--font-main);
 }
 
-.form__group{
+.form__group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.form__label{
+.form__label {
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-color);
 }
 
-.form__input{
+.form__input {
     padding: 0.8rem;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -30,7 +29,7 @@
     color: var(--text-color);
 }
 
-.form__input:focus{
+.form__input:focus {
     outline: none;
     border-color: var(--color-primary);
     transition: all 0.3s ease;

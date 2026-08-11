@@ -110,3 +110,74 @@
 .macro--carbs .macro__icon {
     color: var(--color-carbs);
 }
+
+
+/* BENTO CARDS CSS FOR DASHBOARD.js */
+
+.bento-card{
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition:transform 0.2s ease,border-color 0.2s ease;
+}
+
+.bento-card:hover{
+    transform: translateY(-5px);
+    border-color: var(--color-accent);
+}
+
+.bento-card--accent{
+    grid-column: span 2;
+    background-color: var(--color-accent);
+    color: var(--color-text-primary);
+    border:none;
+}
+
+.bento-card--chart{
+    grid-column: span 2;
+    min-height: 250px;
+}
+
+.bento-card__title{
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.bento-card--accent , .brnto-card__title{
+    color: var(--color-text-primary);
+    opacity: 0.9;
+}
+
+.bento-card__value{
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.bento-card__icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.bento-card--proteins .bento-card__icon,
+.bento-card--proteins .bento-card__value {
+    color: var(--color-protein);
+}
+
+.bento-card--fats .bento-card__icon,
+.bento-card--fats .bento-card__value{
+color: var(--color-fats);
+}
+
+.bento-card--carbs .bento-card__icon,
+.bento-card--carbs .bento-card__value{
+color: var(--color-carbs);
+}
