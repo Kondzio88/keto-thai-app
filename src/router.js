@@ -4,16 +4,16 @@ import { getUser } from "./services/userService.js";
 const appContainer = document.getElementById("app");
 
 const renderContent = () => {
-    const user = getUser()
+    const user = getUser();
 
     let path = window.location.pathname;
 
-    if(!user && (path !== '/onboarding' && path !== '/')){
-        path = '/onboarding'
-        window.history.replaceState(null, null, path)
-    }else if(user && path === '/onboarding'){
-        path = '/dashboard'
-        window.history.replaceState(null, null, path)
+    if (!user && (path !== "/onboarding" && path !== "/" && path !== '/recipes' && path !== '/knowledge' && path !== '/contact')) {
+        path = "/onboarding";
+        window.history.replaceState(null, null, path);
+    } else if (user && path === "/onboarding") {
+        path = "/dashboard";
+        window.history.replaceState(null, null, path);
     }
 
     const route = routes[path] || routes["/"];
@@ -38,7 +38,7 @@ export const initRouter = () => {
     document.body.addEventListener("click", (event) => {
         if (event.target.matches("[data-link]")) {
             event.preventDefault();
-            navigateTo(event.target.href);
+            navigateTo(event.target.getAttribute("href"));
         }
     });
 
