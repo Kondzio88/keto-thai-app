@@ -53,7 +53,7 @@ export const generateDietPlan = (userProfile) => {
     
     const tdeeResult = calculateTDEE(bmrResult,activity)
 
-    const goalResult = calculateTargetCalories(tdeeResult,goal)
+    const goalResult = Math.round(calculateTargetCalories(tdeeResult,goal))
 
     const macrosResult = calculateKetoMacros(goalResult,weight)
 

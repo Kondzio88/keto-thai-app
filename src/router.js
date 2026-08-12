@@ -8,7 +8,18 @@ const renderContent = () => {
 
     let path = window.location.pathname;
 
-    if (!user && (path !== "/onboarding" && path !== "/" && path !== '/recipes' && path !== '/knowledge' && path !== '/contact')) {
+    if (path.includes("/keto-thai")) {
+        path = path.replace("/keto-thai-app", "") || "/";
+    }
+
+    if (
+        !user &&
+        path !== "/onboarding" &&
+        path !== "/" &&
+        path !== "/recipes" &&
+        path !== "/knowledge" &&
+        path !== "/contact"
+    ) {
         path = "/onboarding";
         window.history.replaceState(null, null, path);
     } else if (user && path === "/onboarding") {
