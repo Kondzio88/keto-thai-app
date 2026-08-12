@@ -5,4 +5,5 @@
 @import "./components/header.css";
 @import "./base/layout.css";
 @import "./components/card.css";
-@import "./components/form.css"
+@import "./components/form.css";
+@import "./components/modal.css";

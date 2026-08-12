@@ -1,0 +1,108 @@
+.fab-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    height: 56px;
+    width: 56px;
+    z-index: 50;
+    border-radius: 50px;
+    background-color: var(--color-accent);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.fab-button:hover{
+    transform: translateY(-5px);
+    background-color:var(--color-carbs);
+}
+
+.fab-button::before {
+    content: "Dodaj pomiar Wagi";
+    position: absolute;
+    right: 70px;
+    top: 50%;
+    transform:translateY(-50%);
+    opacity: 0;
+    pointer-events: none;
+    background-color: var(--color-surface);
+    color:var(--color-text-primary);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fab-button:hover::before {
+    opacity: 1;
+    transform: translateY(-50%) translateX(-5px);
+}
+
+.fab-button .icon-add-weight {
+    color: var(--color-background);
+    width: 40px;
+    height: 40px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-overlay.is-hidden {
+    display: none !important;
+}
+
+.modal__content {
+    background-color: var(--color-surface);
+    padding: var(--spacing-xl);
+    border-radius: 20px;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.modal__input {
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--color-background);
+    color: var(--text-color);
+}
+
+.modal__input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    transition: all 0.3s ease;
+}
+
+.modal__input[type="number"]::-webkit-outer-spin-button,
+.modal__input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.modal__input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.modal__actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md);
+}

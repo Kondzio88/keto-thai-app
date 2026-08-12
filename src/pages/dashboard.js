@@ -1,5 +1,5 @@
 import { html } from "../utils/template.js";
-import { getUser, clearUser } from "../services/userService.js";
+import { getUser, clearUser, saveUser } from "../services/userService.js";
 import { generateDietPlan } from "../services/calculatorService.js";
 import { navigateTo } from "../router.js";
 
@@ -51,13 +51,24 @@ export const renderDashboard = () => {
                         <canvas id="weight-chart"></canvas>
                     </div>
                 </div>
-
             </div>
-            
+
             <div class="page-actions">
                 <button class="btn btn-delete" id="btn-delete">Skasuj dane aplikacji</button>
             </div>
+        </div>
 
+        <button class="fab-button" id="btn-add-weight"><i data-lucide="scale" class="icon-add-weight"></i></button>
+
+        <div class="modal-overlay is-hidden" id="modal-overlay">
+            <div class="modal__content">
+                <h3 class="modal__title">Podaj aktualną wage</h3>
+                <input type="number" class="modal__input" id="input-weight" />
+                <div class="modal__actions">
+                    <button class="btn btn--primary" id="btn-save-weight">Zapisz</button>
+                    <button class="btn btn--secondary" id="btn-exit">Wyjdź</button>
+                </div>
+            </div>
         </div>
     `;
 };
@@ -115,13 +126,12 @@ export const initDashboard = () => {
     const dates = userProfile.weightHistory.map((entry) => entry.date);
     const weights = userProfile.weightHistory.map((entry) => entry.weight);
 
-    new Chart(weightChartsCanvas, {
+    const weightChart = new Chart(weightChartsCanvas, {
         type: "line",
         data: {
             labels: dates,
             datasets: [
                 {
-                    // POPRAWKA 1: Dodane "s"
                     label: "Moja waga (kg)",
                     data: weights,
                     borderColor: "#10b981",
@@ -133,7 +143,7 @@ export const initDashboard = () => {
             ],
         },
         options: {
-            maintainAspectRatio: false, // POPRAWKA 2: Usunięte "n" na końcu
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     labels: {
@@ -144,7 +154,7 @@ export const initDashboard = () => {
                     },
                 },
             },
-            // POPRAWKA 3: scales musi być W ŚRODKU options!
+
             scales: {
                 y: {
                     grid: {
@@ -153,11 +163,11 @@ export const initDashboard = () => {
                     ticks: { color: "#9ca3af" },
                 },
                 x: {
-                    grid: { color: "rgba(255,255,255,0.1)" }, // POPRAWKA 4: Domknięty nawias po 0.1
+                    grid: { color: "rgba(255,255,255,0.1)" },
                     ticks: { color: "#9ca3af" },
                 },
             },
-        }, // <- Tu dopiero zamykamy options
+        },
     });
 
     caloriesLimit.textContent = dietPlan.calories;
@@ -168,5 +178,44 @@ export const initDashboard = () => {
     btnDelete.addEventListener("click", () => {
         clearUser();
         navigateTo("/onboarding");
+    });
+
+    // MODAL SAVE WEIGHT FUNCTION
+
+    const modalOverlay = document.getElementById("modal-overlay");
+    const btnAddWeight = document.getElementById("btn-add-weight");
+    const btnExit = document.getElementById("btn-exit");
+    const btnSaveWeight = document.getElementById("btn-save-weight");
+
+    btnAddWeight.addEventListener("click", () => {
+        modalOverlay.classList.remove("is-hidden");
+    });
+
+    btnExit.addEventListener("click", () => {
+        modalOverlay.classList.add("is-hidden");
+    });
+
+    btnSaveWeight.addEventListener("click", () => {
+        const inputElement = document.getElementById("input-weight");
+        const inputModalWeight = inputElement.value;
+
+        if (!inputModalWeight) {
+            alert("Proszę podać wagę przed zapisem!");
+            return;
+        }
+
+        const today = new Date().toISOString().split("T")[0];
+        const newWeight = parseFloat(inputModalWeight);
+        const dateWeight = { date: today, weight: newWeight };
+
+        userProfile.weightHistory.push(dateWeight);
+        saveUser(userProfile);
+
+        weightChart.data.labels.push(today);
+        weightChart.data.datasets[0].data.push(newWeight);
+        weightChart.update();
+
+        inputElement.value = "";
+        modalOverlay.classList.add("is-hidden");
     });
 };
