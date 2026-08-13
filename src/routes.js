@@ -1,5 +1,5 @@
 import { renderHome } from "./pages/home.js";
-import { renderRecipes } from "./pages/recipes.js";
+import { renderRecipes ,initRecipes} from "./pages/recipes.js";
 import { renderOnboarding, initOnboarding } from "./pages/onboarding.js";
 import { renderDashboard, initDashboard } from "./pages/dashboard.js";
 
@@ -17,6 +17,7 @@ export const routes = {
     },
     "/recipes": {
         render: renderRecipes,
+        init:initRecipes,
     },
     "/knowledge": {
         render: () => "<h1>Knowledge Base</h1>",
