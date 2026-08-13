@@ -1,0 +1,1 @@
+export const getBase = () => {window.location.hostname.includes("github.io") ? "/keto-thai-app" : ""}

@@ -1,5 +1,6 @@
 import { routes } from "./routes.js";
 import { getUser } from "./services/userService.js";
+import { getBase } from "./utils/env.js";
 
 const appContainer = document.getElementById("app");
 
@@ -8,7 +9,7 @@ const renderContent = () => {
 
     let path = window.location.pathname;
 
-    if (path.includes("/keto-thai")) {
+    if (path.includes("/keto-thai-app")) {
         path = path.replace("/keto-thai-app", "") || "/";
     }
 
@@ -21,10 +22,10 @@ const renderContent = () => {
         path !== "/contact"
     ) {
         path = "/onboarding";
-        window.history.replaceState(null, null, path);
+        window.history.replaceState(null, null, getBase() + path);
     } else if (user && path === "/onboarding") {
         path = "/dashboard";
-        window.history.replaceState(null, null, path);
+        window.history.replaceState(null, null, getBase() + path);
     }
 
     const route = routes[path] || routes["/"];
@@ -41,7 +42,7 @@ const renderContent = () => {
 };
 
 export const navigateTo = (url) => {
-    window.history.pushState(null, null, url);
+    window.history.pushState(null, null, getBase() + url);
     renderContent();
 };
 
