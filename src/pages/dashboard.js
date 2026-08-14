@@ -3,6 +3,16 @@ import { getUser, clearUser, saveUser } from "../services/userService.js";
 import { generateDietPlan } from "../services/calculatorService.js";
 import { navigateTo } from "../router.js";
 
+const checkWeightReminder = (user) => {
+    const lastRecord = user.weightHistory[user.weightHistory.length - 1];
+    const lastDate = new Date(lastRecord.date);
+    const today = new Date();
+    const diffTime = today - lastDate;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays >= 7;
+};
+
 export const renderDashboard = () => {
     return html`
         <div class="page-container">
@@ -10,6 +20,17 @@ export const renderDashboard = () => {
                 <h1 class="page-header__title">Dashboard</h1>
                 <p class="page-header__desc">Twój dzienny cel Keto</p>
             </header>
+
+            <div class="reminder-banner is-hidden" id="weight-reminder">
+                <div class="reminder-banner__text">
+                    <i data-lucide="bell" class="reminder-icon"></i>
+                    <span>Minęło 7 dni! Podaj dzisiejszą wagę:</span>
+                </div>
+                <div class="reminder-banner__actions">
+                    <input type="number" class="banner-input" id="banner-input-weight" placeholder="kg" step="0.1" />
+                    <button class="btn btn--primary btn--small" id="btn-banner-save">Zapisz</button>
+                </div>
+            </div>
 
             <div class="bento-grid">
                 <div class="bento-card bento-card--accent">
@@ -77,6 +98,36 @@ export const initDashboard = () => {
     const userProfile = getUser();
 
     if (!userProfile) return;
+
+    const reminderBanner = document.getElementById("weight-reminder");
+    const bannerInput = document.getElementById("banner-input-weight");
+    const btnBannerSave = document.getElementById("btn-banner-save");
+
+    if (checkWeightReminder(userProfile)) {
+        reminderBanner.classList.remove("is-hidden");
+    }
+
+    btnBannerSave.addEventListener("click", () => {
+        if (!bannerInput.value) {
+            alert("Najpierw wpisz wagę!");
+            return;
+        }
+
+        const newWeight = parseFloat(bannerInput.value);
+        const today = new Date().toISOString().split("T")[0];
+
+        const newWeightData = { date: today, weight: newWeight };
+
+        userProfile.weightHistory.push(newWeightData);
+        saveUser(userProfile);
+
+        weightChart.data.labels.push(today);
+        weightChart.data.datasets[0].data.push(newWeight);
+        weightChart.update();
+
+        bannerInput.value = "";
+        document.getElementById("weight-reminder").classList.add("is-hidden");
+    });
 
     const dietPlan = generateDietPlan(userProfile);
 
