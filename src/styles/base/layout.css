@@ -6,6 +6,12 @@
     width: 90%;
 }
 
+.container{
+    max-width: 1200px;
+    margin:0 auto;
+    width: 90%;
+}
+
 .page-header{
     margin-bottom: var(--spacing-lg);
     border-left: 4px solid var(--color-accent);
