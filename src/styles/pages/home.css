@@ -1,5 +1,5 @@
 .hero {
-    background: url("../assets/homePicture.jpg") center / cover no-repeat;
+    background: url("../../assets/homePicture.jpg") center / cover no-repeat;
     position: relative;
     min-height: 100vh;
     display: flex;
@@ -52,11 +52,11 @@
 
 /* PHILOSOPHY SECTION */
 
-.philosophy{
-    padding: var(--spacing-xl) 0;
+.philosophy {
+    padding: var(--spacing-lg) 0;
 }
 
-.philosophy__title{
+.philosophy__title {
     margin-bottom: var(--spacing-xl);
     font-size: clamp(2rem, 5vw, 4rem);
 }
@@ -74,11 +74,11 @@
     transition: all 0.3s ease;
 }
 
-.philosophy__card-header{
+.philosophy__card-header {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-    margin-bottom:var(--spacing-md) ;
+    margin-bottom: var(--spacing-md);
 }
 
 .philosophy__card-icon {
@@ -90,67 +90,75 @@
     font-weight: 700;
 }
 
-.philosophy__card-desc{
+.philosophy__card-desc {
     font-size: 1.1rem;
     line-height: 1.6rem;
     color: var(--color-text-secondary);
 }
 
-.philosophy__card--keto   .philosophy__card-icon,.philosophy__card--keto .philosophy__card-title { color: var(--color-protein); }
-.philosophy__card--fight  .philosophy__card-icon ,.philosophy__card--fight .philosophy__card-title{ color: var(--color-accent); }
-.philosophy__card--track  .philosophy__card-icon,.philosophy__card--track .philosophy__card-title { color: var(--color-carbs); }
+.philosophy__card--keto .philosophy__card-icon,
+.philosophy__card--keto .philosophy__card-title {
+    color: var(--color-protein);
+}
+.philosophy__card--fight .philosophy__card-icon,
+.philosophy__card--fight .philosophy__card-title {
+    color: var(--color-accent);
+}
+.philosophy__card--track .philosophy__card-icon,
+.philosophy__card--track .philosophy__card-title {
+    color: var(--color-carbs);
+}
 
-.philosophy__card:hover{
+.philosophy__card:hover {
     transform: translateY(-5px);
 }
 
-.philosophy__card--keto:hover{
+.philosophy__card--keto:hover {
     border-color: var(--color-protein);
 }
 
-.philosophy__card--fight:hover{
+.philosophy__card--fight:hover {
     border-color: var(--color-accent);
 }
 
-.philosophy__card--track:hover{
+.philosophy__card--track:hover {
     border-color: var(--color-carbs);
 }
 
 /* ABOUT SECTION */
 
-.about{
-    padding: var(--spacing-xl) 0;
+.about {
+    padding: var(--spacing-lg) 0;
 }
 
-.about__layout{
+.about__layout {
     display: grid;
     grid-template-columns: 1fr;
 }
 
-.about__title{
+.about__title {
     font-size: clamp(2rem, 5vw, 4rem);
     padding: var(--spacing-xl) 0;
 }
 
-.about__desc{
+.about__desc {
     margin-bottom: var(--spacing-md);
     font-size: 1.1rem;
     color: var(--color-text-secondary);
     line-height: 1.6rem;
 }
 
-.about__gallery{
+.about__gallery {
     display: grid;
-    grid-template-columns: repeat(2,1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
 }
 
-.about__image{
+.about__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-
 
 @media (min-width: 768px) {
     .hero__actions {
@@ -162,7 +170,7 @@
         grid-template-columns: repeat(3, 1fr);
     }
 
-    .about__layout{
+    .about__layout {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--spacing-lg);
