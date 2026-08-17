@@ -1,5 +1,37 @@
 /* Pasek kontenera na przyciski */
-.filters {
+.filters{
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.filters__search{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 0 var(--spacing-md)
+}
+
+.filters__input{
+    max-width: 100px;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 5px;
+    outline: none;
+}
+
+.filters__input:focus{
+    border: 2px solid var(--color-accent);
+}
+
+.filters__input[type="number"]::-webkit-outer-spin-button,
+.filters__input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.filters__categories {
     display: flex;
     gap: var(--spacing-sm);
     margin-bottom: var(--spacing-lg);
@@ -9,7 +41,7 @@
     scrollbar-width: none;
 }
 
-.filters::-webkit-scrollbar {
+.filters__categories::-webkit-scrollbar {
     display: none;
 }
 

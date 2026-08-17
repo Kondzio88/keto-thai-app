@@ -316,10 +316,17 @@ export const renderRecipes = () => {
         </header>
 
         <div class="filters">
-            <button class="filter-btn is-active" data-category="all">Wszystkie</button>
-            <button class="filter-btn" data-category="śniadanie">Śniadanie</button>
-            <button class="filter-btn" data-category="obiad">Obiad</button>
-            <button class="filter-btn" data-category="kolacja">Kolacja</button>
+            <div class="filters__search">
+                <input type="number" class="filters__input" id="input-calories" placeholder="Przeszukaj po kaloriach" />
+                <button class="btn btn--primary" id="btn-search-calories">Szukaj</button>
+            </div>
+
+            <div class="filters__categories">
+                <button class="filter-btn is-active" data-category="all">Wszystkie</button>
+                <button class="filter-btn" data-category="śniadanie">Śniadanie</button>
+                <button class="filter-btn" data-category="obiad">Obiad</button>
+                <button class="filter-btn" data-category="kolacja">Kolacja</button>
+            </div>
         </div>
         <section class="grid-layout">${generateCardsHTML(RECIPES_DATA)}</section>
     </main>`;
@@ -362,6 +369,14 @@ export const initRecipes = () => {
     const gridLayout = document.querySelector(".grid-layout");
     const btnsCategorys = document.querySelectorAll(".filter-btn");
 
+    const updateGrid = (recipesToRender) => {
+        gridLayout.innerHTML = generateCardsHTML(recipesToRender);
+
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
+    };
+
     btnsCategorys.forEach((button) => {
         button.addEventListener("click", (e) => {
             btnsCategorys.forEach((btn) => {
@@ -379,11 +394,23 @@ export const initRecipes = () => {
                 newRecipes = RECIPES_DATA.filter((rec) => rec.category === selectedCategory);
             }
 
-            gridLayout.innerHTML = generateCardsHTML(newRecipes);
-
-            if (window.lucide) {
-                window.lucide.createIcons();
-            }
+            updateGrid(newRecipes);
         });
+    });
+
+    const filtersInput = document.getElementById("input-calories");
+    const btnSearchCalories = document.getElementById("btn-search-calories");
+
+    btnSearchCalories.addEventListener("click", () => {
+        if (!filtersInput.value) {
+            updateGrid(RECIPES_DATA);
+            return;
+        }
+
+        const calories = parseInt(filtersInput.value);
+
+        const caloriesArray = RECIPES_DATA.filter((rec) => rec.calories <= calories);
+
+        updateGrid(caloriesArray);
     });
 };
