@@ -1,11 +1,12 @@
-import { renderHome } from "./pages/home.js";
-import { renderRecipes ,initRecipes} from "./pages/recipes.js";
+import { renderHome, initHome } from "./pages/home.js";
+import { renderRecipes, initRecipes } from "./pages/recipes.js";
 import { renderOnboarding, initOnboarding } from "./pages/onboarding.js";
 import { renderDashboard, initDashboard } from "./pages/dashboard.js";
 
 export const routes = {
     "/": {
         render: renderHome,
+        init: initHome,
     },
     "/dashboard": {
         render: renderDashboard,
@@ -17,7 +18,7 @@ export const routes = {
     },
     "/recipes": {
         render: renderRecipes,
-        init:initRecipes,
+        init: initRecipes,
     },
     "/knowledge": {
         render: () => "<h1>Knowledge Base</h1>",

@@ -61,6 +61,11 @@
     font-size: clamp(2rem, 5vw, 4rem);
 }
 
+.philosophy__title::first-letter {
+    font-size: clamp(3rem, 5vw, 5rem);
+    color: var(--color-accent);
+}
+
 .philosophy__grid {
     display: grid;
     gap: var(--spacing-lg);
@@ -141,6 +146,11 @@
     padding: var(--spacing-xl) 0;
 }
 
+.about__title::first-letter {
+    font-size: clamp(3rem, 5vw, 5rem);
+    color: var(--color-accent);
+}
+
 .about__desc {
     margin-bottom: var(--spacing-md);
     font-size: 1.1rem;
@@ -160,6 +170,68 @@
     object-fit: cover;
 }
 
+/* STEPS SECTION */
+
+.steps {
+    padding: var(--spacing-lg) 0;
+}
+
+.steps__title {
+    text-align: center;
+    font-size: clamp(2rem, 5vw, 4rem);
+    margin-bottom: var(--spacing-lg);
+}
+
+.steps__title::first-letter {
+    font-size: clamp(3rem, 5vw, 5rem);
+    color: var(--color-accent);
+}
+
+.timeline__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.timeline__step-num {
+    display: block;
+    font-size: clamp(1.8rem, 3vw, 2.3rem);
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--color-carbs);
+    margin-bottom: var(--spacing-md);
+}
+
+.timeline__subtitle {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: var(--spacing-md);
+}
+
+.timeline__subtitle::first-letter {
+    font-size: clamp(1.8rem, 3vw, 2.3rem);
+    color: var(--color-accent);
+    letter-spacing: 1px;
+}
+
+.timeline__desc {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+}
+
+.timeline__image {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.timeline__marker {
+    display: none;
+}
+
 @media (min-width: 768px) {
     .hero__actions {
         flex-direction: row;
@@ -175,4 +247,74 @@
         grid-template-columns: 1fr 1fr;
         gap: var(--spacing-lg);
     }
+
+    .timeline {
+        position: relative;
+    }
+
+
+    .timeline::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--color-accent);
+    }
+
+    .timeline__item {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 80px;
+    }
+
+    .timeline__item:nth-child(even) {
+        flex-direction: row-reverse;
+    }
+
+    .timeline__item:nth-child(odd) .timeline__content {
+        text-align: right;
+    }
+
+    .timeline__content,
+    .timeline__visual {
+        width: 45%;
+    }
+
+    .timeline__marker {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: block;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: var(--color-carbs);
+    }
+}
+
+/* REVEAL SCROOL CLASSES */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+        opacity 0.6s ease-out,
+        transform 0.6s ease-out;
+}
+
+.reveal--left {
+    transform: translateX(-50px);
+}
+
+.reveal--right {
+    transform: translateX(50px);
+}
+
+.reveal.reveal--visible {
+    opacity: 1;
+    transform: translate(0, 0);
 }

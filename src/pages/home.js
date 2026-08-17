@@ -22,7 +22,7 @@ export const renderHome = () => {
             <section class="philosophy">
                 <div class="philosophy__container container">
                     <h2 class="philosophy__title">Dlaczego Keto Thai?</h2>
-                    <div class="philosophy__grid">
+                    <div class="philosophy__grid reveal">
                         <article class="philosophy__card philosophy__card--keto">
                             <div class="philosophy__card-header">
                                 <i data-lucide="beef" class="philosophy__card-icon"></i>
@@ -62,7 +62,7 @@ export const renderHome = () => {
             <!-- 3. ABOUT & GALLERY SECTION -->
             <section class="about">
                 <div class="about__container container">
-                    <div class="about__layout">
+                    <div class="about__layout reveal">
                         <!-- Lewa Kolumna: Tekst -->
                         <div class="about__content">
                             <h2 class="about__title">Z tajskiej maty do Twojej kuchni</h2>
@@ -118,8 +118,8 @@ export const renderHome = () => {
 
                     <div class="timeline">
                         <!-- Krok 1 (Onboarding) -->
-                        <div class="timeline__item">
-                            <div class="timeline__content">
+                        <div class="timeline__item reveal">
+                            <div class="timeline__content reveal reveal--left">
                                 <span class="timeline__step-num">Krok 1</span>
                                 <h3 class="timeline__subtitle">Oblicz swoje makro</h3>
                                 <p class="timeline__desc">
@@ -130,7 +130,7 @@ export const renderHome = () => {
 
                             <div class="timeline__marker"></div>
 
-                            <div class="timeline__visual">
+                            <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Onboardingu -->
                                 <img
                                     src="${onboardingImg}"
@@ -141,8 +141,8 @@ export const renderHome = () => {
                         </div>
 
                         <!-- Krok 2 (Przepisy) -->
-                        <div class="timeline__item">
-                            <div class="timeline__content">
+                        <div class="timeline__item reveal">
+                            <div class="timeline__content reveal reveal--left">
                                 <span class="timeline__step-num">Krok 2</span>
                                 <h3 class="timeline__subtitle">Odkrywaj keto smaki</h3>
                                 <p class="timeline__desc">
@@ -153,7 +153,7 @@ export const renderHome = () => {
 
                             <div class="timeline__marker"></div>
 
-                            <div class="timeline__visual">
+                            <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Przepisów -->
                                 <img
                                     src="${recipesImg}"
@@ -164,8 +164,8 @@ export const renderHome = () => {
                         </div>
 
                         <!-- Krok 3 (Dashboard) -->
-                        <div class="timeline__item">
-                            <div class="timeline__content">
+                        <div class="timeline__item reveal">
+                            <div class="timeline__content reveal reveal--left">
                                 <span class="timeline__step-num">Krok 3</span>
                                 <h3 class="timeline__subtitle">Śledź swój progres</h3>
                                 <p class="timeline__desc">
@@ -176,7 +176,7 @@ export const renderHome = () => {
 
                             <div class="timeline__marker"></div>
 
-                            <div class="timeline__visual">
+                            <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Dashboardu -->
                                 <img src="${dashboardImg}" alt="Widok wykresów progresu" class="timeline__image" />
                             </div>
@@ -186,4 +186,22 @@ export const renderHome = () => {
             </section>
         </main>
     `;
+};
+
+export const initHome = () => {
+    const revealElements = document.querySelectorAll(".reveal");
+
+    const scrollObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("reveal--visible");
+                    scrollObserver.unobserve(entry.target);
+                }
+            });
+        },
+        { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
+    );
+
+    revealElements.forEach((el) => scrollObserver.observe(el));
 };
