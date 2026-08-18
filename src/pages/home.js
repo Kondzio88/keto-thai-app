@@ -1,7 +1,5 @@
 import { html } from "../utils/template.js";
-import onboardingImg from "../assets/iphonMobileOnboarding.png";
-import recipesImg from "../assets/iphonMobileRecipes.png";
-import dashboardImg from "../assets/iphonMobileDashboard.png";
+import { getBase } from "../utils/env.js";
 
 export const renderHome = () => {
     return html`
@@ -133,7 +131,7 @@ export const renderHome = () => {
                             <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Onboardingu -->
                                 <img
-                                    src="${onboardingImg}"
+                                    src="${getBase()}/src/assets/iphonMobileOnboarding.png""
                                     alt="Widok kwestionariusza aplikacji"
                                     class="timeline__image"
                                 />
@@ -156,7 +154,7 @@ export const renderHome = () => {
                             <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Przepisów -->
                                 <img
-                                    src="${recipesImg}"
+                                    src="${getBase()}/src/assets/iphonMobileRecipes.png""
                                     alt="Widok bazy przepisów w aplikacji"
                                     class="timeline__image"
                                 />
@@ -178,7 +176,11 @@ export const renderHome = () => {
 
                             <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Dashboardu -->
-                                <img src="${dashboardImg}" alt="Widok wykresów progresu" class="timeline__image" />
+                                <img
+                                    src="${getBase()}/src/assets/iphonMobileDashboard.png""
+                                    alt="Widok wykresów progresu"
+                                    class="timeline__image"
+                                />
                             </div>
                         </div>
                     </div>
