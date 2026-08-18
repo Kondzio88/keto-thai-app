@@ -109,7 +109,6 @@ export const renderHome = () => {
 
             <!-- 4. STEPS -->
 
-            <!-- 4. HOW IT WORKS / TIMELINE -->
             <section class="steps">
                 <div class="steps__container container">
                     <h2 class="steps__title">Twój plan działania</h2>
@@ -186,6 +185,50 @@ export const renderHome = () => {
                     </div>
                 </div>
             </section>
+
+            <!-- 5 FAQ  -->
+
+            <section class="faq">
+                <div class="faq__container container">
+                    <h2 class="faq__title">Najczęsciej zadawane pytania</h2>
+
+                    <div class="accordion">
+                        <div class="accordion__item">
+                            <button class="accordion__header">
+                                <span class="accordion__question">Czy dieta keto jest bezpieczna</span>
+                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                            </button>
+
+                            <div class="accordion__content">
+                                <p class="accordion__answer">Tak , o ile jest prowadzona z głową</p>
+                            </div>
+                        </div>
+
+                        <div class="accordion__item">
+                            <button class="accordion__header">
+                                <span class="accordion__question">Czy dieta keto jest bezpieczna</span>
+                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                            </button>
+
+                            <div class="accordion__content">
+                                <p class="accordion__answer">Tak , o ile jest prowadzona z głową</p>
+                            </div>
+                        </div>
+
+                        <div class="accordion__item">
+                            <button class="accordion__header">
+                                <span class="accordion__question">Czy dieta keto jest bezpieczna</span>
+                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                            </button>
+
+                            <div class="accordion__content">
+                                <p class="accordion__answer">Tak , o ile jest prowadzona z głową</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </section>
         </main>
     `;
 };
@@ -206,4 +249,12 @@ export const initHome = () => {
     );
 
     revealElements.forEach((el) => scrollObserver.observe(el));
+
+    const accordionBtns = document.querySelectorAll('.accordion__header')
+
+    accordionBtns.forEach(btn => {
+        btn.addEventListener('click',() => {
+            btn.parentElement.classList.toggle('is-active')
+        })
+    })
 };
