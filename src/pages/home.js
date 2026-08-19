@@ -186,7 +186,30 @@ export const renderHome = () => {
                 </div>
             </section>
 
-            <!-- 5 FAQ  -->
+            <!-- 5 CAMP OFER SECTION  -->
+
+            <section class="camp-ofer">
+                <div class="camp-ofer__container container">
+                    <div class="camp-ofer__card">
+                        <div class="camp-ofer__content">
+                            <span class="camp-ofer__badge">Program Hybrydowy</span>
+                            <h2 class="camp-ofer__title">12 Tygodniowy Fighter's Camp</h2>
+                            <p class="camp-ofer__desc">Połącz dietę keto z reżimem treningowym pod moim okiem!</p>
+                            <ul class="camp-ofer__list">
+                                <li>Indywidualne Prowadzenie</li>
+                                <li>Analiza postępów</li>
+                                <li>Dietetyczne wsparcie PRO</li>
+                            </ul>
+
+                            <a href="/contact" class="btn btn--accent">Aplikuj do Campu</a>
+                        </div>
+
+                        <div class="camp-ofer__image"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6 FAQ SECTION -->
 
             <section class="faq">
                 <div class="faq__container container">
@@ -250,11 +273,11 @@ export const initHome = () => {
 
     revealElements.forEach((el) => scrollObserver.observe(el));
 
-    const accordionBtns = document.querySelectorAll('.accordion__header')
+    const accordionBtns = document.querySelectorAll(".accordion__header");
 
-    accordionBtns.forEach(btn => {
-        btn.addEventListener('click',() => {
-            btn.parentElement.classList.toggle('is-active')
-        })
-    })
+    accordionBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            btn.parentElement.classList.toggle("is-active");
+        });
+    });
 };
