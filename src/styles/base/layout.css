@@ -1,4 +1,4 @@
-.page-container{
+.page-container {
     padding-top: 100px;
     padding-bottom: var(--spacing-xl);
     max-width: 1200px;
@@ -6,55 +6,55 @@
     width: 90%;
 }
 
-.container{
+.container {
     max-width: 1200px;
-    margin:0 auto;
+    margin: 0 auto;
     width: 90%;
 }
 
-.page-header{
+.page-header {
     margin-bottom: var(--spacing-lg);
     border-left: 4px solid var(--color-accent);
     padding-left: var(--spacing-md);
 }
 
-.page-header__title{
-    font-family: 'Oswald',sans-serif;
+.page-header__title {
+    font-family: var(--font-heading);
     font-size: 2.5rem;
     text-transform: uppercase;
     line-height: 1.2;
 }
 
-.page-header__desc{
+.page-header__desc {
     color: var(--color-text-secondary);
     font-size: 1.1rem;
 }
 
-.grid-layout{
+.grid-layout {
     display: grid;
     gap: var(--spacing-lg);
-    grid-template-columns: repeat(auto-fill,minmax(300px ,1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
-.bento-grid{
+.bento-grid {
     display: grid;
-    grid-template-columns: repeat(2 ,1fr);
-    gap:1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
     max-width: 800px;
     margin: 2rem auto;
 }
 
 .page-actions {
-    display: flex; 
-    justify-content: center; 
-    margin-top: var(--spacing-xl); 
-    padding-bottom: var(--spacing-xl); 
+    display: flex;
+    justify-content: center;
+    margin-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
 }
 
 /* Jeśli jeszcze nie masz ostylowanego samego przycisku usuwania, możesz dodać to: */
 .btn-delete {
     background-color: transparent;
-    color: var(--color-protein); 
+    color: var(--color-protein);
     border: 1px solid var(--color-protein);
     padding: var(--spacing-md) var(--spacing-lg);
     border-radius: 8px;

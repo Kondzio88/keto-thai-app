@@ -130,7 +130,7 @@ export const renderHome = () => {
                             <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Onboardingu -->
                                 <img
-                                    src="${getBase()}/src/assets/iphonMobileOnboarding.png""
+                                    src="${getBase()}/src/assets/iphonMobileOnboarding.png"
                                     alt="Widok kwestionariusza aplikacji"
                                     class="timeline__image"
                                 />
@@ -153,7 +153,7 @@ export const renderHome = () => {
                             <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Przepisów -->
                                 <img
-                                    src="${getBase()}/src/assets/iphonMobileRecipes.png""
+                                    src="${getBase()}/src/assets/iphonMobileRecipes.png"
                                     alt="Widok bazy przepisów w aplikacji"
                                     class="timeline__image"
                                 />
@@ -223,29 +223,29 @@ export const renderHome = () => {
                             </button>
 
                             <div class="accordion__content">
-                                <p class="accordion__answer">Tak , o ile jest prowadzona z głową</p>
+                                <p class="accordion__answer">Tak , o ile jest prowadzona z głową. Mam w tym kilku letnie doświadczenie.</p>
                             </div>
                         </div>
 
                         <div class="accordion__item">
                             <button class="accordion__header">
-                                <span class="accordion__question">Czy dieta keto jest bezpieczna</span>
+                                <span class="accordion__question">Czy nie zabraknie mi siły na treningach wytrzymałościowych</span>
                                 <i data-lucide="chevron-down" class="accordion__icon"></i>
                             </button>
 
                             <div class="accordion__content">
-                                <p class="accordion__answer">Tak , o ile jest prowadzona z głową</p>
+                                <p class="accordion__answer">Jak widac Nie . Kilka lat trenuje w tym systemie żywieniowym . Z powodzeniem</p>
                             </div>
                         </div>
 
                         <div class="accordion__item">
                             <button class="accordion__header">
-                                <span class="accordion__question">Czy dieta keto jest bezpieczna</span>
+                                <span class="accordion__question">Dla kogo jest aplikacja</span>
                                 <i data-lucide="chevron-down" class="accordion__icon"></i>
                             </button>
 
                             <div class="accordion__content">
-                                <p class="accordion__answer">Tak , o ile jest prowadzona z głową</p>
+                                <p class="accordion__answer">Dla każdego kto chce zadbać o swoje zdrowie , zgubić tkanke tłuszczową oraz poprawić swoje wyniki sportowe.</p>
                             </div>
                         </div>
                     </div>

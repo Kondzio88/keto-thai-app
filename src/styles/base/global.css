@@ -22,6 +22,7 @@
     --shadow-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2);
 
     --font-main: "Inter", system-ui, sans-serif;
+    --font-heading: "Oswald",sans-serif;
 
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;

@@ -20,7 +20,7 @@
 }
 
 .header__logo {
-    font-family: "Oswald", sans-serif;
+    font-family: var(--font-heading);
     font-size: 1.75rem;
     font-weight: 700;
     letter-spacing: 1px;

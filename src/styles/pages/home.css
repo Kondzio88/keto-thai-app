@@ -199,16 +199,19 @@
 
 .timeline__step-num {
     display: block;
-    font-size: clamp(1.8rem, 3vw, 2.3rem);
-    font-weight: 700;
-    letter-spacing: 1px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--color-carbs);
+    color: var(--color-accent);
     margin-bottom: var(--spacing-md);
 }
 
 .timeline__subtitle {
-    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    line-height: 1.2;
     margin-bottom: var(--spacing-md);
 }
 
@@ -219,8 +222,9 @@
 }
 
 .timeline__desc {
+    max-width: 400px;
     font-size: 1.1rem;
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--color-text-secondary);
 }
 
@@ -228,6 +232,22 @@
     width: 100%;
     max-width: 300px;
     margin: 0 auto;
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 15px rgba(var(--color-accent-rgb), 0.12));
+    animation: float 4s ease-in-out infinite;
+}
+
+.timeline__item:nth-child(even) .timeline__image {
+    animation-delay: 3s;
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-12px);
+    }
 }
 
 .timeline__marker {
@@ -274,8 +294,8 @@
 }
 
 .camp-offer__title {
-    width:fit-content;
-    font-family: 'Oswald', sans-serif;
+    width: fit-content;
+    font-family: var(--font-heading);
     font-size: clamp(1.8rem, 3.5vw, 2.6rem);
     font-weight: 800;
     line-height: 1.15;
@@ -355,10 +375,22 @@
 }
 
 .accordion__item {
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
     background-color: var(--color-surface);
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.accordion__item.is-active {
+    border-color: rgba(var(--color-accent-rgb), 0.4);
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(var(--color-accent-rgb), 0.08);
+}
+
+.accordion__item:hover {
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .accordion__header {
@@ -369,6 +401,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    text-align: left;
+    gap: var(--spacing-md);
 }
 
 .accordion__question {
@@ -379,10 +413,17 @@
 .accordion__icon {
     color: var(--color-text-primary);
     transition: transform 0.3s ease;
+    flex-shrink: 0;
 }
 
 .accordion__item.is-active .accordion__icon {
     transform: rotate(180deg);
+}
+
+.accordion__item.is-active .accordion__question,
+.accrodion__item.is-active .accordion__icon {
+    color: var(--color-accent);
+    font-weight: 700;
 }
 
 .accordion__content {
@@ -397,8 +438,10 @@
 }
 
 .accordion__answer {
-    font-size: 1rem;
+    color: var(--color-text-secondary);
+    font-size: 1.05rem;
     opacity: 0;
+    line-height: 1.6;
     transform: translateY(-10px);
     transition: all 0.4s ease;
     min-height: 0px;
@@ -446,6 +489,7 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 80px;
+        padding: var(--spacing-lg);
     }
 
     .timeline__item:nth-child(even) {
@@ -454,6 +498,10 @@
 
     .timeline__item:nth-child(odd) .timeline__content {
         text-align: right;
+    }
+
+    .timeline__item:nth-child(odd) .timeline__desc {
+        margin-left: auto;
     }
 
     .timeline__content,
@@ -469,7 +517,9 @@
         width: 24px;
         height: 24px;
         border-radius: 50%;
-        background-color: var(--color-carbs);
+        background-color: var(--color-surface);
+        border: 3px solid var(--color-accent);
+        box-shadow: 0 0 15px rgba(var(--color-accent-rgb), 0.6);
     }
 
     .camp-offer__card {
