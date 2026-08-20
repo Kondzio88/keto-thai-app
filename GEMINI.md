@@ -92,3 +92,8 @@ Wskaż obszary do poprawy, zadając pytania: "Jak mógłbyś uprościć tę funk
 
 - Jeśli pytanie wymaga odpowiedzi "Tak" lub "Nie", odpowiedz krótko w pierwszym zdaniu, a następnie rozwiń kontekst techniczny i konsekwencje praktyczne.
 - Jeśli omawiany temat jest kluczowy dla fundamentów programowania, zakończ wypowiedź krótkim, samodzielnym mikro-ćwiczeniem weryfikującym moje zrozumienie zamiast przechodzić od razu dalej.
+
+## 8. ODCZYT I ZAPIS PROJEKTU NA STAN OBECNY
+
+- Na samym poczatku pracy czytaj jeśli jest w projekcie plik PLAN.md żebyś dobrze wiedział co robimy
+- Na sam koniec pracy dziennej , kiedy napisze Ci zapisz postępy , zapisz w pliku PROGRES.md co zrobilismy w danej sesji . Streść funckjonalnosci , architekture projektu , oraz zmiany które wprowadzilismy . Nie przepisuj całej rozmowy jedynie w punktach to co zrobilismy (najistotniejsze rzeczy). Zapisz plik PROGRES.md

@@ -75,7 +75,7 @@
     background-color: var(--color-surface);
     border-radius: 8px;
     padding: var(--spacing-md);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     transition: all 0.3s ease;
 }
 
@@ -168,6 +168,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 5px;
 }
 
 /* STEPS SECTION */
@@ -232,6 +234,103 @@
     display: none;
 }
 
+/* CAMP-OFfER SECTION */
+
+.camp-offer {
+    padding: var(--spacing-lg) 0;
+}
+
+.camp-offer__card {
+    display: grid;
+    grid-template-columns: 1fr;
+    background-color: var(--color-surface);
+    padding: var(--spacing-lg);
+    gap: var(--spacing-lg);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(var(--color-accent-rgb), 0.08);
+}
+
+.camp-offer__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+}
+
+.camp-offer__badge {
+    align-self: flex-start;
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    background-color: rgba(var(--color-accent-rgb), 0.12);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.3);
+    color: var(--color-accent);
+    border-radius: 999px;
+}
+
+.camp-offer__title {
+    width:fit-content;
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 800;
+    line-height: 1.15;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #ffffff 20%, var(--color-accent) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.camp-offer__desc {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.camp-offer__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.camp-offer__list li {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.camp-offer--icon {
+    color: var(--color-accent);
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.camp-offer__btn {
+    align-self: self-start;
+}
+
+.camp-offer__image {
+    overflow: hidden;
+    border-radius: 8px;
+    aspect-ratio: 16 / 9;
+}
+
+.camp-offer__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 /* FAQ SECTION */
 
 .faq {
@@ -259,6 +358,7 @@
     padding: var(--spacing-lg);
     background-color: var(--color-surface);
     border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .accordion__header {
@@ -281,7 +381,7 @@
     transition: transform 0.3s ease;
 }
 
-.accordion__item.is-active .accordion__icon{
+.accordion__item.is-active .accordion__icon {
     transform: rotate(180deg);
 }
 
@@ -298,13 +398,13 @@
 
 .accordion__answer {
     font-size: 1rem;
-    opacity:0;
+    opacity: 0;
     transform: translateY(-10px);
     transition: all 0.4s ease;
     min-height: 0px;
 }
 
-.accordion__item.is-active .accordion__answer{
+.accordion__item.is-active .accordion__answer {
     opacity: 1;
     transform: translateY(0);
     padding: var(--spacing-md) 0;
@@ -370,6 +470,11 @@
         height: 24px;
         border-radius: 50%;
         background-color: var(--color-carbs);
+    }
+
+    .camp-offer__card {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
     }
 }
 

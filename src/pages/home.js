@@ -188,23 +188,23 @@ export const renderHome = () => {
 
             <!-- 5 CAMP OFER SECTION  -->
 
-            <section class="camp-ofer">
-                <div class="camp-ofer__container container">
-                    <div class="camp-ofer__card">
-                        <div class="camp-ofer__content">
-                            <span class="camp-ofer__badge">Program Hybrydowy</span>
-                            <h2 class="camp-ofer__title">12 Tygodniowy Fighter's Camp</h2>
-                            <p class="camp-ofer__desc">Połącz dietę keto z reżimem treningowym pod moim okiem!</p>
-                            <ul class="camp-ofer__list">
-                                <li>Indywidualne Prowadzenie</li>
-                                <li>Analiza postępów</li>
-                                <li>Dietetyczne wsparcie PRO</li>
+            <section class="camp-offer">
+                <div class="camp-offer__container container">
+                    <div class="camp-offer__card reveal">
+                        <div class="camp-offer__content">
+                            <span class="camp-offer__badge">Program Hybrydowy</span>
+                            <h2 class="camp-offer__title">12 Tygodniowy Fighter's Camp</h2>
+                            <p class="camp-offer__desc">Połącz dietę keto z reżimem treningowym pod moim okiem!</p>
+                            <ul class="camp-offer__list">
+                                <li><i data-lucide="shield-check" class='camp-offer--icon'></i>Indywidualne Prowadzenie</li>
+                                <li><i data-lucide="shield-check" class='camp-offer--icon'></i>Analiza postępów</li>
+                                <li><i data-lucide="shield-check" class='camp-offer--icon'></i>Dietetyczne wsparcie PRO</li>
                             </ul>
 
-                            <a href="/contact" class="btn btn--accent">Aplikuj do Campu</a>
+                            <a data-link href="/contact" class="btn btn--primary camp-offer__btn">Aplikuj do Campu</a>
                         </div>
 
-                        <div class="camp-ofer__image"></div>
+                        <div class="camp-offer__image"><img src="${getBase()}/src/assets/homePicture.jpg" alt="Muay Thai Fighter" class="camp-offer__img"></div>
                     </div>
                 </div>
             </section>
