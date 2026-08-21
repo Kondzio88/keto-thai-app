@@ -2,6 +2,7 @@ import { renderHome, initHome } from "./pages/home.js";
 import { renderRecipes, initRecipes } from "./pages/recipes.js";
 import { renderOnboarding, initOnboarding } from "./pages/onboarding.js";
 import { renderDashboard, initDashboard } from "./pages/dashboard.js";
+import { renderCamp ,initCamp} from "./pages/camp.js";
 
 export const routes = {
     "/": {
@@ -14,7 +15,7 @@ export const routes = {
     },
     "/onboarding": {
         render: renderOnboarding,
-        init: initOnboarding, // Ta funkcja odpali się tuż po wyrenderowaniu formularza!
+        init: initOnboarding, 
     },
     "/recipes": {
         render: renderRecipes,
@@ -22,6 +23,10 @@ export const routes = {
     },
     "/knowledge": {
         render: () => "<h1>Knowledge Base</h1>",
+    },
+    "/camp":{
+        render: renderCamp,
+        init:initCamp
     },
     "/contact": {
         render: () => "<h1>Contact Coach</h1>",

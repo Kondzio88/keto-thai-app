@@ -19,7 +19,8 @@ const renderContent = () => {
         path !== "/" &&
         path !== "/recipes" &&
         path !== "/knowledge" &&
-        path !== "/contact"
+        path !== "/contact" &&
+        path !== "/camp"
     ) {
         path = "/onboarding";
         window.history.replaceState(null, null, getBase() + path);

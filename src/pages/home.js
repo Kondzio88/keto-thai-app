@@ -230,7 +230,7 @@ export const renderHome = () => {
                                 </li>
                             </ul>
 
-                            <a data-link href="/contact" class="btn btn--primary camp-offer__btn">Aplikuj do Campu</a>
+                            <a data-link href="/camp" class="btn btn--primary camp-offer__btn">Aplikuj do Campu</a>
                         </div>
 
                         <div class="camp-offer__image">

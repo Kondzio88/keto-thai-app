@@ -1,57 +1,65 @@
 # Podsumowanie Postępów – Keto Thai App
 
-## Sesja: Strona Główna (Home) – Sekcje Camp Offer, FAQ, Timeline oraz Tokenizacja
+## Sesja: Szlif Strony Głównej (About, Philosophy) & Architektura i Hero podstrony Fighter's Camp (`/camp`)
+
+---
 
 ### 1. Zrealizowane Funkcjonalności i Usprawnienia UI/UX
 
-* **Sekcja Camp Offer (`camp-offer`):**
-  * Wdrożono układ typu *Split Card (50/50)* łączący panel tekstowy ze zdjęciem z obozu.
-  * Ostylowano luksusowy *Pill Badge* z poświatą koloru akcentowego (`rgba(var(--color-accent-rgb), 0.12)`).
-  * Zbudowano listę benefitów z wektorowymi ikonami Lucide (`shield-check`), stosując Flexbox i `flex-shrink: 0`.
-  * Zastosowano metaliczny gradient na tekście nagłówka (`background-clip: text` z `width: fit-content`).
-  * Nadano karcie głębię w Dark Mode poprzez wielowarstwowy `box-shadow` z poświatą i subtelną ramkę.
-  * Zabezpieczono nawigację SPA (`data-link`) oraz responsywność zdjęcia (`aspect-ratio: 16 / 9` na mobile i `height: 100%` na desktopie).
+#### A. Strona Główna (`/`)
+* **Sekcja About (Historia & Filozofia):**
+  * Wdrożono kontenery `.about__image-wrapper` z maską `overflow: hidden`, ramką i proporcjami `aspect-ratio: 4/3`.
+  * Zaimplementowano płynne animacje GPU (`transform: scale(1.06)` i `filter: brightness(1.05)`) bezpośrednio na elementach `<img>`.
+  * Dodano *kicker* (`.about__kicker`), wyróżnienia kluczowych fraz `<strong>` oraz blok podpisu autora (`.about__author`).
+  * Wyrównano układ w pionie na desktopie (`align-items: center`).
 
-* **Sekcja FAQ / Accordion (`faq`):**
-  * Usunięto błędy łamania nagłówka na mobile (`text-align: left`, `flex-shrink: 0` dla ikony i `gap`).
-  * Zoptymalizowano paddingi dla małych ekranów (`var(--spacing-md)` na mobile, `var(--spacing-lg)` na desktopie).
-  * Wdrożono stany interaktywne: stan najechania `:hover` oraz stan aktywny `.is-active` z akcentowym podświetleniem pytania, ramki i poświaty.
-
-* **Sekcja Timeline / Kroki działania (`steps`):**
-  * Usunięto błędy składniowe w atrybutach `src` grafik telefonów.
-  * Uporządkowano harmonię barw (Wariant Ognisty / Akcentowy) – ujednolicono kolor linii, markerów i numerów kroków.
-  * Dodano animację lewitacji makiet 3D (`@keyframes float`) z naprzemiennym opóźnieniem (`animation-delay`) dla parzystych kroków.
-  * Dopracowano hierarchię typograficzną (Kicker / Heading / Body) i rozwiązano problem wyrównania opisu na desktopie (`margin-left: auto` dla kroków nieparzystych).
+* **Sekcja Philosophy (3 Filary Systemu – Dark & Cyber Fighter UI):**
+  * Dodano duże, techniczne numery w tle (`01`, `02`, `03`) z fontem `Oswald`, niską przezroczystością (`opacity: 0.08`) i uniesieniem na `:hover`.
+  * Zaprojektowano dedykowane "Icon Boxy" (`.philosophy__icon-box`) ze zróżnicowaną paletą barw dla każdego filaru:
+    * Filar 1 (Keto / Czyste Paliwo): Czerwień proteiny (`--color-protein`),
+    * Filar 2 (Fight / Umysł Wojownika): Pomarańcz akcentu (`--color-accent`),
+    * Filar 3 (Track / Pełna Kontrola): Zieleń węglowodanów (`--color-carbs`).
+  * Wdrożono wielowarstwowe poświaty `box-shadow` z kanałem alpha w kolorach tematycznych.
+  * Zunifikowano nagłówek i kicker sekcji z Design Systemem.
 
 ---
 
-### 2. Architektura Projektu i Zmiany w CSS (Design System)
+#### B. Nowa Podstrona: 12 Tygodniowy Fighter's Camp (`/camp`)
+* **Infrastruktura SPA & Routing:**
+  * Utworzono moduł widoku `src/pages/camp.js` z funkcjami `renderCamp` i `initCamp`.
+  * Zarejestrowano ścieżkę `"/camp"` w `src/routes.js`.
+  * Zaktualizowano Route Guarding w `src/router.js` (dodano `/camp` do listy tras publicznych).
+  * Utworzono i podpięto arkusz stylów `src/styles/pages/camp.css` w `src/styles/main.css`.
+  * Zaktualizowano link CTA w sekcji `camp-offer` na stronie głównej (`href="/camp"` z `data-link`).
 
-* **Tokenizacja krojów pisma (Typography Tokens):**
-  * Zdefiniowano zmienną `--font-heading: "Oswald", sans-serif;` w `src/styles/base/global.css`.
-  * Podmieniono sztywne deklaracje fontu na `var(--font-heading)` w plikach:
-    * `src/styles/base/layout.css` (`.page-header__title`),
-    * `src/styles/components/header.css` (`.header__logo`),
-    * `src/styles/pages/home.css` (`.timeline__subtitle`, `.camp-offer__title`).
-* **Czysty kod i Box Model:**
-  * Przejście ze sztywnych `margin-bottom` na nowoczesny `gap` w układach Flexbox i Grid.
-  * Prawidłowe zarządzanie kaskadą `:nth-child` w relacjach rodzic-dziecko.
+* **Sekcja Hero & Karta Członkowska VIP:**
+  * Zbudowano lewą kolumnę: kicker, gradientowy nagłówek H1, lead opisowy, 3 pigułki zaufania (`.camp-hero__badge` z ikonami Lucide) oraz przyciski akcji CTA.
+  * Zaprojektowano prawą kolumnę: matową, ciemną **Kartę Członkowską VIP Pass** (`.fighter-card`) ze złotym obramowaniem, tagiem `VIP ACCESS`, rokiem sezonu i numerem seryjnym.
+  * Zaimplementowano płaski, w 100% poprawny standard **BEM (Block Element Modifier)**.
+  * Zoptymalizowano responsywność na mobile (`display: flex; flex-direction: column; gap: var(--spacing-xl)`) oraz desktop (`display: grid; grid-template-columns: 1.2fr 0.8fr`).
 
 ---
 
-### 3. Zmodyfikowane Pliki w Sesji
+### 2. Architektura Projektu i Zmodyfikowane Pliki
 
 * `src/pages/home.js`
 * `src/styles/pages/home.css`
-* `src/styles/base/global.css`
-* `src/styles/base/layout.css`
-* `src/styles/components/header.css`
+* `src/pages/camp.js` *(Nowy moduł)*
+* `src/styles/pages/camp.css` *(Nowy arkusz stylów)*
+* `src/routes.js`
+* `src/router.js`
+* `src/styles/main.css`
 * `PROGRES.md`
 
 ---
 
-### 4. Kolejne Kroki (Plan na następną sesję)
+### 3. Plan Prac na Następną Sesję
 
-1. Dopracowanie sekcji **About (Galeria zdjęć z obozu)** – mikro-interakcje `:hover` (zoom & shine).
-2. Dodanie 4. kroku (Fighter's Camp) do Timeline w `home.js` dla pełnej symetrii.
-3. Wypełnienie sekcji FAQ docelową, merytoryczną treścią.
+1. **Rozbudowa podstrony Fighter's Camp (`/camp`):**
+   * **Sekcja 3 Fazy Transformacji (12 Tygodni):** Wizualny timeline etapów (Adaptacja, Silnik Muay Thai, Szczyt Formy).
+   * **Sekcja Bento Grid (Pakiety i Korzyści):** Dieta makro, cotygodniowe raporty wideo, protokół elektrolitowy, kontakt 24/7.
+   * **Sekcja Kwalifikacji:** Kontrast "Dla kogo jest / Dla kogo NIE jest ten program".
+   * **Sekcja Formularza Aplikacyjnego:** Formularz kwalifikacyjny z obsługą zdarzenia `submit` i animacją *Success State* w `initCamp()`.
+2. **Dokończenie Strony Głównej (`/`):**
+   * Dodanie 4. kroku (Fighter's Camp) do Timeline po przygotowaniu grafiki.
+   * Uzupełnienie docelowej treści merytorycznej w sekcji FAQ.

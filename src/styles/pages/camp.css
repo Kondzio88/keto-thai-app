@@ -1,0 +1,157 @@
+.camp-hero {
+    padding: var(--spacing-xl) 0 var(--spacing-lg) 0;
+    background:
+        radial-gradient(circle at 80% 20%, rgba(var(--color-accent-rgb), 0.08) 0%, transparent 60%),
+        var(--color-background);
+}
+
+.camp-hero__layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.camp-hero__kicker {
+    display: block;
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-xs);
+}
+
+.camp-hero__title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    line-height: 1.1;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-md);
+    background: linear-gradient(135deg, #ffffff 30%, var(--color-accent) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.camp-hero__desc {
+    font-size: 1.15rem;
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-lg);
+    max-width: 600px;
+}
+
+.camp-hero__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+}
+
+.camp-hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--color-accent);
+}
+
+.camp-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.fighter-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 230px;
+    background: linear-gradient(145deg, #1e1e1e, #121212);
+    border-radius: 16px;
+    padding: var(--spacing-lg);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.3);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.7),
+        0 0 25px rgba(var(--color-accent-rgb), 0.15);
+    transition: all 0.3s ease-in;
+}
+
+.fighter-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fighter-card__tag {
+    background: rgba(var(--color-accent-rgb), 0.12);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.3);
+    color: var(--color-accent);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+.fighter-card__icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-accent);
+}
+
+.fighter-card__body{
+    margin: var(--spacing-md) 0;
+}
+
+.fighter-card__title{
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    color: var(--color-text-primary);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+ 
+.fighter-card__edition{
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    letter-spacing: 1px;
+}
+
+.fighter-card__footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: var(--spacing-sm);
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    letter-spacing: 1px;
+}
+
+.fighter-card__code{
+    font-family: monospace;
+    color: var(--color-accent);
+    font-weight: 700;
+}
+    
+
+@media (min-width: 768px) {
+    .camp-hero__layout {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        align-items: center;
+        gap: var(--spacing-xl);
+    }
+}
