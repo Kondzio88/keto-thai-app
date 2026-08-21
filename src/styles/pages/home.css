@@ -56,7 +56,19 @@
     padding: var(--spacing-lg) 0;
 }
 
+.philosophy__kicker{
+    display: block;
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-xs);
+}
+
 .philosophy__title {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
     margin-bottom: var(--spacing-xl);
     font-size: clamp(2rem, 5vw, 4rem);
 }
@@ -72,11 +84,31 @@
 }
 
 .philosophy__card {
+    position: relative;
+    overflow: hidden;
     background-color: var(--color-surface);
     border-radius: 8px;
     padding: var(--spacing-md);
     border: 1px solid rgba(255, 255, 255, 0.08);
     transition: all 0.3s ease;
+}
+
+.philosophy__card-number {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1;
+    pointer-events: none;
+    opacity: 0.08;
+    transition: all 0.3s ease;
+}
+
+.philosophy__card:hover .philosophy__card-number {
+    opacity: 0.2;
+    transform: translateY(-3px);
 }
 
 .philosophy__card-header {
@@ -86,10 +118,27 @@
     margin-bottom: var(--spacing-md);
 }
 
+.philosophy__icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
 .philosophy__card-icon {
     width: 38px;
     height: 38px;
+    transition: transform 0.3s ease;
 }
+
+.philosophy__card:hover .philosophy__card-icon {
+    transform: scale(1.12);
+}
+
 .philosophy__card-title {
     font-size: 1.5rem;
     font-weight: 700;
@@ -101,34 +150,67 @@
     color: var(--color-text-secondary);
 }
 
+.philosophy__card--keto .philosophy__card-number {
+    color: var(--color-protein);
+}
+
+.philosophy__card--keto .philosophy__icon-box {
+    background-color: rgba(255, 75, 75, 0.1);
+    border: 1px solid rgba(255, 75, 75, 0.25);
+}
+
 .philosophy__card--keto .philosophy__card-icon,
 .philosophy__card--keto .philosophy__card-title {
     color: var(--color-protein);
 }
+
+.philosophy__card--keto:hover {
+    border-color: var(--color-protein);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 75, 75, 0.2);
+}
+
+
 .philosophy__card--fight .philosophy__card-icon,
 .philosophy__card--fight .philosophy__card-title {
     color: var(--color-accent);
 }
+
+.philosophy__card--fight .philosophy__card-number {
+    color: var(--color-accent);
+}
+
+.philosophy__card--fight .philosophy__icon-box{
+    background-color: rgba(var(--color-accent-rgb), 0.1);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.25);
+}
+
+.philosophy__card--fight:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(var(--color-accent-rgb), 0.2);
+}
+
+.philosophy__card--track .philosophy__card-number {
+    color: var(--color-carbs);
+}
+
 .philosophy__card--track .philosophy__card-icon,
 .philosophy__card--track .philosophy__card-title {
     color: var(--color-carbs);
 }
 
-.philosophy__card:hover {
-    transform: translateY(-5px);
-}
-
-.philosophy__card--keto:hover {
-    border-color: var(--color-protein);
-}
-
-.philosophy__card--fight:hover {
-    border-color: var(--color-accent);
+.philosophy__card--track .philosophy__icon-box{
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+    border: 1px solid rgba(var(--color-primary-rgb), 0.25);
 }
 
 .philosophy__card--track:hover {
     border-color: var(--color-carbs);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(var(--color-primary-rgb), 0.2);
 }
+.philosophy__card:hover {
+    transform: translateY(-5px);
+}
+
 
 /* ABOUT SECTION */
 
@@ -139,11 +221,24 @@
 .about__layout {
     display: grid;
     grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+}
+
+.about__kicker {
+    display: block;
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-xs);
 }
 
 .about__title {
+    font-family: var(--font-heading);
     font-size: clamp(2rem, 5vw, 4rem);
-    padding: var(--spacing-xl) 0;
+    margin-bottom: var(--spacing-md);
+    text-transform: uppercase;
 }
 
 .about__title::first-letter {
@@ -158,18 +253,61 @@
     line-height: 1.6rem;
 }
 
+.about__desc strong {
+    color: var(--color-text-primary);
+    font-weight: 700;
+}
+
+.about__author {
+    margin-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: var(--spacing-md);
+}
+
+.about__author-name {
+    font-weight: 700;
+    color: var(--color-text-primary);
+    font-size: 1.1rem;
+}
+
+.about__author-role {
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
 .about__gallery {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
+    transition: all 0.3s ease;
+}
+
+.about__image-wrapper {
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.about__image-wrapper:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 8px 25px rgba(var(--color-accent-rgb), 0.25);
 }
 
 .about__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 5px;
+    display: block;
+    aspect-ratio: 4/3;
+    transition: all 0.3s ease;
+}
+
+.about__image-wrapper:hover .about__image {
+    transform: scale(1.06);
+    filter: brightness(1.05);
 }
 
 /* STEPS SECTION */
@@ -179,6 +317,7 @@
 }
 
 .steps__title {
+    font-family: var(--font-heading);
     text-align: center;
     font-size: clamp(2rem, 5vw, 4rem);
     margin-bottom: var(--spacing-lg);
@@ -335,7 +474,7 @@
 }
 
 .camp-offer__btn {
-    align-self: self-start;
+    align-self: flex-start;
 }
 
 .camp-offer__image {
@@ -421,7 +560,7 @@
 }
 
 .accordion__item.is-active .accordion__question,
-.accrodion__item.is-active .accordion__icon {
+.accordion__item.is-active .accordion__icon {
     color: var(--color-accent);
     font-weight: 700;
 }
@@ -466,6 +605,7 @@
     .about__layout {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        align-items: center;
         gap: var(--spacing-lg);
     }
 

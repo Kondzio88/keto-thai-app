@@ -19,11 +19,15 @@ export const renderHome = () => {
             <!-- 2. PHILOSOPHY SECTION -->
             <section class="philosophy">
                 <div class="philosophy__container container">
+                    <span class="philosophy__kicker">3 filary systemu</span>
                     <h2 class="philosophy__title">Dlaczego Keto Thai?</h2>
                     <div class="philosophy__grid reveal">
                         <article class="philosophy__card philosophy__card--keto">
+                            <span class="philosophy__card-number">01</span>
                             <div class="philosophy__card-header">
-                                <i data-lucide="beef" class="philosophy__card-icon"></i>
+                                <div class="philosophy__icon-box">
+                                    <i data-lucide="beef" class="philosophy__card-icon"></i>
+                                </div>
                                 <h3 class="philosophy__card-title">Czyste Paliwo</h3>
                             </div>
                             <p class="philosophy__card-desc">
@@ -33,8 +37,11 @@ export const renderHome = () => {
                         </article>
 
                         <article class="philosophy__card philosophy__card--fight">
+                            <span class="philosophy__card-number">02</span>
                             <div class="philosophy__card-header">
-                                <i data-lucide="brain" class="philosophy__card-icon"></i>
+                                <div class="philosophy__icon-box">
+                                    <i data-lucide="brain" class="philosophy__card-icon"></i>
+                                </div>
                                 <h3 class="philosophy__card-title">Umysł Wojownika</h3>
                             </div>
                             <p class="philosophy__card-desc">
@@ -44,8 +51,11 @@ export const renderHome = () => {
                         </article>
 
                         <article class="philosophy__card philosophy__card--track">
+                            <span class="philosophy__card-number">03</span>
                             <div class="philosophy__card-header">
-                                <i data-lucide="line-chart" class="philosophy__card-icon"></i>
+                                <div class="philosophy__icon-box">
+                                    <i data-lucide="line-chart" class="philosophy__card-icon"></i>
+                                </div>
                                 <h3 class="philosophy__card-title">Pełna Kontrola</h3>
                             </div>
                             <p class="philosophy__card-desc">
@@ -63,6 +73,7 @@ export const renderHome = () => {
                     <div class="about__layout reveal">
                         <!-- Lewa Kolumna: Tekst -->
                         <div class="about__content">
+                            <span class="about__kicker">Historia i filozofia</span>
                             <h2 class="about__title">Z tajskiej maty do Twojej kuchni</h2>
                             <p class="about__desc">
                                 Przez lata trenowałem sztuki walki, szukając idealnego sposobu na budowanie formy i
@@ -70,38 +81,52 @@ export const renderHome = () => {
                                 frustracją.
                             </p>
                             <p class="about__desc">
-                                Przełom nastąpił, gdy połączyłem żelazny reżim Muay Thai z dietą ketogeniczną. Właśnie
-                                ten system szlifowałem trenując w Lamai Muay Thai Camp na Koh Samui, czerpiąc wiedzę od
-                                najlepszych.
+                                Przełom nastąpił, gdy połączyłem
+                                <strong>żelazny reżim Muay Thai z dietą ketogeniczną</strong>. Właśnie ten system
+                                szlifowałem trenując w <strong>Lamai Muay Thai Camp na Koh Samui</strong>, czerpiąc
+                                wiedzę od najlepszych.
                             </p>
                             <p class="about__desc">
-                                Stworzyłem aplikację Keto Thai, żeby dać Ci gotowe, sprawdzone na własnej skórze
+                                Stworzyłem aplikację Keto Thai, żeby dać Ci gotowe,
+                                <strong>sprawdzone na własnej skórze</strong>
                                 narzędzie. Bez wymówek, z konkretnymi wynikami.
                             </p>
+                            <div class="about__author">
+                                <div class="about__author-name">Konrad</div>
+                                <div class="about__author-role">Keto Thai</div>
+                            </div>
                         </div>
 
                         <!-- Prawa Kolumna: Galeria -->
                         <div class="about__gallery">
-                            <img
-                                src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=600"
-                                alt="Trening Muay Thai"
-                                class="about__image"
-                            />
-                            <img
-                                src="https://images.unsplash.com/photo-1607349913338-fca6f7fc42d0?q=80&w=600"
-                                alt="Keto jedzenie"
-                                class="about__image"
-                            />
-                            <img
-                                src="https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=600"
-                                alt="Walka w ringu"
-                                class="about__image"
-                            />
-                            <img
-                                src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600"
-                                alt="Tajlandia trening"
-                                class="about__image"
-                            />
+                            <div class="about__image-wrapper">
+                                <img
+                                    src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=600"
+                                    alt="Trening Muay Thai"
+                                    class="about__image"
+                                />
+                            </div>
+                            <div class="about__image-wrapper">
+                                <img
+                                    src="https://images.unsplash.com/photo-1607349913338-fca6f7fc42d0?q=80&w=600"
+                                    alt="Keto jedzenie"
+                                    class="about__image"
+                                />
+                            </div>
+                            <div class="about__image-wrapper">
+                                <img
+                                    src="https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=600"
+                                    alt="Walka w ringu"
+                                    class="about__image"
+                                />
+                            </div>
+                            <div class="about__image-wrapper">
+                                <img
+                                    src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600"
+                                    alt="Tajlandia trening"
+                                    class="about__image"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -176,7 +201,7 @@ export const renderHome = () => {
                             <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Dashboardu -->
                                 <img
-                                    src="${getBase()}/src/assets/iphonMobileDashboard.png""
+                                    src="${getBase()}/src/assets/iphonMobileDashboard.png"
                                     alt="Widok wykresów progresu"
                                     class="timeline__image"
                                 />
@@ -196,15 +221,25 @@ export const renderHome = () => {
                             <h2 class="camp-offer__title">12 Tygodniowy Fighter's Camp</h2>
                             <p class="camp-offer__desc">Połącz dietę keto z reżimem treningowym pod moim okiem!</p>
                             <ul class="camp-offer__list">
-                                <li><i data-lucide="shield-check" class='camp-offer--icon'></i>Indywidualne Prowadzenie</li>
-                                <li><i data-lucide="shield-check" class='camp-offer--icon'></i>Analiza postępów</li>
-                                <li><i data-lucide="shield-check" class='camp-offer--icon'></i>Dietetyczne wsparcie PRO</li>
+                                <li>
+                                    <i data-lucide="shield-check" class="camp-offer--icon"></i>Indywidualne Prowadzenie
+                                </li>
+                                <li><i data-lucide="shield-check" class="camp-offer--icon"></i>Analiza postępów</li>
+                                <li>
+                                    <i data-lucide="shield-check" class="camp-offer--icon"></i>Dietetyczne wsparcie PRO
+                                </li>
                             </ul>
 
                             <a data-link href="/contact" class="btn btn--primary camp-offer__btn">Aplikuj do Campu</a>
                         </div>
 
-                        <div class="camp-offer__image"><img src="${getBase()}/src/assets/homePicture.jpg" alt="Muay Thai Fighter" class="camp-offer__img"></div>
+                        <div class="camp-offer__image">
+                            <img
+                                src="${getBase()}/src/assets/homePicture.jpg"
+                                alt="Muay Thai Fighter"
+                                class="camp-offer__img"
+                            />
+                        </div>
                     </div>
                 </div>
             </section>
@@ -223,18 +258,24 @@ export const renderHome = () => {
                             </button>
 
                             <div class="accordion__content">
-                                <p class="accordion__answer">Tak , o ile jest prowadzona z głową. Mam w tym kilku letnie doświadczenie.</p>
+                                <p class="accordion__answer">
+                                    Tak , o ile jest prowadzona z głową. Mam w tym kilku letnie doświadczenie.
+                                </p>
                             </div>
                         </div>
 
                         <div class="accordion__item">
                             <button class="accordion__header">
-                                <span class="accordion__question">Czy nie zabraknie mi siły na treningach wytrzymałościowych</span>
+                                <span class="accordion__question"
+                                    >Czy nie zabraknie mi siły na treningach wytrzymałościowych</span
+                                >
                                 <i data-lucide="chevron-down" class="accordion__icon"></i>
                             </button>
 
                             <div class="accordion__content">
-                                <p class="accordion__answer">Jak widac Nie . Kilka lat trenuje w tym systemie żywieniowym . Z powodzeniem</p>
+                                <p class="accordion__answer">
+                                    Jak widac Nie . Kilka lat trenuje w tym systemie żywieniowym . Z powodzeniem
+                                </p>
                             </div>
                         </div>
 
@@ -245,11 +286,13 @@ export const renderHome = () => {
                             </button>
 
                             <div class="accordion__content">
-                                <p class="accordion__answer">Dla każdego kto chce zadbać o swoje zdrowie , zgubić tkanke tłuszczową oraz poprawić swoje wyniki sportowe.</p>
+                                <p class="accordion__answer">
+                                    Dla każdego kto chce zadbać o swoje zdrowie , zgubić tkanke tłuszczową oraz poprawić
+                                    swoje wyniki sportowe.
+                                </p>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </section>
         </main>
