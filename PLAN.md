@@ -27,11 +27,13 @@ Wizualna tożsamość łączy surowość sportów walki z klinicznym podejściem
     - Akcent Główny (Primary): Tajskie Złoto `#D4AF37` (przyciski CTA, nagłówki, wykresy białka).
     - Akcent Sukcesu (Success/Keto): Żywa Zieleń `#2ECC71` (wykresy tłuszczu, potwierdzenia, cele).
 - **Typografia:** `Oswald` (dynamiczne, rzucające się w oczy nagłówki) oraz `Inter` (maksymalnie czytelny tekst ciągły i interfejs trackera).
+    - System _Fluid Typography_ oparty na tokenach CSS (`clamp()`): `--font-size-hero`, `--font-size-h2`, `--font-size-h3`, `--font-size-lead`, `--font-size-kicker`.
 - **Wzorce UX (User Experience):**
     - Skeleton Loaders (ekrany ładowania udające docelowy interfejs).
     - Toast Notifications (powiadomienia wysuwające się z rogu ekranu).
     - Natywny element `<details>` dla rozwijanych list.
     - Ghost Buttons dla akcji drugorzędnych.
+    - Płynna nawigacja wewnątrzstronowa (`scroll-behavior: smooth`, `scroll-padding-top: 80px`).
 
 ## 4. Funkcjonalności i Ścieżki (Features & Routing)
 
@@ -39,12 +41,22 @@ Oto kompletna mapa Twojej aplikacji.
 
 ### Ścieżka `/` (Strona Główna / Landing Page)
 
-- **Cel:** Konwersja użytkownika i budowa autorytetu.
+- **Cel:** Konwersja użytkownika i budowa autorytetu w sporcie i diecie keto.
 - **Struktura:**
     1. **Hero Section:** Pełnoekranowe, przyciemnione zdjęcie z campu Muay Thai, mocny nagłówek H1 i jeden główny przycisk CTA: "Oblicz swoje Keto-Makro".
     2. **3 Filary (Grid):** Trzy karty z ikonami SVG (Muay Thai, Ketosis, Mindset).
     3. **Metamorfozy (Social Proof):** Siatka zdjęć "Przed i Po" podopiecznych.
     4. **Bio:** Asymetryczna sekcja z Twoim zdjęciem i krótką historią.
+
+### Ścieżka `/camp` (Fighter's Camp – Mentoring 1-on-1 / Sales Page)
+
+- **Cel:** Główna ścieżka monetyzacji premium (High-Ticket) – kompleksowy, 12-tygodniowy program transformacji sylwetki i wydolności dla osób aktywnych.
+- **Struktura i moduły:**
+    1. **Hero Section:** Dynamiczny nagłówek z obietnicą formy życia, podwójne CTA ("Aplikuj do programu" oraz anchor do szczegółów) i tło oparte na `radial-gradient`.
+    2. **3 Fazy Transformacji (`.camp-phases`):** Przejrzysty podział 12 tygodni (Adaptacja -> Rekompozycja -> Szczyt Formy) ze wskaźnikami postępu, znakami wodnymi w tle i kolorystycznymi poświatami.
+    3. **Bento Grid Wsparcia (`.camp-features`):** 4 kluczowe filary opieki trenerskiej w asymetrycznym układzie (Indywidualny Protokół, Wideo-Analiza, Komunikator 24/7, Protokół Reverse Dieting / gwarancja braku jojo).
+    4. **Kwalifikacja:** Zestawienie kontrastowych kart ("Dla kogo jest ten program" vs "Dla kogo NIE jest").
+    5. **Formularz Aplikacyjny (`#apply`):** Kwalifikacja zgłoszenia (sport, parametry, cel) z obsługą wysyłki i widokiem potwierdzenia (Success State).
 
 ### Ścieżka `/onboarding` (Kalkulator BMR)
 
@@ -74,23 +86,82 @@ Oto kompletna mapa Twojej aplikacji.
 ### Ścieżki Dodatkowe (Wartość Dodana)
 
 - `/recipes`: Galeria dopracowanych dań keto. Posiada przycisk "Add to my day", który wysyła pełne makro potrawy prosto do obiektu dzisiejszego dnia w trackerze.
-- `/knowledge`: Blog działający na bazie pliku JSON. Wykorzystuje metodę `map()` do dynamicznego generowania artykułów z badaniami klinicznymi (sortowanych po dacie).
+- `/knowledge`: Baza Wiedzy & Dynamiczny Blog / CMS:
+    1. **Widok Siatki (Articles Grid):**
+        - Karty artykułów z miniaturą (cover image), pigułką kategorii (Ketoza, Wydolność, Elektrolity, Regeneracja), czasem czytania, tytułem, abstraktem i CTA "Czytaj artykuł".
+        - Pasek filtrów po kategoriach oraz pole wyszukiwarki z opóźnieniem (Debounce).
+    2. **Widok Pojedynczego Artykułu (Single Article View):**
+        - Dynamiczny routing (`/knowledge?article=slug` lub routing z parametrem).
+        - Pełna treść z formatowaniem, cytatami badań naukowych, sekcją "Kluczowe Wnioski" oraz dolnym banerem CTA kierującym do `/camp`.
+        - Elementy FOMO (artykuły z kłódką dostępne wyłącznie dla podopiecznych Fighter's Camp).
+    3. **Dynamiczny System Zarządzania Artykułami (Hybryda Data-Driven + Panel Twórcy):**
+        - **Warstwa Danych:** Baza wpisów w `src/data/articles.js` jako punkt startowy.
+        - **Formularz Dodawania Postów (Mini-CMS):** Interaktywny modal / widok umożliwiający dodanie nowego artykułu (tytuł, kategoria, treść, zdjęcie, tagi), który zapisuje wpis do `localStorage` (docelowo API/baza danych) i w locie łączy się z bazą statyczną, natychmiast odświeżając widok siatki.
 - `/contact`: Profesjonalny formularz do zapytań o indywidualną współpracę trenerską.
 
-    STRUKTURA FOLDERI :
+## 5. Struktura Folderów
 
-- keto-thai-app/
-  ├── index.html
-  ├── package.json
-  ├── public/
-  └── src/
-  ├── api/
-  ├── assets/
-  ├── components/
-  ├── data/
-  ├── pages/
-  ├── state/
-  ├── styles/
-  ├── utils/
-  ├── main.js
-  ── router.js
+```text
+keto-thai-app/
+├── index.html
+├── package.json
+├── public/
+│   └── manifest.webmanifest
+└── src/
+    ├── api/
+    ├── assets/
+    ├── components/
+    ├── data/
+    │   └── articles.js
+    ├── pages/
+    │   ├── camp.js
+    │   ├── dashboard.js
+    │   ├── home.js
+    │   ├── knowledge.js
+    │   ├── onboarding.js
+    │   └── recipes.js
+    ├── services/
+    ├── state/
+    ├── styles/
+    │   ├── base/
+    │   ├── components/
+    │   └── pages/
+    ├── utils/
+    ├── main.js
+    ├── router.js
+    └── routes.js
+```
+
+## 6. Dalszy Rozwój Aplikacji (Post-MVP / Roadmap)
+
+Sekcja gromadząca zaawansowane funkcjonalności planowane do wdrożenia po ukończeniu i przetestowaniu wersji podstawowej (MVP).
+
+### 1. Moduł PWA (Progressive Web App – Instalowalność Mobilna)
+
+- **Cel:** Przekształcenie SPA w aplikację instalowalną bezpośrednio na ekranie głównym smartfona (iOS / Android) w trybie pełnoekranowym (`display: standalone`).
+- **Web App Manifest (`public/manifest.webmanifest`):** Definicja ikon (192x192, 512x512, maskable), kolorów motywu (`theme_color: #121212`) i nazwy.
+- **Service Worker (`service-worker.js`):** Buforowanie kluczowych zasobów w Cache API dla wsparcia trybu **Offline-First**.
+- **Install Prompt:** Dedykowany baner zachęcający do instalacji po wykryciu zdarzenia `beforeinstallprompt`
+
+### 2. Interaktywna Książka Przepisów (`/recipes`)
+
+- **Widok Szczegółowy / Modal Przepisu:**
+    - Składniki z gramaturami i przelicznikiem porcji (1x, 2x, 0.5x).
+    - Instrukcja przygotowania krok po kroku (numerowane etapy).
+    - Przycisk _"Dodaj do mojego dnia"_: Wybór posiłku (Śniadanie / Obiad / Kolacja) i automatyczny transfer makro do dziennika.
+
+### 3. Zaawansowany Dynamiczny Bilans w Dashboardzie (`/tracker`)
+
+- **Wykres Pozostałego Limitu (Macro & Calorie Remaining):**
+    - Wizualizacja w czasie rzeczywistym: _Zapotrzebowanie z Onboardingu - Zjedzone posiłki_.
+    - Dokładny licznik pozostałych kalorii oraz gramatury makroskładników (Białko, Tłuszcz, Węglowodany netto).
+- **Keto Threshold Alert:** Wizualne ostrzeżenie przed przekroczeniem dziennego limitu węglowodanów (ochrona przed wypadnięciem z ketozy).
+- **Reaktywna Integracja:** Każdy posiłek dodany z bazy lub z `/recipes` natychmiastowo przelicza bilans w Dashboardzie.
+
+### 4. Narzędzia Inteligentnej Konwersji & Analityki (Mentoring Upsell)
+
+- **Keto Readiness Score (Poranny Test Gotowości):**
+    - 3 szybkie pytania diagnostyczne (Jakość snu, Poziom energii, Regeneracja/Nawodnienie).
+    - Kontekstowy system rekomendacji: w przypadku powtarzających się spadków formy lub stagnacji system wyświetla inteligentną sugestię konsultacji i audytu parametrów z mentorem na ścieżce `/camp`.
+- **Eksport Raportu Postępów (Fighter's Metabolic Report):**
+    - Możliwość wygenerowania i pobrania estetycznego raportu podsumowującego (trendy wagi, średni bilans makro, nawodnienie) do formatu PDF / podglądu do druku, ułatwiającego analizę postępów z trenerem.

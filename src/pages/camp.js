@@ -8,7 +8,7 @@ export const renderCamp = () => {
                 <div class="camp-hero__layout">
                     <!-- LEWA KOLUMNA -->
                     <div class="camp-hero__content">
-                        <span class="camp-hero__kicker">12-Tygodniowy Program Hybrydowy</span>
+                        <span class="camp-hero__kicker">12-Tygodniowy fighter's camp</span>
                         <h1 class="camp-hero__title">Zbuduj Formę życia Na Ketogenicznym Paliwie</h1>
 
                         <p class="camp-hero__desc">
@@ -279,6 +279,76 @@ export const renderCamp = () => {
                             <span class="bento-tag">Zero Efektu Jojo</span>
                             <span class="bento-tag">Reverse Dieting</span>
                             <span class="bento-tag">Wiedza na Lata</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUALIFICATION SECTION -->
+
+        <section class="camp-qual" id="qualification">
+            <div class="camp-qual__container container">
+                <div class="camp-qual__header">
+                    <span class="camp-qual__kicker">Selekcja do Programu</span>
+                    <h2 class="camp-qual__title">Czy Fighter's Camp Jest Dla Ciebie?</h2>
+                    <p class="camp-qual__desc">
+                        Nie przyjmuję każdego. Ten program to intensywna, 12-tygodniowa współpraca oparta na dyscyplinie
+                        i twardych danych, a nie kolejna dieta-cud.
+                    </p>
+                </div>
+
+                <div class="camp-qual__grid">
+                    <article class="qual-card qual-card--positive">
+                        <div class="qual-card__header">
+                            <i data-lucide="check-circle-2" class="qual-card__icon"></i>
+                            <h3 class="qual-card__title">Ten program jest dla Ciebie, jeśli:</h3>
+                        </div>
+                        <div class="qual-card__body">
+                            <ul class="qual-card__list">
+                                <li>
+                                    Trenujesz regularnie: Uprawiasz siłownię, biegasz, sporty walki lub rekreację i
+                                    chcesz wejść na wyższy poziom wydolności.
+                                </li>
+                                <li>
+                                    Masz dość stagnacji: Od miesięcy nie widzisz postępów w redukcji wagi lub
+                                    doświadczasz spadków energii w ciągu dnia i na treningu.
+                                </li>
+                                <li>
+                                    Szukasz twardych danych: Chcesz precyzyjnego protokołu makro i cotygodniowej
+                                    weryfikacji wideo, a nie przypadkowych porad z internetu.
+                                </li>
+                                <li>
+                                    Jesteś gotowy na dyscyplinę: Traktujesz swoje ciało poważnie, raportujesz pomiary co
+                                    7 dni i wdrażasz plan w 100%.
+                                </li>
+                            </ul>
+                        </div>
+                    </article>
+                    <article class="qual-card qual-card--negative">
+                        <div class="qual-card__header">
+                            <i data-lucide="x-circle" class="qual-card__icon"></i>
+                            <h3 class="qual-card__title">Ten program NIE jest dla Ciebie,jeśli:</h3>
+                        </div>
+                        <div class="qual-card__body">
+                            <ul class="qual-card__list">
+                                <li>
+                                    Szukasz diety-cud: Oczekujesz magicznych rezultatów bez trzymania założeń
+                                    kalorycznych i regularnego treningu.
+                                </li>
+                                <li>
+                                    Brak Ci odpowiedzialności: Znikasz na 2 tygodnie, nie wysyłasz raportów i szukasz
+                                    wymówek zamiast rozwiązań.
+                                </li>
+                                <li>
+                                    Chcesz tylko "kartki z dietą": Nie zależy Ci na zrozumieniu swojego metabolizmu i
+                                    trwałej samodzielności po 12 tygodniach.
+                                </li>
+                                <li>
+                                    Nie akceptujesz szczerego feedbacku: Oczekujesz wyłącznie głaskania po głowie – ja
+                                    mówię wprost, co działa, a co musisz natychmiast poprawić.
+                                </li>
+                            </ul>
                         </div>
                     </article>
                 </div>

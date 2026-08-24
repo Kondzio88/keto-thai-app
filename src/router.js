@@ -33,6 +33,12 @@ const renderContent = () => {
 
     appContainer.innerHTML = route.render();
 
+    window.scrollTo({
+        top:0,
+        left:0,
+        behavior:'instant'
+    })
+
     if (window.lucide) {
         window.lucide.createIcons();
     }
