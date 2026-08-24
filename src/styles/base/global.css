@@ -22,7 +22,13 @@
     --shadow-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2);
 
     --font-main: "Inter", system-ui, sans-serif;
-    --font-heading: "Oswald",sans-serif;
+    --font-heading: "Oswald", sans-serif;
+
+    --font-size-hero: clamp(2.5rem, 5vw, 4.5rem);
+    --font-size-h2: clamp(2rem, 4.5vw, 3.5rem);
+    --font-size-h3: clamp(1.4rem, 2.5vw, 1.8rem);
+    --font-size-lead: clamp(1rem, 2vw, 1.15rem);
+    --font-size-kicker: 0.85rem;
 
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;

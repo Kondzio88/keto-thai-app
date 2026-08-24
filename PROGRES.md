@@ -1,65 +1,54 @@
 # Podsumowanie Postępów – Keto Thai App
 
-## Sesja: Szlif Strony Głównej (About, Philosophy) & Architektura i Hero podstrony Fighter's Camp (`/camp`)
+## Sesja: Pivot Strategiczny, Tokeny Typografii & Rozbudowa Podstrony Fighter's Camp (`/camp` – 3 Fazy & Bento Grid)
 
 ---
 
-### 1. Zrealizowane Funkcjonalności i Usprawnienia UI/UX
+### 1. Zrealizowane Funkcjonalności i Zmiany Architektoniczne
 
-#### A. Strona Główna (`/`)
-* **Sekcja About (Historia & Filozofia):**
-  * Wdrożono kontenery `.about__image-wrapper` z maską `overflow: hidden`, ramką i proporcjami `aspect-ratio: 4/3`.
-  * Zaimplementowano płynne animacje GPU (`transform: scale(1.06)` i `filter: brightness(1.05)`) bezpośrednio na elementach `<img>`.
-  * Dodano *kicker* (`.about__kicker`), wyróżnienia kluczowych fraz `<strong>` oraz blok podpisu autora (`.about__author`).
-  * Wyrównano układ w pionie na desktopie (`align-items: center`).
+#### A. Pivot Strategiczny & Copywriting (Szeroki Rynek + Social Proof)
+* **Rebranding komunikacji:** Przesunięcie pozycjonowania z wąskiej niszy wyłącznie dla zawodników Muay Thai na **ogólnorozwojową transformację sylwetki i wydolności dla osób uprawiających dowolny sport** (siłownia, bieganie, sporty walki, rekreacja).
+* **Rola Muay Thai:** Wykorzystanie lat spędzonych w tajskich campach jako **twardego dowodu społecznego (Social Proof)**, autorytetu trenerskiego i obozowego rygoru (Camp Mindset).
 
-* **Sekcja Philosophy (3 Filary Systemu – Dark & Cyber Fighter UI):**
-  * Dodano duże, techniczne numery w tle (`01`, `02`, `03`) z fontem `Oswald`, niską przezroczystością (`opacity: 0.08`) i uniesieniem na `:hover`.
-  * Zaprojektowano dedykowane "Icon Boxy" (`.philosophy__icon-box`) ze zróżnicowaną paletą barw dla każdego filaru:
-    * Filar 1 (Keto / Czyste Paliwo): Czerwień proteiny (`--color-protein`),
-    * Filar 2 (Fight / Umysł Wojownika): Pomarańcz akcentu (`--color-accent`),
-    * Filar 3 (Track / Pełna Kontrola): Zieleń węglowodanów (`--color-carbs`).
-  * Wdrożono wielowarstwowe poświaty `box-shadow` z kanałem alpha w kolorach tematycznych.
-  * Zunifikowano nagłówek i kicker sekcji z Design Systemem.
+#### B. Globalny Refaktoring Typografii (Fluid Typography Tokens)
+* **Zmienne w `:root` (`src/styles/base/global.css`):**
+  * `--font-size-hero`: `clamp(2.5rem, 5vw, 4.5rem)`
+  * `--font-size-h2`: `clamp(2rem, 4.5vw, 3.5rem)`
+  * `--font-size-h3`: `clamp(1.4rem, 2.5vw, 1.8rem)`
+  * `--font-size-lead`: `clamp(1rem, 2vw, 1.15rem)`
+  * `--font-size-kicker`: `0.85rem`
+* **Unifikacja stylów:** Zastąpienie rozproszonych, sztywnych wartości `clamp()` tokenami CSS w `home.css` oraz `camp.css`.
+* **Nawigacja wewnątrzstronowa:** Dodanie `scroll-behavior: smooth` oraz `scroll-padding-top: 80px` dla płynnego przewijania do kotwic z uwzględnieniem stałego paska menu.
 
----
-
-#### B. Nowa Podstrona: 12 Tygodniowy Fighter's Camp (`/camp`)
-* **Infrastruktura SPA & Routing:**
-  * Utworzono moduł widoku `src/pages/camp.js` z funkcjami `renderCamp` i `initCamp`.
-  * Zarejestrowano ścieżkę `"/camp"` w `src/routes.js`.
-  * Zaktualizowano Route Guarding w `src/router.js` (dodano `/camp` do listy tras publicznych).
-  * Utworzono i podpięto arkusz stylów `src/styles/pages/camp.css` w `src/styles/main.css`.
-  * Zaktualizowano link CTA w sekcji `camp-offer` na stronie głównej (`href="/camp"` z `data-link`).
-
-* **Sekcja Hero & Karta Członkowska VIP:**
-  * Zbudowano lewą kolumnę: kicker, gradientowy nagłówek H1, lead opisowy, 3 pigułki zaufania (`.camp-hero__badge` z ikonami Lucide) oraz przyciski akcji CTA.
-  * Zaprojektowano prawą kolumnę: matową, ciemną **Kartę Członkowską VIP Pass** (`.fighter-card`) ze złotym obramowaniem, tagiem `VIP ACCESS`, rokiem sezonu i numerem seryjnym.
-  * Zaimplementowano płaski, w 100% poprawny standard **BEM (Block Element Modifier)**.
-  * Zoptymalizowano responsywność na mobile (`display: flex; flex-direction: column; gap: var(--spacing-xl)`) oraz desktop (`display: grid; grid-template-columns: 1.2fr 0.8fr`).
+#### C. Rozbudowa Podstrony Fighter's Camp (`/camp`)
+* **Sekcja Hero:** Naprawa tła za pomocą rozmytego `radial-gradient` (organiczne wygaszanie) oraz usunięcie nadmiarowego odstępu pionowego.
+* **Sekcja 2: 3 Fazy Transformacji (`.camp-phases`):**
+  * Podział programu na 3 równe, 4-tygodniowe etapy: Adaptacja Metaboliczna $\rightarrow$ Maksymalna Rekompozycja $\rightarrow$ Szczyt Formy i Utrwalenie.
+  * Znak wodny w tle (`.phase-card__number`) z `pointer-events: none` i `position: absolute`.
+  * Wskaźniki postępu (`.phase-card__progress-bar` o grubości 8px) z podbitymi, czytelnymi etykietami etapów.
+  * Kolorystyczne modyfikatory BEM (`.phase-card--phase-1`, `--phase-2`, `--phase-3`) z dedykowanymi poświatami neonowymi.
+* **Sekcja 3: Bento Grid – Kompleksowe Wsparcie 1 na 1 (`.camp-features`):**
+  * Nowoczesna siatka 2-kolumnowa z wykorzystaniem `grid-column: span 2` dla kafelków wyróżnionych.
+  * 4 kluczowe filary: Indywidualny Protokół pod Twój Sport, Cotygodniowa Wideo-Analiza, Prywatny Komunikator 24/7 oraz Protokół Bezpiecznego Wyjścia (Reverse Dieting / Gwarancja braku jojo).
+  * Zestaw dedykowanych mikro-tagów (`.bento-tag`) dla każdego kafelka.
 
 ---
 
-### 2. Architektura Projektu i Zmodyfikowane Pliki
+### 2. Zmodyfikowane i Rozbudowane Pliki
 
-* `src/pages/home.js`
-* `src/styles/pages/home.css`
-* `src/pages/camp.js` *(Nowy moduł)*
-* `src/styles/pages/camp.css` *(Nowy arkusz stylów)*
-* `src/routes.js`
-* `src/router.js`
-* `src/styles/main.css`
-* `PROGRES.md`
+* `src/styles/base/global.css` *(Dodanie tokenów Fluid Typography)*
+* `src/styles/base/reset.css` *(Smooth scrolling i scroll-padding-top)*
+* `src/styles/pages/home.css` *(Unifikacja typografii)*
+* `src/pages/camp.js` *(Struktura HTML dla Hero, 3 Faz i Bento Grid)*
+* `src/styles/pages/camp.css` *(Ostylowanie Faz, kart, Bento Grid, poświat i responsywności)*
+* `PROGRES.md` *(Aktualizacja dokumentacji projektu)*
 
 ---
 
 ### 3. Plan Prac na Następną Sesję
 
-1. **Rozbudowa podstrony Fighter's Camp (`/camp`):**
-   * **Sekcja 3 Fazy Transformacji (12 Tygodni):** Wizualny timeline etapów (Adaptacja, Silnik Muay Thai, Szczyt Formy).
-   * **Sekcja Bento Grid (Pakiety i Korzyści):** Dieta makro, cotygodniowe raporty wideo, protokół elektrolitowy, kontakt 24/7.
-   * **Sekcja Kwalifikacji:** Kontrast "Dla kogo jest / Dla kogo NIE jest ten program".
-   * **Sekcja Formularza Aplikacyjnego:** Formularz kwalifikacyjny z obsługą zdarzenia `submit` i animacją *Success State* w `initCamp()`.
-2. **Dokończenie Strony Głównej (`/`):**
-   * Dodanie 4. kroku (Fighter's Camp) do Timeline po przygotowaniu grafiki.
-   * Uzupełnienie docelowej treści merytorycznej w sekcji FAQ.
+1. **Dokończenie Podstrony Fighter's Camp (`/camp`):**
+   * **Sekcja 4: Kwalifikacja:** Kontrastowe karty *"Dla kogo jest ten program"* (zielone checkmarki) vs *"Dla kogo ten program NIE jest"* (czerwone krzyżyki).
+   * **Sekcja 5: Formularz Aplikacyjny (`#apply`):** Pola kwalifikacyjne (sport, waga/wzrost, cel, kontakt) + interaktywna obsługa wysyłki zgłoszenia (Success State) w `initCamp()`.
+2. **Aktualizacja Treści Strony Głównej (`/`):**
+   * Przeformułowanie sekcji About i FAQ pod kątem nowego pivotu strategicznego (każdy sportowiec + autorytet Muay Thai).

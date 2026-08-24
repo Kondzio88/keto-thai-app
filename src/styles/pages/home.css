@@ -27,7 +27,7 @@
 }
 
 .hero__title {
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-size: var(--font-size-hero);
     font-weight: 900;
     line-height: 1.1;
     margin-bottom: var(--spacing-md);
@@ -35,7 +35,7 @@
 }
 
 .hero__desc {
-    font-size: clamp(1rem, 2vw, 1.125rem);
+    font-size: var(--font-size-lead);
     color: var(--color-text-secondary);
     margin-bottom: var(--spacing-xl);
     max-width: 600px;
@@ -59,7 +59,7 @@
 .philosophy__kicker{
     display: block;
     color: var(--color-accent);
-    font-size: 0.85rem;
+    font-size: var(--font-size-kicker);
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -70,7 +70,7 @@
     font-family: var(--font-heading);
     text-transform: uppercase;
     margin-bottom: var(--spacing-xl);
-    font-size: clamp(2rem, 5vw, 4rem);
+    font-size: var(--font-size-h2);
 }
 
 .philosophy__title::first-letter {
@@ -227,7 +227,7 @@
 .about__kicker {
     display: block;
     color: var(--color-accent);
-    font-size: 0.85rem;
+    font-size: var(--font-size-kicker);
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -236,7 +236,7 @@
 
 .about__title {
     font-family: var(--font-heading);
-    font-size: clamp(2rem, 5vw, 4rem);
+    font-size: var(--font-size-h2);
     margin-bottom: var(--spacing-md);
     text-transform: uppercase;
 }
@@ -272,7 +272,7 @@
 
 .about__author-role {
     color: var(--color-accent);
-    font-size: 0.85rem;
+    font-size: var(--font-size-kicker);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -319,7 +319,7 @@
 .steps__title {
     font-family: var(--font-heading);
     text-align: center;
-    font-size: clamp(2rem, 5vw, 4rem);
+    font-size: var(--font-size-h2);
     margin-bottom: var(--spacing-lg);
 }
 
@@ -349,7 +349,7 @@
 .timeline__subtitle {
     font-family: var(--font-heading);
     text-transform: uppercase;
-    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    font-size: var(--font-size-h3);
     line-height: 1.2;
     margin-bottom: var(--spacing-md);
 }
@@ -422,7 +422,7 @@
 .camp-offer__badge {
     align-self: flex-start;
     padding: var(--spacing-xs) var(--spacing-md);
-    font-size: 0.85rem;
+    font-size: var(--font-size-kicker);
     letter-spacing: 2px;
     text-transform: uppercase;
     font-weight: 700;
@@ -435,7 +435,7 @@
 .camp-offer__title {
     width: fit-content;
     font-family: var(--font-heading);
-    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-size: var(--font-size-h2);
     font-weight: 800;
     line-height: 1.15;
     text-transform: uppercase;
@@ -498,7 +498,7 @@
 
 .faq__title {
     text-align: center;
-    font-size: clamp(2rem, 5vw, 4rem);
+    font-size: var(--font-size-h2);
     margin-bottom: var(--spacing-lg);
 }
 

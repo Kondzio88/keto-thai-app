@@ -1,7 +1,12 @@
 .camp-hero {
-    padding: var(--spacing-xl) 0 var(--spacing-lg) 0;
+    padding: var(--spacing-lg) 0;
     background:
-        radial-gradient(circle at 80% 20%, rgba(var(--color-accent-rgb), 0.08) 0%, transparent 60%),
+        radial-gradient(
+            ellipse at 80% 0%,
+            rgba(var(--color-accent-rgb), 0.08) 0%,
+            rgba(var(--color-accent-rgb), 0.02) 40%,
+            transparent 70%
+        ),
         var(--color-background);
 }
 
@@ -14,7 +19,7 @@
 .camp-hero__kicker {
     display: block;
     color: var(--color-accent);
-    font-size: 0.85rem;
+    font-size: var(--font-size-kicker);
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -23,7 +28,7 @@
 
 .camp-hero__title {
     font-family: var(--font-heading);
-    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    font-size: var(--font-size-hero);
     line-height: 1.1;
     text-transform: uppercase;
     margin-bottom: var(--spacing-md);
@@ -34,7 +39,7 @@
 }
 
 .camp-hero__desc {
-    font-size: 1.15rem;
+    font-size: var(--font-size-lead);
     line-height: 1.65;
     color: var(--color-text-secondary);
     margin-bottom: var(--spacing-lg);
@@ -56,7 +61,7 @@
     border-radius: 999px;
     background-color: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    font-size: 0.85rem;
+    font-size: var(--font-size-kicker);
     font-weight: 600;
 }
 
@@ -111,25 +116,25 @@
     color: var(--color-accent);
 }
 
-.fighter-card__body{
+.fighter-card__body {
     margin: var(--spacing-md) 0;
 }
 
-.fighter-card__title{
+.fighter-card__title {
     font-family: var(--font-heading);
     font-size: 1.35rem;
     color: var(--color-text-primary);
     letter-spacing: 1px;
     margin-bottom: 4px;
 }
- 
-.fighter-card__edition{
+
+.fighter-card__edition {
     font-size: 0.85rem;
     color: var(--color-text-secondary);
     letter-spacing: 1px;
 }
 
-.fighter-card__footer{
+.fighter-card__footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -140,12 +145,421 @@
     letter-spacing: 1px;
 }
 
-.fighter-card__code{
+.fighter-card__code {
     font-family: monospace;
     color: var(--color-accent);
     font-weight: 700;
 }
-    
+
+/* CAMP PHASES SECTION */
+
+.camp-phases {
+    padding: var(--spacing-lg) 0 var(--spacing-xl) 0;
+}
+
+.camp-phases__header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.camp-phases__kicker {
+    display: block;
+    color: var(--color-accent);
+    font-size: var(--font-size-kicker);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-xs);
+}
+
+.camp-phases__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h2);
+    line-height: 1.1;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-md);
+    background: linear-gradient(135deg, #ffffff 30%, var(--color-accent) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.camp-phases__desc {
+    max-width: 650px;
+    margin: 0 auto;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-lead);
+    line-height: 1.6;
+}
+
+.camp-phases__grid {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+/* PHASE CARD */
+
+.phase-card {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-surface);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.phase-card:hover {
+    transform: translateY(-6px);
+}
+
+.phase-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+}
+
+.phase-card__icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.phase-card__icon {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease;
+}
+
+.phase-card:hover .phase-card__icon {
+    transform: scale(1.12);
+}
+
+.phase-card__timeline {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--color-text-secondary);
+}
+
+.phase-card__number {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    font-weight: 900;
+    line-height: 1;
+    opacity: 0.08;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.phase-card:hover .phase-card__number {
+    opacity: 0.2;
+    transform: translateY(-3px);
+}
+
+.phase-card__body {
+    position: relative;
+    z-index: 2;
+}
+
+.phase-card__title {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-primary);
+}
+
+.phase-card__lead {
+    font-size: 1.05rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.phase-card__schedule {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: var(--spacing-md);
+    position: relative;
+    z-index: 2;
+}
+
+.phase-card__steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.phase-card__steps li {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    line-height: 1.45;
+    position: relative;
+    padding-left: 14px;
+}
+
+.phase-card__steps li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+}
+
+.phase-card__steps li strong {
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.phase-card__footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: var(--spacing-md);
+    position: relative;
+    z-index: 2;
+}
+
+.phase-card__progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: var(--spacing-xs);
+}
+
+.phase-card__progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.6s ease;
+}
+
+.phase-card__progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.phase-card__progress-value {
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-family: monospace;
+}
+
+/* MODYFIKATORY FAZ (BEM) */
+
+/* Faza 1 (Pomarańcz Akcentu) */
+.phase-card--phase-1 .phase-card__icon-box {
+    background-color: rgba(var(--color-accent-rgb), 0.1);
+    border-color: rgba(var(--color-accent-rgb), 0.25);
+}
+.phase-card--phase-1 .phase-card__icon,
+.phase-card--phase-1 .phase-card__number,
+.phase-card--phase-1 .phase-card__progress-value {
+    color: var(--color-accent);
+}
+.phase-card--phase-1 .phase-card__progress-fill {
+    background-color: var(--color-accent);
+}
+.phase-card--phase-1:hover {
+    border-color: var(--color-accent);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(var(--color-accent-rgb), 0.2);
+}
+
+/* Faza 2 (Czerwień Proteiny) */
+.phase-card--phase-2 .phase-card__icon-box {
+    background-color: rgba(255, 75, 75, 0.1);
+    border-color: rgba(255, 75, 75, 0.25);
+}
+.phase-card--phase-2 .phase-card__icon,
+.phase-card--phase-2 .phase-card__number,
+.phase-card--phase-2 .phase-card__progress-value {
+    color: var(--color-protein);
+}
+.phase-card--phase-2 .phase-card__progress-fill {
+    background-color: var(--color-protein);
+}
+.phase-card--phase-2 .phase-card__steps li::before {
+    color: var(--color-protein);
+}
+.phase-card--phase-2:hover {
+    border-color: var(--color-protein);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(255, 75, 75, 0.2);
+}
+
+/* Faza 3 (Zieleń/Węglowodany Sukcesu) */
+.phase-card--phase-3 .phase-card__icon-box {
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+    border-color: rgba(var(--color-primary-rgb), 0.25);
+}
+.phase-card--phase-3 .phase-card__icon,
+.phase-card--phase-3 .phase-card__number,
+.phase-card--phase-3 .phase-card__progress-value {
+    color: var(--color-carbs);
+}
+.phase-card--phase-3 .phase-card__progress-fill {
+    background-color: var(--color-carbs);
+}
+.phase-card--phase-3 .phase-card__steps li::before {
+    color: var(--color-carbs);
+}
+.phase-card--phase-3:hover {
+    border-color: var(--color-carbs);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(var(--color-primary-rgb), 0.2);
+}
+
+/* CAMP_FEATURES */
+
+.camp-features {
+    padding: var(--spacing-lg) 0;
+}
+
+.camp-features__header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.camp-features__kicker {
+    font-size: var(--font-size-kicker);
+    color: var(--color-accent);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.camp-features__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h2);
+    line-height: 1.1;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-md);
+    background: linear-gradient(135deg, #ffffff 30%, var(--color-accent) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.camp-features__desc{
+    max-width: 650px;
+    margin: 0 auto;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-lead);
+    line-height: 1.6;
+}
+
+.camp-features__grid {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.camp-bento {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: var(--color-surface);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: var(--spacing-lg);
+    transition: all 0.3s ease;
+}
+
+.camp-bento:hover {
+    transform: translateY(-5px);
+    border-color: rgba(var(--color-accent-rgb), 0.4);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(var(--color-accent-rgb), 0.15);
+}
+
+.camp-bento--highlight {
+    border-color: rgba(var(--color-accent-rgb), 0.3);
+    background: linear-gradient(145deg, #1f1a14, var(--color-surface));
+}
+
+.camp-bento__icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--color-accent-rgb), 0.1);
+    transition: all 0.3s ease;
+}
+
+.camp-bento:hover .camp-bento__icon {
+    transform: scale(1.12);
+}
+
+.camp-bento__icon {
+    color: var(--color-accent);
+}
+
+.camp-bento__title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+}
+
+.camp-bento__desc {
+    text-transform: uppercase;
+    font-size: 1.05rem;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+    margin-bottom: var(--spacing-xs);
+}
+
+.camp-bento__tags {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.bento-tag {
+    font-size: var(--font-size-kicker);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: var(--font-size-kicker);
+    background: rgba(var(--color-accent-rgb), 0.1);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.25);
+    color: var(--color-accent);
+}
 
 @media (min-width: 768px) {
     .camp-hero__layout {
@@ -153,5 +567,17 @@
         grid-template-columns: 1.2fr 0.8fr;
         align-items: center;
         gap: var(--spacing-xl);
+    }
+
+    .camp-phases__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .camp-features__grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 równe kolumny */
+    }
+
+    .camp-bento--wide {
+        grid-column: span 2; /* kafelek zajmuje całą szerokość dwóch kolumn! */
     }
 }
