@@ -6,12 +6,15 @@ export const renderHome = () => {
         <main>
             <!-- 1. HERO SECTION -->
             <section class="hero">
-                <div class="hero__content">
-                    <h1 class="hero__title">Forma życia czeka na Ciebie</h1>
-                    <p class="hero__desc">Nowy Ty w zdrowym, metabolicznym stylu Keto Thai.</p>
-                    <div class="hero__actions">
-                        <a href="/dashboard" class="btn btn--primary" data-link>Twój Dashboard</a>
-                        <a href="/recipes" class="btn btn--secondary" data-link>Przepisy Keto</a>
+                <div class="hero__container page-container">
+                    <div class="hero__content">
+                        <span class="hero__kicker">Metodyka z tajskich ringów dla każdego sportowca</span>
+                        <h1 class="hero__title">ZBUDUJ FORMĘ ŻYCIA NA CZYSTYM PALIWIE TŁUSZCZOWYM</h1>
+                        <p class="hero__desc">Nowy Ty w zdrowym, metabolicznym stylu Keto Thai.</p>
+                        <div class="hero__actions">
+                            <a href="/dashboard" class="btn btn--primary" data-link>Twój Dashboard</a>
+                            <a href="/recipes" class="btn btn--secondary" data-link>Przepisy Keto</a>
+                        </div>
                     </div>
                 </div>
             </section>

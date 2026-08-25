@@ -1,11 +1,11 @@
 .hero {
-    background: url("../../assets/homePicture.jpg") center / cover no-repeat;
     position: relative;
     min-height: 100vh;
+    background: url("../../assets/homePicture.jpg") 70% / cover no-repeat;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    align-items: flex-end;
+    overflow: hidden;
+    padding-bottom: var(--spacing-xl);
 }
 
 .hero::before {
@@ -15,32 +15,71 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(10, 10, 10, 0.05), var(--color-background));
+    background:
+        linear-gradient(
+            to left,
+            rgba(18, 18, 18, 0.95) 0%,
+            rgba(18, 18, 18, 0.8) 35%,
+            rgba(18, 18, 18, 0.2) 65%,
+            transparent 100%
+        ),
+        linear-gradient(to top, rgba(18, 18, 18, 1) 0%, transparent 25%);
     z-index: 1;
 }
 
-.hero__content {
+.hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(to bottom, transparent 0%, var(--color-background) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hero__container {
     position: relative;
     z-index: 2;
-    padding: var(--spacing-lg);
-    max-width: 800px;
+    width: 100%;
+}
+
+.hero__content {
+    max-width: 100%;
+    padding: var(--spacing-md) var(--spacing-sm);
+    text-align: center;
+}
+
+.hero__kicker {
+    display: inline-block;
+    color: var(--color-accent);
+    font-size: var(--font-size-kicker);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-xs);
 }
 
 .hero__title {
+    font-family: var(--font-heading);
     font-size: var(--font-size-hero);
     font-weight: 900;
-    line-height: 1.1;
+    line-height: 1.05;
     margin-bottom: var(--spacing-md);
     text-transform: uppercase;
+    color: var(--color-text-primary);
+    background: linear-gradient(135deg, #ffffff 30%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .hero__desc {
     font-size: var(--font-size-lead);
     color: var(--color-text-secondary);
+    line-height: 1.6;
     margin-bottom: var(--spacing-xl);
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .hero__actions {
@@ -56,7 +95,7 @@
     padding: var(--spacing-lg) 0;
 }
 
-.philosophy__kicker{
+.philosophy__kicker {
     display: block;
     color: var(--color-accent);
     font-size: var(--font-size-kicker);
@@ -166,9 +205,10 @@
 
 .philosophy__card--keto:hover {
     border-color: var(--color-protein);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 75, 75, 0.2);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(255, 75, 75, 0.2);
 }
-
 
 .philosophy__card--fight .philosophy__card-icon,
 .philosophy__card--fight .philosophy__card-title {
@@ -179,14 +219,16 @@
     color: var(--color-accent);
 }
 
-.philosophy__card--fight .philosophy__icon-box{
+.philosophy__card--fight .philosophy__icon-box {
     background-color: rgba(var(--color-accent-rgb), 0.1);
     border: 1px solid rgba(var(--color-accent-rgb), 0.25);
 }
 
 .philosophy__card--fight:hover {
     border-color: var(--color-accent);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(var(--color-accent-rgb), 0.2);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(var(--color-accent-rgb), 0.2);
 }
 
 .philosophy__card--track .philosophy__card-number {
@@ -198,19 +240,20 @@
     color: var(--color-carbs);
 }
 
-.philosophy__card--track .philosophy__icon-box{
+.philosophy__card--track .philosophy__icon-box {
     background-color: rgba(var(--color-primary-rgb), 0.1);
     border: 1px solid rgba(var(--color-primary-rgb), 0.25);
 }
 
 .philosophy__card--track:hover {
     border-color: var(--color-carbs);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(var(--color-primary-rgb), 0.2);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(var(--color-primary-rgb), 0.2);
 }
 .philosophy__card:hover {
     transform: translateY(-5px);
 }
-
 
 /* ABOUT SECTION */
 
@@ -593,9 +636,31 @@
 }
 
 @media (min-width: 768px) {
+    .hero {
+        background-size: 130%;
+        background-position: 80% center;
+        align-items: center;
+        padding-bottom: 0;
+    }
+
+    .hero__container {
+        display: flex;
+        justify-content: flex-end; /* Tekst ląduje po prawej stronie */
+    }
+
+    .hero__content {
+        max-width: 620px;
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+
     .hero__actions {
         flex-direction: row;
-        justify-content: center;
+        width: auto;
+    }
+
+    .hero__actions .btn {
+        width: 50%;
+        text-align: center;
     }
 
     .philosophy__grid {
