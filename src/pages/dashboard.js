@@ -107,40 +107,17 @@ export const initDashboard = () => {
         reminderBanner.classList.remove("is-hidden");
     }
 
-    btnBannerSave.addEventListener("click", () => {
-        if (!bannerInput.value) {
-            alert("Najpierw wpisz wagę!");
-            return;
-        }
-
-        const newWeight = parseFloat(bannerInput.value);
-        const today = new Date().toISOString().split("T")[0];
-
-        const newWeightData = { date: today, weight: newWeight };
-
-        userProfile.weightHistory.push(newWeightData);
-        saveUser(userProfile);
-
-        weightChart.data.labels.push(today);
-        weightChart.data.datasets[0].data.push(newWeight);
-        weightChart.update();
-
-        bannerInput.value = "";
-        document.getElementById("weight-reminder").classList.add("is-hidden");
-    });
-
     const dietPlan = generateDietPlan(userProfile);
 
     const caloriesLimit = document.getElementById("calories-value");
     const proteins = document.getElementById("proteins-value");
     const fats = document.getElementById("fats-value");
     const carbs = document.getElementById("carbs-value");
-
     const btnDelete = document.getElementById("btn-delete");
+    const macroChartCanvas = document.getElementById("macro-chart");
 
-    const macroChart = document.getElementById("macro-chart");
-
-    new Chart(macroChart, {
+    // Przypisujemy wykres do zmiennej, aby móc go później aktualizować
+    const macroChartInstance = new Chart(macroChartCanvas, {
         type: "doughnut",
         data: {
             labels: ["Białko", "Tłuszcze", "Węglowodany"],
@@ -162,10 +139,7 @@ export const initDashboard = () => {
                         color: "#f9fafb",
                         padding: 20,
                         usePointStyle: true,
-                        font: {
-                            size: 14,
-                            family: '"Inter", sans-serif',
-                        },
+                        font: { size: 14, family: '"Inter", sans-serif' },
                     },
                 },
             },
@@ -173,7 +147,6 @@ export const initDashboard = () => {
     });
 
     const weightChartsCanvas = document.getElementById("weight-chart");
-
     const dates = userProfile.weightHistory.map((entry) => entry.date);
     const weights = userProfile.weightHistory.map((entry) => entry.weight);
 
@@ -196,35 +169,60 @@ export const initDashboard = () => {
         options: {
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    labels: {
-                        color: "#f9fafb",
-                        font: {
-                            family: '"Inter", sans-serif',
-                        },
-                    },
-                },
+                legend: { labels: { color: "#f9fafb", font: { family: '"Inter", sans-serif' } } },
             },
-
             scales: {
-                y: {
-                    grid: {
-                        color: "rgba(255,255,255,0.1)",
-                    },
-                    ticks: { color: "#9ca3af" },
-                },
-                x: {
-                    grid: { color: "rgba(255,255,255,0.1)" },
-                    ticks: { color: "#9ca3af" },
-                },
+                y: { grid: { color: "rgba(255,255,255,0.1)" }, ticks: { color: "#9ca3af" } },
+                x: { grid: { color: "rgba(255,255,255,0.1)" }, ticks: { color: "#9ca3af" } },
             },
         },
     });
 
+    // Ustawienie początkowych wartości
     caloriesLimit.textContent = dietPlan.calories;
     proteins.textContent = dietPlan.proteins;
     fats.textContent = dietPlan.fats;
     carbs.textContent = dietPlan.carbs;
+
+    // MAGIA REAKTYWNOŚCI: Funkcja aktualizująca UI w locie
+    const updateMacrosUI = () => {
+        const newDietPlan = generateDietPlan(userProfile); // Przelicza makro na podstawie NOWEJ wagi
+        
+        // 1. Aktualizacja tekstów
+        caloriesLimit.textContent = newDietPlan.calories;
+        proteins.textContent = newDietPlan.proteins;
+        fats.textContent = newDietPlan.fats;
+        carbs.textContent = newDietPlan.carbs;
+
+        // 2. Aktualizacja wykresu kołowego
+        macroChartInstance.data.datasets[0].data = [newDietPlan.proteins, newDietPlan.fats, newDietPlan.carbs];
+        macroChartInstance.update();
+    };
+
+    btnBannerSave.addEventListener("click", () => {
+        if (!bannerInput.value) {
+            alert("Najpierw wpisz wagę!");
+            return;
+        }
+
+        const newWeight = parseFloat(bannerInput.value);
+        const today = new Date().toISOString().split("T")[0];
+        const newWeightData = { date: today, weight: newWeight };
+
+        userProfile.weightHistory.push(newWeightData);
+        userProfile.weight = newWeight;
+        saveUser(userProfile);
+
+        weightChart.data.labels.push(today);
+        weightChart.data.datasets[0].data.push(newWeight);
+        weightChart.update();
+
+        // Odświeżamy kafelki!
+        updateMacrosUI();
+
+        bannerInput.value = "";
+        document.getElementById("weight-reminder").classList.add("is-hidden");
+    });
 
     btnDelete.addEventListener("click", () => {
         clearUser();
@@ -232,7 +230,6 @@ export const initDashboard = () => {
     });
 
     // MODAL SAVE WEIGHT FUNCTION
-
     const modalOverlay = document.getElementById("modal-overlay");
     const btnAddWeight = document.getElementById("btn-add-weight");
     const btnExit = document.getElementById("btn-exit");
@@ -260,11 +257,15 @@ export const initDashboard = () => {
         const dateWeight = { date: today, weight: newWeight };
 
         userProfile.weightHistory.push(dateWeight);
+        userProfile.weight = newWeight;
         saveUser(userProfile);
 
         weightChart.data.labels.push(today);
         weightChart.data.datasets[0].data.push(newWeight);
         weightChart.update();
+
+        // Odświeżamy kafelki!
+        updateMacrosUI();
 
         inputElement.value = "";
         modalOverlay.classList.add("is-hidden");

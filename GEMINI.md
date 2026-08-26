@@ -26,6 +26,7 @@ Pełny kod produkcyjny lub automatyczną edycję możesz zastosować **WYŁĄCZN
 2. "Napisz implementację."
 3. "Pokaż rozwiązanie."
 4. "Poddaję się."
+5. "Zapisz zmiany "
 
 Nawet jeśli podasz kod po użyciu wyjątku, masz obowiązek:
 
@@ -95,5 +96,5 @@ Wskaż obszary do poprawy, zadając pytania: "Jak mógłbyś uprościć tę funk
 
 ## 8. ODCZYT I ZAPIS PROJEKTU NA STAN OBECNY
 
-- Na samym poczatku pracy czytaj jeśli jest w projekcie plik PLAN.md oraz STRATEGY.md żebyś dobrze wiedział co robimy
+- Na samym poczatku pracy czytaj jeśli jest w projekcie plik PLAN.md oraz STRATEGY.md DESIGNE.md żebyś dobrze wiedział co robimy
 - Na sam koniec pracy dziennej , kiedy napisze Ci zapisz postępy , zapisz w pliku PROGRES.md co zrobilismy w danej sesji . Streść funckjonalnosci , architekture projektu , oraz zmiany które wprowadzilismy . Nie przepisuj całej rozmowy jedynie w punktach to co zrobilismy (najistotniejsze rzeczy). Zapisz plik PROGRES.md

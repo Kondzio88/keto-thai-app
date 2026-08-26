@@ -55,9 +55,11 @@ export const navigateTo = (url) => {
 
 export const initRouter = () => {
     document.body.addEventListener("click", (event) => {
-        if (event.target.matches("[data-link]")) {
+        const linkElement = event.target.closest("[data-link]");
+        
+        if (linkElement) {
             event.preventDefault();
-            navigateTo(event.target.getAttribute("href"));
+            navigateTo(linkElement.getAttribute("href"));
         }
     });
 

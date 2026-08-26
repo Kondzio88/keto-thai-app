@@ -1,10 +1,32 @@
 # Podsumowanie Postępów – Keto Thai App
 
-## Sesja: Refaktoryzacja Hero Section na Stronie Głównej, Optymalizacja Media Queries (Mobile-First) & Strategia FAQ
+## Sesja: Reaktywny Dashboard, Fix Rutera SPA & Architektura Designu
 
 ---
 
 ### 1. Zrealizowane Funkcjonalności i Zmiany Architektoniczne
+
+#### A. Dokumentacja i Kompromisy Architektoniczne (`DESIGNE.md`)
+* Wdrożenie poprawki do manifestu designu: Asymetria i ostre "łamanie siatki" będą stosowane wyłącznie na desktopie.
+* Zadbano o UX sekcji `/knowledge`: do długich artykułów eksperckich zastosowany zostanie czytelniejszy font (np. Inter) z obniżonym kontrastem, rezygnując z twardego monospace'a w celu odciążenia wzroku użytkowników.
+
+#### B. Naprawa Rutera SPA (Bug: 404 File Not Found na GitHub Pages)
+* Zidentyfikowano problem Event Bubbling przy klikaniu zagnieżdżonych elementów (np. ikony lub `<span>` wewnątrz linków `<a>`).
+* **Zaimplementowane rozwiązanie (`src/router.js`):** Zastąpiono metodę `matches()` bezpieczniejszą metodą `.closest("[data-link]")`. Ruter poprawnie deleguje zdarzenia w górę drzewa DOM i zapobiega twardym przeładowaniom strony niezależnie od tego, co fizycznie kliknął użytkownik.
+
+#### C. Naprawa Stanu i "Reaktywność w Locie" (Dashboard)
+* Naprawiono rozwarstwienie danych profilu: od teraz aplikacja aktualizuje na bieżąco zmienną `userProfile.weight` (bazę dla matematyki w kalkulatorze), a nie tylko tablicę do wykresów.
+* Zrefaktoryzowano architekturę `initDashboard()` (`src/pages/dashboard.js`). Wdrożono funkcję pomocniczą (Helper Function) `updateMacrosUI()`, która przelicza kalorie na podstawie nowej wagi za pomocą `generateDietPlan()` i w czasie rzeczywistym aktualizuje teksty w DOM oraz wykres kołowy Chart.js. Zastosowano wzorzec DRY (Don't Repeat Yourself) wywołując tę funkcję po akcjach z modala i z banera.
+
+---
+
+### Do wdrożenia w przyszłości (Odłożone w czasie):
+
+#### Sesja Poprzednia: Refaktoryzacja Hero Section na Stronie Głównej, Optymalizacja Media Queries (Mobile-First) & Strategia FAQ
+
+---
+
+### 1. Poprzednie Funkcjonalności (Zamrożone)
 
 #### A. Przebudowa i Lifting Sekcji Hero (`src/pages/home.js` & `src/styles/pages/home.css`)
 * **Asymetryczny Split Layout (Desktop):** Przestawienie kompozycji tak, by sylwetka trenera znajdowała się po lewej stronie kadru (błyskawiczny Social Proof formy z Tajlandii), a blok tekstowy z nagłówkiem H1 i przyciskami CTA po prawej stronie.
