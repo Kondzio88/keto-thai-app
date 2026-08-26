@@ -6,6 +6,7 @@ const calculateBMR = (weight, height, age, gender) => {
     if (gender === "female") {
         return 10 * weight + 6.25 * height - 5 * age - 161;
     }
+    throw new Error("Niezdefiniowana płeć")
 };
 
 const calculateTDEE = (bmr, activity) => {
@@ -18,6 +19,7 @@ const calculateTDEE = (bmr, activity) => {
     if (activity === "high") {
         return bmr * 1.725;
     }
+    throw new Error("Niezdefiniowana aktywność")
 };
 
 const calculateTargetCalories = (tdee, goal) => {
@@ -30,6 +32,7 @@ const calculateTargetCalories = (tdee, goal) => {
     if (goal === "still") {
         return tdee;
     }
+    throw new Error("Niezdefiniowany cel")
 };
 
 const calculateKetoMacros = (calories, weight) => {

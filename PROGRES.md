@@ -1,12 +1,12 @@
 # Podsumowanie Postępów – Keto Thai App
 
-## Sesja: Reaktywny Dashboard, Fix Rutera SPA & Architektura Designu
+## Sesja: Bugfixing Architektoniczny (Kalkulator & Memory Leaks), FAQ & Formularz Fighter's Camp
 
 ---
 
 ### 1. Zrealizowane Funkcjonalności i Zmiany Architektoniczne
 
-#### A. Dokumentacja i Kompromisy Architektoniczne (`DESIGNE.md`)
+#### A. Dokumentacja i Kompromisy Architektoniczne (`DESIGN.md`)
 * Wdrożenie poprawki do manifestu designu: Asymetria i ostre "łamanie siatki" będą stosowane wyłącznie na desktopie.
 * Zadbano o UX sekcji `/knowledge`: do długich artykułów eksperckich zastosowany zostanie czytelniejszy font (np. Inter) z obniżonym kontrastem, rezygnując z twardego monospace'a w celu odciążenia wzroku użytkowników.
 
@@ -18,46 +18,54 @@
 * Naprawiono rozwarstwienie danych profilu: od teraz aplikacja aktualizuje na bieżąco zmienną `userProfile.weight` (bazę dla matematyki w kalkulatorze), a nie tylko tablicę do wykresów.
 * Zrefaktoryzowano architekturę `initDashboard()` (`src/pages/dashboard.js`). Wdrożono funkcję pomocniczą (Helper Function) `updateMacrosUI()`, która przelicza kalorie na podstawie nowej wagi za pomocą `generateDietPlan()` i w czasie rzeczywistym aktualizuje teksty w DOM oraz wykres kołowy Chart.js. Zastosowano wzorzec DRY (Don't Repeat Yourself) wywołując tę funkcję po akcjach z modala i z banera.
 
----
+#### D. Eliminacja "Wirusa NaN" w Kalkulatorze (`src/services/calculatorService.js`)
+* Zdiagnozowano problem cichego zwracania `undefined` przy braku dopasowania warunków w funkcjach matematycznych, co kaskadowo psuło stan (`NaN` w kaloriach i makroskładnikach).
+* **Zastosowane rozwiązanie:** Wdrożono wzorzec **Fail Fast** oraz **Guard Clauses** we wszystkich funkcjach pomocniczych (`calculateBMR`, `calculateTDEE`, `calculateTargetCalories`), rzucając jawne wyjątki `throw new Error(...)` zamiast cichego zwracania `undefined`.
 
-### Do wdrożenia w przyszłości (Odłożone w czasie):
+#### E. Architektura Cyklu Życia SPA & Eliminacja Wycieków Pamięci (`src/router.js`, `src/pages/dashboard.js`, `src/routes.js`)
+* Zidentyfikowano wyciek pamięci RAM ("Zombie Charts") przy przełączaniu podstron w SPA (niszczenie `<canvas>` przez `innerHTML` nie niszczyło instancji `Chart.js` z pamięci).
+* **Zaimplementowane rozwiązanie:**
+  * Wdrożono wzorzec **Lifecycle Hook (`cleanup`)** w głównym silniku rutera (`src/router.js`), wywoływany bezpiecznie z operatorem Optional Chaining (`currentRoute?.cleanup?.()`) przed podmianą drzewa DOM.
+  * Zdefiniowano i wyeksportowano `cleanupDashboard()` w `src/pages/dashboard.js`, niszczący aktywne wykresy (`macroChartInstance?.destroy()`, `weightChartInstance?.destroy()`) oraz zerujący referencje dla Garbage Collectora.
+  * Zarejestrowano hook `cleanup: cleanupDashboard` w tabeli tras `src/routes.js`.
+  * Omówiono procedurę weryfikacji pamięci w Chrome DevTools (Performance Monitor oraz Heap Snapshots).
 
-#### Sesja Poprzednia: Refaktoryzacja Hero Section na Stronie Głównej, Optymalizacja Media Queries (Mobile-First) & Strategia FAQ
+#### F. Rozbudowa Sekcji FAQ na Stronie Głównej (`src/pages/home.js`)
+* Zintegrowano 6 strategicznych pytań i merytorycznych odpowiedzi rozbijających obiekcje ("Objection Killer") dla sportowców i adeptów keto (adaptacja, wydolność, elektrolity, budowa masy mięśniowej, unikalność aplikacji).
 
----
+#### G. Semantyczny Formularz Kwalifikacyjny Fighter's Camp (`src/pages/camp.js`)
+* Zaprojektowano i wdrożono strukturę HTML nowej sekcji `<section class="camp-apply" id="apply">`.
+* Zastosowano asymetryczną architekturę BEM:
+  * Lewa kolumna: Formularz kwalifikacyjny `<form id="camp-apply-form">` (Imię, Email, Telefon, Wybór dyscypliny sportowej, Aktualna waga i cel, Opis wyzwań dietetycznych).
+  * Prawa kolumna: Karta zaufania i transparentności `<aside class="camp-trust-card">` (Feedback w 24h, Limit 5 miejsc w batchu, Zero ryzyka).
 
-### 1. Poprzednie Funkcjonalności (Zamrożone)
-
-#### A. Przebudowa i Lifting Sekcji Hero (`src/pages/home.js` & `src/styles/pages/home.css`)
-* **Asymetryczny Split Layout (Desktop):** Przestawienie kompozycji tak, by sylwetka trenera znajdowała się po lewej stronie kadru (błyskawiczny Social Proof formy z Tajlandii), a blok tekstowy z nagłówkiem H1 i przyciskami CTA po prawej stronie.
-* **Spójność Design Systemu:** Zastosowanie złotego, metalicznego gradientu (`background-clip: text`) na nagłówku `.hero__title`, ujednolicając styl z podstroną Fighter's Camp.
-* **Cinematic Bottom Fade (`::after`):** Wdrożenie płynnego przejścia tonalnego na dole sekcji (`linear-gradient(to bottom, transparent, var(--color-background))`) z właściwością `pointer-events: none`, eliminującego ostrą krawędź odcięcia zdjęcia.
-* **Strategiczny Copywriting:** Zaktualizowanie treści Hero pod kątem szerokiego rynku (sporty walki, siłownia, bieganie, rekreacja) z bezpośrednimi odnośnikami do kalkulatora `/onboarding` oraz programu mentoringowego `/camp`.
-
-#### B. Architektura i Diagnostyka CSS Media Queries
-* **Eliminacja Antywzorca:** Usunięcie konfliktów wynikających z mieszania podejścia Desktop-First (`max-width: 1024px`) z Mobile-First (`min-width: 768px`), co powodowało aplikowanie reguł mobilnych na ekranach komputerów.
-* **Analiza Wymiarów Zdjęcia (Asset Inspection):** Zbadanie pliku `homePicture.jpg` (1528x1528 px, kwadrat 1:1) i rozwiązanie problemu matematycznego w `background-size: cover`, gdzie na ekranach panoramicznych szerokość zdjęcia jest równa szerokości kontenera (mnożenie przez 0px w procentach).
-* **Precyzyjne Pozycjonowanie:** Przejście na jednostki bezwzględne w pikselach (`background-position: -200px center` / `calc()`) w `@media (min-width: 768px)` oraz bezpieczne, wycentrowane kadrowanie w widoku mobilnym (`center top` / `50% 10%`).
-
-#### C. Opracowanie Strategii dla Sekcji FAQ ("Objection Killer")
-* Przygotowanie merytorycznego zestawu 6 kluczowych pytań i odpowiedzi dla nowych adeptów keto (Keto Flu i elektrolity, budowa masy mięśniowej, czas trwania adaptacji, specyfika sportowa, różnice względem tradycyjnych aplikacji liczących kalorie).
+#### H. Naprawa Błędu Kodowania Znaków (Mojibake) w CSS (`src/styles/pages/camp.css`)
+* Wyeliminowano błąd wyświetlania nieprawidłowych znaków w pseudo-elementach `li::before`, zastępując surowy znak Unicode bezpiecznym kodem ucieczki CSS `\2022`.
 
 ---
 
 ### 2. Zmodyfikowane i Rozbudowane Pliki
 
-* `src/pages/home.js` *(Nowy szkielet semantyczny i copywriting w sekcji Hero)*
-* `src/styles/pages/home.css` *(Uporządkowanie architektury Mobile-First, kadrowanie tła, złoty gradient tekstu, pseudoelement `::after`)*
+* `src/services/calculatorService.js` *(Zabezpieczenie funkcji kalkulatora wzorcem Fail Fast)*
+* `src/router.js` *(Obsługa cyklu życia i hooka cleanup przed renderowaniem)*
+* `src/routes.js` *(Rejestracja hooka cleanupDashboard)*
+* `src/pages/dashboard.js` *(Implementacja funkcji cleanupDashboard i czyszczenie instancji Chart.js)*
+* `src/pages/home.js` *(Kompletny zestaw 6 pytań i odpowiedzi w akordeonie FAQ)*
+* `src/pages/camp.js` *(Wdrożenie semantycznego szkieletu HTML sekcji #apply)*
+* `src/styles/pages/camp.css` *(Poprawka kodowania znaków Unicode w listach)*
 * `PROGRES.md` *(Aktualizacja dokumentacji projektu)*
 
 ---
 
 ### 3. Plan Prac na Następną Sesję
 
-1. **Wdrożenie Rozbudowanego FAQ na Stronie Głównej (`src/pages/home.js` & `src/styles/pages/home.css`):**
-   * Dodanie 6 opracowanych pytań rozbijających obiekcje adeptów keto do komponentu akordeonu (`.accordion`).
-   * Weryfikacja działania interakcji rozwijania pytań w `initHome()`.
-2. **Przegląd Pozostałych Sekcji Strony Głównej (`src/pages/home.js`):**
+1. **Stylizacja Nowej Sekcji Aplikacyjnej (`src/styles/pages/camp.css`):**
+   * Opracowanie asymetrycznego układu 60/40 dla `.camp-apply__layout` na desktopie oraz Mobile-First na telefonach.
+   * Stylizacja surowych, technicznych pól formularza (`.camp-form__input`, `.camp-form__select`, `.camp-form__textarea`, stany `:focus`) zgodnie z wytycznymi [DESIGN.md](file:///C:/projekty/keto-thai-app/DESIGN.md).
+   * Ostylowanie karty zaufania `.camp-trust-card`.
+2. **Interaktywna Obsługa Formularza w JavaScript (`src/pages/camp.js`):**
+   * Oprogramowanie funkcji `initCamp()`: przechwycenie zdarzenia `submit`, pobranie danych z formularza za pomocą `FormData` i wstrzyknięcie widoku potwierdzenia (Success State).
+3. **Nowy Design Nawigacji i Linków (Header / Navbar Redesign):**
+   * Przeprojektowanie głównej nawigacji i linków (Desktop & Mobile), ponieważ obecny wygląd odstaje od reszty aplikacji – dostosowanie do założeń [DESIGN.md](file:///C:/projekty/keto-thai-app/DESIGN.md) (surowy, nowoczesny, sportowo-inżynieryjny styl, wyraziste stany aktywne).
+4. **Przegląd Pozostałych Sekcji Strony Głównej (`src/pages/home.js`):**
    * Doszlifowanie copywritingu sekcji 3 Filarów (Philosophy), Historii z Lamai Camp (About) oraz Ofertowej (Camp Offer).
-3. **Dokończenie Podstrony Fighter's Camp (`/camp`):**
-   * **Sekcja 5: Formularz Aplikacyjny (`#apply`):** Semantyczny formularz kwalifikacyjny + interaktywna obsługa wysyłki i Success State w `initCamp()`.

@@ -1,8 +1,8 @@
 import { renderHome, initHome } from "./pages/home.js";
 import { renderRecipes, initRecipes } from "./pages/recipes.js";
 import { renderOnboarding, initOnboarding } from "./pages/onboarding.js";
-import { renderDashboard, initDashboard } from "./pages/dashboard.js";
-import { renderCamp ,initCamp} from "./pages/camp.js";
+import { renderDashboard, initDashboard, cleanupDashboard } from "./pages/dashboard.js";
+import { renderCamp, initCamp } from "./pages/camp.js";
 
 export const routes = {
     "/": {
@@ -12,10 +12,11 @@ export const routes = {
     "/dashboard": {
         render: renderDashboard,
         init: initDashboard,
+        cleanup:cleanupDashboard,
     },
     "/onboarding": {
         render: renderOnboarding,
-        init: initOnboarding, 
+        init: initOnboarding,
     },
     "/recipes": {
         render: renderRecipes,
@@ -24,9 +25,9 @@ export const routes = {
     "/knowledge": {
         render: () => "<h1>Knowledge Base</h1>",
     },
-    "/camp":{
+    "/camp": {
         render: renderCamp,
-        init:initCamp
+        init: initCamp,
     },
     "/contact": {
         render: () => "<h1>Contact Coach</h1>",

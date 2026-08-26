@@ -270,14 +270,15 @@ export const renderHome = () => {
                         <div class="accordion__item">
                             <button class="accordion__header">
                                 <span class="accordion__question"
-                                    >Czy nie zabraknie mi siły na treningach wytrzymałościowych</span
+                                    >Czy na keto nie spadnie mi moc i szybkość na sparingach / treningach?</span
                                 >
                                 <i data-lucide="chevron-down" class="accordion__icon"></i>
                             </button>
 
                             <div class="accordion__content">
                                 <p class="accordion__answer">
-                                    Jak widac Nie . Kilka lat trenuje w tym systemie żywieniowym . Z powodzeniem
+                                    Wręcz przeciwnie – po okresie adaptacji organizm czerpie stabilną energię z tłuszczu
+                                    bez nagłych "zjazdów energetycznych" i wahań glukozy.
                                 </p>
                             </div>
                         </div>
@@ -292,6 +293,54 @@ export const renderHome = () => {
                                 <p class="accordion__answer">
                                     Dla każdego kto chce zadbać o swoje zdrowie , zgubić tkanke tłuszczową oraz poprawić
                                     swoje wyniki sportowe.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="accordion__item">
+                            <button class="accordion__header">
+                                <span class="accordion__question"
+                                    >Słyszałem o tzw. "Keto Flu" (grypie ketogenicznej). Jak tego uniknąć?</span
+                                >
+                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                            </button>
+
+                            <div class="accordion__content">
+                                <p class="accordion__answer">
+                                    Kluczem jest odpowiednia podaż sodu, potasu i magnezu, co nasz system i przepisy
+                                    uwzględniają od pierwszego dnia.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="accordion__item">
+                            <button class="accordion__header">
+                                <span class="accordion__question"
+                                    >Czy na diecie keto można skutecznie budować beztłuszczową masę mięśniową?</span
+                                >
+                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                            </button>
+
+                            <div class="accordion__content">
+                                <p class="accordion__answer">
+                                    Tak, odpowiednia podaż białka (ok. 2g/kg m.c.) w połączeniu z nadwyżką kaloryczną
+                                    zapewnia optymalne środowisko anaboliczne.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="accordion__item">
+                            <button class="accordion__header">
+                                <span class="accordion__question"
+                                    >Dlaczego warto korzystać z Keto Thai zamiast zwykłego licznika kalorii?</span
+                                >
+                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                            </button>
+
+                            <div class="accordion__content">
+                                <p class="accordion__answer">
+                                    Nasz kalkulator opiera się na specyfice sportów o wysokiej intensywności,
+                                    automatycznie wylicza sztywny keto-split i daje gotowe, przetestowane receptury.
                                 </p>
                             </div>
                         </div>

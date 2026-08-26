@@ -2,9 +2,12 @@ import { routes } from "./routes.js";
 import { getUser } from "./services/userService.js";
 import { getBase } from "./utils/env.js";
 
+let currentRoute = null;
 const appContainer = document.getElementById("app");
 
 const renderContent = () => {
+    currentRoute?.cleanup?.();
+
     const user = getUser();
 
     let path = window.location.pathname;
@@ -31,13 +34,15 @@ const renderContent = () => {
 
     const route = routes[path] || routes["/"];
 
+    currentRoute = route;
+
     appContainer.innerHTML = route.render();
 
     window.scrollTo({
-        top:0,
-        left:0,
-        behavior:'instant'
-    })
+        top: 0,
+        left: 0,
+        behavior: "instant",
+    });
 
     if (window.lucide) {
         window.lucide.createIcons();
@@ -56,7 +61,7 @@ export const navigateTo = (url) => {
 export const initRouter = () => {
     document.body.addEventListener("click", (event) => {
         const linkElement = event.target.closest("[data-link]");
-        
+
         if (linkElement) {
             event.preventDefault();
             navigateTo(linkElement.getAttribute("href"));

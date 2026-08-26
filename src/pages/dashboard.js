@@ -3,6 +3,9 @@ import { getUser, clearUser, saveUser } from "../services/userService.js";
 import { generateDietPlan } from "../services/calculatorService.js";
 import { navigateTo } from "../router.js";
 
+let macroChartInstance = null;
+let weightChartInstance = null;
+
 const checkWeightReminder = (user) => {
     const lastRecord = user.weightHistory[user.weightHistory.length - 1];
     const lastDate = new Date(lastRecord.date);
@@ -117,7 +120,7 @@ export const initDashboard = () => {
     const macroChartCanvas = document.getElementById("macro-chart");
 
     // Przypisujemy wykres do zmiennej, aby móc go później aktualizować
-    const macroChartInstance = new Chart(macroChartCanvas, {
+    macroChartInstance = new Chart(macroChartCanvas, {
         type: "doughnut",
         data: {
             labels: ["Białko", "Tłuszcze", "Węglowodany"],
@@ -150,7 +153,7 @@ export const initDashboard = () => {
     const dates = userProfile.weightHistory.map((entry) => entry.date);
     const weights = userProfile.weightHistory.map((entry) => entry.weight);
 
-    const weightChart = new Chart(weightChartsCanvas, {
+    weightChartInstance = new Chart(weightChartsCanvas, {
         type: "line",
         data: {
             labels: dates,
@@ -187,7 +190,7 @@ export const initDashboard = () => {
     // MAGIA REAKTYWNOŚCI: Funkcja aktualizująca UI w locie
     const updateMacrosUI = () => {
         const newDietPlan = generateDietPlan(userProfile); // Przelicza makro na podstawie NOWEJ wagi
-        
+
         // 1. Aktualizacja tekstów
         caloriesLimit.textContent = newDietPlan.calories;
         proteins.textContent = newDietPlan.proteins;
@@ -213,9 +216,9 @@ export const initDashboard = () => {
         userProfile.weight = newWeight;
         saveUser(userProfile);
 
-        weightChart.data.labels.push(today);
-        weightChart.data.datasets[0].data.push(newWeight);
-        weightChart.update();
+        weightChartInstance.data.labels.push(today);
+        weightChartInstance.data.datasets[0].data.push(newWeight);
+        weightChartInstance.update();
 
         // Odświeżamy kafelki!
         updateMacrosUI();
@@ -260,9 +263,9 @@ export const initDashboard = () => {
         userProfile.weight = newWeight;
         saveUser(userProfile);
 
-        weightChart.data.labels.push(today);
-        weightChart.data.datasets[0].data.push(newWeight);
-        weightChart.update();
+        weightChartInstance.data.labels.push(today);
+        weightChartInstance.data.datasets[0].data.push(newWeight);
+        weightChartInstance.update();
 
         // Odświeżamy kafelki!
         updateMacrosUI();
@@ -271,3 +274,8 @@ export const initDashboard = () => {
         modalOverlay.classList.add("is-hidden");
     });
 };
+
+export const cleanupDashboard = () => {
+    macroChartInstance?.destroy()
+    weightChartInstance?.destroy()
+}

@@ -354,6 +354,156 @@ export const renderCamp = () => {
                 </div>
             </div>
         </section>
+
+        <!-- camp APPLY SECTION -->
+
+        <section class="camp-apply" id="apply">
+            <div class="camp-apply__container container">
+                <div class="camp-apply__layout">
+                    <!-- LEWA KOLUMNA: Formularz Kwalifikacyjny -->
+                    <div class="camp-apply__content">
+                        <span class="camp-apply__kicker">Kwalifikacja do programu</span>
+                        <h2 class="camp-apply__title">Aplikuj do Fighter's Camp</h2>
+                        <p class="camp-apply__desc">
+                            Wypełnij krótki formularz kwalifikacyjny. Po analizie Twojego profilu i celów skontaktuję
+                            się z Tobą w ciągu 24h w celu wstępnej weryfikacji.
+                        </p>
+
+                        <form class="camp-form" id="camp-apply-form">
+                            <div class="camp-form__group">
+                                <label for="apply-name" class="camp-form__label">Imię i Nazwisko</label>
+                                <input
+                                    type="text"
+                                    id="apply-name"
+                                    name="name"
+                                    class="camp-form__input"
+                                    placeholder="np. Jan Kowalski"
+                                    required
+                                />
+                            </div>
+
+                            <div class="camp-form__row">
+                                <div class="camp-form__group">
+                                    <label for="apply-email" class="camp-form__label">Adres E-mail</label>
+                                    <input
+                                        type="email"
+                                        id="apply-email"
+                                        name="email"
+                                        class="camp-form__input"
+                                        placeholder="jan@example.com"
+                                        required
+                                    />
+                                </div>
+
+                                <div class="camp-form__group">
+                                    <label for="apply-phone" class="camp-form__label">Numer Telefonu / WhatsApp</label>
+                                    <input
+                                        type="tel"
+                                        id="apply-phone"
+                                        name="phone"
+                                        class="camp-form__input"
+                                        placeholder="+48 000 000 000"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="camp-form__group">
+                                <label for="apply-sport" class="camp-form__label">Twój Główny Sport / Aktywność</label>
+                                <select
+                                    id="apply-sport"
+                                    name="sport"
+                                    class="camp-form__input camp-form__select"
+                                    required
+                                >
+                                    <option value="" disabled selected>Wybierz dyscyplinę...</option>
+                                    <option value="combat">Sztuki Walki / Boks / Muay Thai</option>
+                                    <option value="gym">Trening Siłowy / Kształtowanie Sylwetki</option>
+                                    <option value="endurance">Bieganie / Kolarstwo / Wytrzymałość</option>
+                                    <option value="recreation">Aktywność Rekreacyjna / Zdrowie</option>
+                                </select>
+                            </div>
+
+                            <div class="camp-form__group">
+                                <label for="apply-goal" class="camp-form__label">Aktualna Waga i Twój Cel</label>
+                                <input
+                                    type="text"
+                                    id="apply-goal"
+                                    name="goal"
+                                    class="camp-form__input"
+                                    placeholder="np. 86 kg -> 79 kg, docięcie i poprawa wydolności"
+                                    required
+                                />
+                            </div>
+
+                            <div class="camp-form__group">
+                                <label for="apply-message" class="camp-form__label"
+                                    >Z czym masz największy problem?</label
+                                >
+                                <textarea
+                                    id="apply-message"
+                                    name="message"
+                                    class="camp-form__input camp-form__textarea"
+                                    rows="3"
+                                    placeholder="Opisz krótko swój staż, dotychczasowe próby z dietą lub spadki energii..."
+                                    required
+                                ></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn--primary camp-form__submit">
+                                <span>Wyślij Zgłoszenie do Kwalifikacji</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- PRAWA KOLUMNA: Karta Zaufania & Gwarancja -->
+                    <aside class="camp-apply__sidebar">
+                        <div class="camp-trust-card">
+                            <div class="camp-trust-card__header">
+                                <div class="camp-trust-card__icon-box">
+                                    <i data-lucide="shield-check" class="camp-trust-card__icon"></i>
+                                </div>
+                                <span class="camp-trust-card__badge">Gwarancja Jakości</span>
+                            </div>
+
+                            <h3 class="camp-trust-card__title">Zasady Kwalifikacji Batch #04</h3>
+
+                            <ul class="camp-trust-card__list">
+                                <li class="camp-trust-card__item">
+                                    <i data-lucide="clock" class="trust-icon"></i>
+                                    <div>
+                                        <strong>Feedback w 24h:</strong>
+                                        <p>Analizuję Twoje zgłoszenie i odpowiadam konkretną informacją zwrotną.</p>
+                                    </div>
+                                </li>
+                                <li class="camp-trust-card__item">
+                                    <i data-lucide="users" class="trust-icon"></i>
+                                    <div>
+                                        <strong>Maksymalnie 5 Miejsc:</strong>
+                                        <p>Prowadzenie 1 na 1 wymaga pełnego skupienia na każdym podopiecznym.</p>
+                                    </div>
+                                </li>
+                                <li class="camp-trust-card__item">
+                                    <i data-lucide="lock" class="trust-icon"></i>
+                                    <div>
+                                        <strong>Zero Ryzyka:</strong>
+                                        <p>Brak jakichkolwiek opłat przed formalnym zatwierdzeniem profilu.</p>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <div class="camp-trust-card__note">
+                                <i data-lucide="info" class="note-icon"></i>
+                                <span
+                                    >Jeśli uznam, że ten program nie jest dla Ciebie – powiem Ci to wprost i wskażę
+                                    darmowe alternatywy.</span
+                                >
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
     `;
 };
 
