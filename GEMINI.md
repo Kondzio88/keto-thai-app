@@ -96,5 +96,7 @@ Wskaż obszary do poprawy, zadając pytania: "Jak mógłbyś uprościć tę funk
 
 ## 8. ODCZYT I ZAPIS PROJEKTU NA STAN OBECNY
 
-- Na samym poczatku pracy czytaj jeśli jest w projekcie plik PLAN.md oraz STRATEGY.md DESIGN.md żebyś dobrze wiedział co robimy
+- Na samym poczatku pracy czytaj jeśli jest w projekcie plik PLAN.md oraz STRATEGY.md PROGRES.md KETO_THAI_DESIGN_GUIDELINES.md żebyś dobrze wiedział co robimy
+- Wez przeczytaj i stosuj sie do plików z katalogu skills wszystkich plików z rozszerzeniem .md. Jest to zestaw instrukcji które bedą używane dla UI UX zeby uniknąć typowego Ai sloop. Tego musimy sie wystrzegac koniecznie i pod każdym warunkiem żeby aplikacja nie była typowym Ai sloopem jak miliony naświecie.
+- Cały nasz design aplikacji poznasz w pliku KETO_THAI_DESIGN_GUIDELINES.md . trzymamy sie tego wyglądu aplikacji
 - Na sam koniec pracy dziennej , kiedy napisze Ci zapisz postępy , zapisz w pliku PROGRES.md co zrobilismy w danej sesji . Streść funckjonalnosci , architekture projektu , oraz zmiany które wprowadzilismy . Nie przepisuj całej rozmowy jedynie w punktach to co zrobilismy (najistotniejsze rzeczy). Zapisz plik PROGRES.md

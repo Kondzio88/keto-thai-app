@@ -66,7 +66,7 @@ export const renderCamp = () => {
                 <!-- NAGŁÓWEK SEKCJI -->
                 <div class="camp-phases__header">
                     <span class="camp-phases__kicker">Plan Działania Krok Po Kroku</span>
-                    <h2 class="camp-phases__title">12 Tygodni do Szczytowej Formy</h2>
+                    <h2 class="camp-phases__title"><span class="text-accent">12</span> Tygodni do Szczytowej Formy</h2>
                     <p class="camp-phases__desc">
                         Trzy precyzyjne, 4-tygodniowe etapy. Przekładamy rygorystyczne metody z campów na Twój sport,
                         byś osiągnął życiową sylwetkę bez zgadywania.

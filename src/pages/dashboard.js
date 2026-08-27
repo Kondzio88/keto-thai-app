@@ -70,6 +70,7 @@ export const renderDashboard = () => {
                 </div>
 
                 <div class="bento-card bento-card--chart">
+                    <button class="btn btn--secondary" id="btn-add-weight">➕ Dodaj pomiar.</button>
                     <span class="bento-card__title">Historia Wagi</span>
                     <div class="line-chart-wrapper">
                         <canvas id="weight-chart"></canvas>
@@ -81,8 +82,6 @@ export const renderDashboard = () => {
                 <button class="btn btn-delete" id="btn-delete">Skasuj dane aplikacji</button>
             </div>
         </div>
-
-        <button class="fab-button" id="btn-add-weight"><i data-lucide="scale" class="icon-add-weight"></i></button>
 
         <div class="modal-overlay is-hidden" id="modal-overlay">
             <div class="modal__content">
@@ -276,6 +275,6 @@ export const initDashboard = () => {
 };
 
 export const cleanupDashboard = () => {
-    macroChartInstance?.destroy()
-    weightChartInstance?.destroy()
-}
+    macroChartInstance?.destroy();
+    weightChartInstance?.destroy();
+};

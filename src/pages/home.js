@@ -9,7 +9,10 @@ export const renderHome = () => {
                 <div class="hero__container page-container">
                     <div class="hero__content">
                         <span class="hero__kicker">Metodyka z tajskich ringów dla każdego sportowca</span>
-                        <h1 class="hero__title">ZBUDUJ FORMĘ ŻYCIA NA CZYSTYM PALIWIE TŁUSZCZOWYM</h1>
+                        <h1 class="hero__title">
+                            <span class="hero__title--main">Zbuduj forme życia</span>
+                            <span class="hero__title--sub">NA czystym paliwie.</span>
+                        </h1>
                         <p class="hero__desc">Nowy Ty w zdrowym, metabolicznym stylu Keto Thai.</p>
                         <div class="hero__actions">
                             <a href="/dashboard" class="btn btn--primary" data-link>Twój Dashboard</a>

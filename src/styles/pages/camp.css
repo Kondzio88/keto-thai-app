@@ -1,13 +1,6 @@
 .camp-hero {
     padding: var(--spacing-lg) 0;
-    background:
-        radial-gradient(
-            ellipse at 80% 0%,
-            rgba(var(--color-accent-rgb), 0.08) 0%,
-            rgba(var(--color-accent-rgb), 0.02) 40%,
-            transparent 70%
-        ),
-        var(--color-background);
+    background: radial-gradient(circle at 70% 30%, rgba(var(--color-accent-rgb), 0.1) 0%, var(--color-background) 60%);
 }
 
 .camp-hero__layout {
@@ -32,10 +25,15 @@
     line-height: 1.1;
     text-transform: uppercase;
     margin-bottom: var(--spacing-md);
-    background: linear-gradient(135deg, #ffffff 30%, var(--color-accent) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+}
+
+.camp-hero__title::first-letter,
+.camp-phases__title::first-letter,
+.camp-features__title::first-letter,
+.camp-qual__title::first-letter,
+.camp-apply__title::first-letter {
+    font-size: clamp(3.5rem, 6vw, 6.5rem);
+    color: var(--color-accent);
 }
 
 .camp-hero__desc {
@@ -83,13 +81,11 @@
     flex-direction: column;
     justify-content: space-between;
     min-height: 230px;
-    background: linear-gradient(145deg, #1e1e1e, #121212);
+    background-color: var(--color-surface);
     border-radius: 16px;
     padding: var(--spacing-lg);
-    border: 1px solid rgba(var(--color-accent-rgb), 0.3);
-    box-shadow:
-        0 20px 40px rgba(0, 0, 0, 0.7),
-        0 0 25px rgba(var(--color-accent-rgb), 0.15);
+    order: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.8);
     transition: all 0.3s ease-in;
 }
 
@@ -122,7 +118,7 @@
 
 .fighter-card__title {
     font-family: var(--font-heading);
-    font-size: 1.35rem;
+    font-size: var(--font-size-h2);
     color: var(--color-text-primary);
     letter-spacing: 1px;
     margin-bottom: 4px;
@@ -178,10 +174,11 @@
     line-height: 1.1;
     text-transform: uppercase;
     margin-bottom: var(--spacing-md);
-    background: linear-gradient(135deg, #ffffff 30%, var(--color-accent) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+}
+
+.camp-phases__title .text-accent{
+    font-size: clamp(3.5rem, 6vw, 6.5rem);
+    color: var(--color-accent);
 }
 
 .camp-phases__desc {
@@ -464,10 +461,6 @@
     line-height: 1.1;
     text-transform: uppercase;
     margin-bottom: var(--spacing-md);
-    background: linear-gradient(135deg, #ffffff 30%, var(--color-accent) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 
 .camp-features__desc {
@@ -586,10 +579,6 @@
     line-height: 1.1;
     text-transform: uppercase;
     margin-bottom: var(--spacing-md);
-    background: linear-gradient(135deg, #ffffff 30%, var(--color-accent) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 
 .camp-qual__desc {
@@ -683,7 +672,7 @@
     background: linear-gradient(145deg, rgba(52, 211, 153, 0.04), var(--color-surface));
 }
 
-.qual-card--negative{
+.qual-card--negative {
     color: var(--color-protein);
 }
 
@@ -700,6 +689,43 @@
     box-shadow:
         0 15px 35px rgba(0, 0, 0, 0.6),
         0 0 25px rgba(255, 75, 75, 0.15);
+}
+
+/* CAMP APLLY SETION */
+
+.camp-apply {
+    padding: var(--spacing-lg) 0;
+    border-top: 1px solid var(--color-border);
+}
+
+.camp-apply__layout {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.camp-apply__kicker {
+    display: block;
+    font-size: var(--font-size-kicker);
+    font-weight: 700;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--spacing-xs);
+}
+
+.camp-apply__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h2);
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-bottom: var(--spacing-md);
+}
+
+.camp-apply__desc {
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-lead);
 }
 
 @media (min-width: 768px) {
@@ -724,5 +750,11 @@
 
     .camp-qual__grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .camp-apply__layout {
+        grid-template-columns: 1.4fr 1fr;
+        align-items: start;
+        gap: var(--spacing-xl);
     }
 }

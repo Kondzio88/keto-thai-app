@@ -1,5 +1,5 @@
 .page-container {
-    padding-top: 100px;
+    padding-top:calc(80px + var(--spacing-xl)) ;
     padding-bottom: var(--spacing-xl);
     max-width: 1200px;
     margin: 0 auto;
