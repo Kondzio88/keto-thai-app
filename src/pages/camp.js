@@ -396,7 +396,7 @@ export const renderCamp = () => {
                                 </div>
 
                                 <div class="camp-form__group">
-                                    <label for="apply-phone" class="camp-form__label">Numer Telefonu / WhatsApp</label>
+                                    <label for="apply-phone" class="camp-form__label">Numer Telefonu</label>
                                     <input
                                         type="tel"
                                         id="apply-phone"
@@ -466,7 +466,7 @@ export const renderCamp = () => {
                                 <span class="camp-trust-card__badge">Gwarancja Jakości</span>
                             </div>
 
-                            <h3 class="camp-trust-card__title">Zasady Kwalifikacji Batch #04</h3>
+                            <h3 class="camp-trust-card__title">Zasady Kwalifikacji</h3>
 
                             <ul class="camp-trust-card__list">
                                 <li class="camp-trust-card__item">

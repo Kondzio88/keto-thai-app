@@ -28,46 +28,79 @@ export const renderHome = () => {
                     <span class="philosophy__kicker">3 filary systemu</span>
                     <h2 class="philosophy__title">Dlaczego Keto Thai?</h2>
                     <div class="philosophy__grid reveal">
+                        <!-- KARTA 1 -->
                         <article class="philosophy__card philosophy__card--keto">
-                            <span class="philosophy__card-number">01</span>
-                            <div class="philosophy__card-header">
-                                <div class="philosophy__icon-box">
-                                    <i data-lucide="beef" class="philosophy__card-icon"></i>
+                            <header class="philosophy__card-header">
+                                <div class="philosophy__title-wrapper">
+                                    <i data-lucide="beef" class="philosophy__naked-icon"></i>
+                                    <h3 class="philosophy__card-title">Czyste Paliwo</h3>
                                 </div>
-                                <h3 class="philosophy__card-title">Czyste Paliwo</h3>
-                            </div>
+                                <span class="philosophy__badge">01</span>
+                            </header>
                             <p class="philosophy__card-desc">
-                                Przeprogramuj swój organizm na spalanie tłuszczu. Stabilna energia przez cały dzień,
-                                brak zjazdów cukrowych i jedzenie, które smakuje obłędnie.
+                                Przeprogramuj organizm na spalanie tłuszczu. Stabilna energia i brak zjazdów cukrowych.
                             </p>
+                            <div class="philosophy__mockup">
+                                <span class="mockup__label">ROZKŁAD MAKRO</span>
+                                <div class="macro-bar">
+                                    <div class="macro-segment macro-segment--fat" style="width: 70%"></div>
+                                    <div class="macro-segment macro-segment--protein" style="width: 20%"></div>
+                                    <div class="macro-segment macro-segment--carbs" style="width: 10%"></div>
+                                </div>
+                            </div>
                         </article>
 
+                        <!-- KARTA 2 -->
                         <article class="philosophy__card philosophy__card--fight">
-                            <span class="philosophy__card-number">02</span>
-                            <div class="philosophy__card-header">
-                                <div class="philosophy__icon-box">
-                                    <i data-lucide="brain" class="philosophy__card-icon"></i>
+                            <header class="philosophy__card-header">
+                                <div class="philosophy__title-wrapper">
+                                    <i data-lucide="brain" class="philosophy__naked-icon"></i>
+                                    <h3 class="philosophy__card-title">Umysł Wojownika</h3>
                                 </div>
-                                <h3 class="philosophy__card-title">Umysł Wojownika</h3>
-                            </div>
+                                <span class="philosophy__badge">02</span>
+                            </header>
                             <p class="philosophy__card-desc">
-                                Czerpiemy dyscyplinę prosto z obozów Muay Thai. Budujemy charakter i wytrzymałość, która
-                                nie poddaje się ani na macie, ani w życiu.
+                                Dyscyplina z tajskich campów. Budujemy charakter, który nie poddaje się na macie ani w życiu.
                             </p>
+                            <div class="philosophy__mockup">
+                                <span class="mockup__label">OBECNA SERIA</span>
+                                <div class="streak-grid">
+                                    <div class="streak-box is-active"></div>
+                                    <div class="streak-box is-active"></div>
+                                    <div class="streak-box is-active"></div>
+                                    <div class="streak-box is-active"></div>
+                                    <div class="streak-box is-active"></div>
+                                    <div class="streak-box"></div>
+                                    <div class="streak-box"></div>
+                                </div>
+                            </div>
                         </article>
 
+                        <!-- KARTA 3 -->
                         <article class="philosophy__card philosophy__card--track">
-                            <span class="philosophy__card-number">03</span>
-                            <div class="philosophy__card-header">
-                                <div class="philosophy__icon-box">
-                                    <i data-lucide="line-chart" class="philosophy__card-icon"></i>
+                            <header class="philosophy__card-header">
+                                <div class="philosophy__title-wrapper">
+                                    <i data-lucide="line-chart" class="philosophy__naked-icon"></i>
+                                    <h3 class="philosophy__card-title">Pełna Kontrola</h3>
                                 </div>
-                                <h3 class="philosophy__card-title">Pełna Kontrola</h3>
-                            </div>
+                                <span class="philosophy__badge">03</span>
+                            </header>
                             <p class="philosophy__card-desc">
-                                Nie musisz zgadywać. Nasz panel analityczny pozwala Ci śledzić makroskładniki i wagę z
-                                precyzją, byś zawsze był na właściwym kursie.
+                                Panel analityczny monitoruje Twoje makro i wagę z precyzją. Zawsze wiesz, gdzie jesteś.
                             </p>
+                            <div class="philosophy__mockup">
+                                <span class="mockup__label">METRYKA</span>
+                                <div class="metrics-grid">
+                                    <div class="metric-box">
+                                        <span class="metric-value">2450</span>
+                                        <span class="metric-unit">KCAL</span>
+                                    </div>
+                                    <div class="metric-box">
+                                        <span class="metric-value">-0.8</span>
+                                        <span class="metric-unit">KG/TYDZ</span>
+                                    </div>
+                                </div>
+                            </div>
                         </article>
                     </div>
                 </div>
@@ -126,13 +159,7 @@ export const renderHome = () => {
                                     class="about__image"
                                 />
                             </div>
-                            <div class="about__image-wrapper">
-                                <img
-                                    src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600"
-                                    alt="Tajlandia trening"
-                                    class="about__image"
-                                />
-                            </div>
+                           
                         </div>
                     </div>
                 </div>

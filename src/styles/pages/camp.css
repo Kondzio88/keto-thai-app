@@ -1,6 +1,6 @@
 .camp-hero {
     padding: var(--spacing-lg) 0;
-    background: radial-gradient(circle at 70% 30%, rgba(var(--color-accent-rgb), 0.1) 0%, var(--color-background) 60%);
+    /* Usunięto rozmyty radial-gradient (AI Slop) */
 }
 
 .camp-hero__layout {
@@ -82,10 +82,10 @@
     justify-content: space-between;
     min-height: 230px;
     background-color: var(--color-surface);
-    border-radius: 16px;
+    border-radius: 4px;
     padding: var(--spacing-lg);
-    order: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Usunięto box-shadow (Wariant A - Monolit) */
     transition: all 0.3s ease-in;
 }
 
@@ -176,7 +176,7 @@
     margin-bottom: var(--spacing-md);
 }
 
-.camp-phases__title .text-accent{
+.camp-phases__title .text-accent {
     font-size: clamp(3.5rem, 6vw, 6.5rem);
     color: var(--color-accent);
 }
@@ -201,7 +201,7 @@
     overflow: hidden;
     background-color: var(--color-surface);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
+    border-radius: 4px;
     padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
@@ -228,11 +228,9 @@
 .phase-card__icon-box {
     width: 48px;
     height: 48px;
-    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
 }
 
@@ -369,10 +367,7 @@
 /* MODYFIKATORY FAZ (BEM) */
 
 /* Faza 1 (Pomarańcz Akcentu) */
-.phase-card--phase-1 .phase-card__icon-box {
-    background-color: rgba(var(--color-accent-rgb), 0.1);
-    border-color: rgba(var(--color-accent-rgb), 0.25);
-}
+
 .phase-card--phase-1 .phase-card__icon,
 .phase-card--phase-1 .phase-card__number,
 .phase-card--phase-1 .phase-card__progress-value {
@@ -383,16 +378,10 @@
 }
 .phase-card--phase-1:hover {
     border-color: var(--color-accent);
-    box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.6),
-        0 0 25px rgba(var(--color-accent-rgb), 0.2);
 }
 
 /* Faza 2 (Czerwień Proteiny) */
-.phase-card--phase-2 .phase-card__icon-box {
-    background-color: rgba(255, 75, 75, 0.1);
-    border-color: rgba(255, 75, 75, 0.25);
-}
+
 .phase-card--phase-2 .phase-card__icon,
 .phase-card--phase-2 .phase-card__number,
 .phase-card--phase-2 .phase-card__progress-value {
@@ -406,16 +395,10 @@
 }
 .phase-card--phase-2:hover {
     border-color: var(--color-protein);
-    box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.6),
-        0 0 25px rgba(255, 75, 75, 0.2);
 }
 
 /* Faza 3 (Zieleń/Węglowodany Sukcesu) */
-.phase-card--phase-3 .phase-card__icon-box {
-    background-color: rgba(var(--color-primary-rgb), 0.1);
-    border-color: rgba(var(--color-primary-rgb), 0.25);
-}
+
 .phase-card--phase-3 .phase-card__icon,
 .phase-card--phase-3 .phase-card__number,
 .phase-card--phase-3 .phase-card__progress-value {
@@ -429,9 +412,6 @@
 }
 .phase-card--phase-3:hover {
     border-color: var(--color-carbs);
-    box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.6),
-        0 0 25px rgba(var(--color-primary-rgb), 0.2);
 }
 
 /* CAMP_FEATURES */
@@ -490,16 +470,14 @@
 }
 
 .camp-bento:hover {
-    transform: translateY(-5px);
-    border-color: rgba(var(--color-accent-rgb), 0.4);
-    box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.6),
-        0 0 25px rgba(var(--color-accent-rgb), 0.15);
+    transform: translateY(-4px);
+    border-color: var(--color-accent);
+    /* box-shadow removed (Wariant A - Monolit) */
 }
 
 .camp-bento--highlight {
     border-color: rgba(var(--color-accent-rgb), 0.3);
-    background: linear-gradient(145deg, #1f1a14, var(--color-surface));
+    background-color: var(--color-surface); /* removed gradient */
 }
 
 .camp-bento__icon-box {
@@ -509,7 +487,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(var(--color-accent-rgb), 0.1);
     transition: all 0.3s ease;
 }
 
@@ -650,7 +627,8 @@
 }
 
 .qual-card--positive {
-    background: linear-gradient(145deg, rgba(52, 211, 153, 0.04), var(--color-surface));
+    background-color: var(--color-surface);
+    border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .qual-card--positive .qual-card__icon {
@@ -662,17 +640,13 @@
 }
 
 .qual-card--positive:hover {
-    border-color: rgba(52, 211, 153, 0.4);
-    box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.6),
-        0 0 25px rgba(52, 211, 153, 0.15);
+    border-color: var(--color-carbs);
+    /* box-shadow removed */
 }
 
 .qual-card--negative {
-    background: linear-gradient(145deg, rgba(52, 211, 153, 0.04), var(--color-surface));
-}
-
-.qual-card--negative {
+    background-color: var(--color-surface);
+    border: 1px solid rgba(239, 68, 68, 0.2);
     color: var(--color-protein);
 }
 
@@ -685,10 +659,8 @@
 }
 
 .qual-card--negative:hover {
-    border-color: rgba(255, 75, 75, 0.4);
-    box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.6),
-        0 0 25px rgba(255, 75, 75, 0.15);
+    border-color: var(--color-protein);
+    /* box-shadow removed */
 }
 
 /* CAMP APLLY SETION */
@@ -728,6 +700,176 @@
     font-size: var(--font-size-lead);
 }
 
+.camp-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.camp-form__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.camp-form__label {
+    font-size: var(--font-size-kicker);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-text-secondary);
+}
+
+.camp-form__input {
+    width: 100%;
+    padding: var(--spacing-xs);
+    color: var(--color-text-primary);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.camp-form__input::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 0.25;
+}
+
+.camp-form__input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.camp-form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.camp-form__select {
+    appearance: none;
+    cursor: pointer;
+    background-color: var(--color-surface);
+}
+
+.camp-form__select:invalid {
+    color: rgba(255, 255, 255, 0.15)
+}
+
+.camp-form__select option {
+    color: var(--color-text-primary);
+}
+
+.camp-form__textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.camp-form__submit {
+    margin-top: var(--spacing-md);
+}
+
+.camp-trust-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+}
+
+.camp-trust-card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.camp-trust-card__icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Naked icon - no background, no border */
+}
+
+.camp-trust-card__icon {
+    width: 24px;
+    height: 24px;
+    color: var(--color-accent);
+}
+
+.camp-trust-card__badge {
+    font-size: var(--font-size-kicker);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-accent);
+}
+
+.camp-trust-card__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h3, 1.25rem);
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.camp-trust-card__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.camp-trust-card__item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+}
+
+.camp-trust-card__item strong {
+    display: block;
+    color: var(--color-text-primary);
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.camp-trust-card__item p {
+    margin: 0;
+}
+
+.trust-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-accent);
+    flex-shrink: 0;
+    margin-top: 2px; /* Wyrównanie optyczne z pierwszą linią tekstu */
+}
+
+.camp-trust-card__note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+.note-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--color-accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
 @media (min-width: 768px) {
     .camp-hero__layout {
         display: grid;
@@ -745,7 +887,7 @@
     }
 
     .camp-bento--wide {
-        grid-column: span 2; /* kafelek zajmuje całą szerokość dwóch kolumn! */
+        grid-column: span 2;
     }
 
     .camp-qual__grid {

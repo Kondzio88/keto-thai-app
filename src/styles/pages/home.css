@@ -137,124 +137,178 @@
 
 .philosophy__card {
     position: relative;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
     background-color: var(--color-surface);
     padding: var(--spacing-lg);
-    border: none;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
     border-bottom: 4px solid var(--color-border);
-    transition: border-bottom-color 0.3s ease;
-    
+    transition: border-bottom-color 0.3s ease, transform 0.3s ease;
 }
 
-.philosophy__card-number {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-family: var(--font-heading);
-    font-size: clamp(3rem, 5vw, 4.5rem);
-    font-weight: 900;
-    line-height: 1;
-    pointer-events: none;
-    opacity: 0.08;
-    transition: all 0.3s ease;
-}
-
-.philosophy__card:hover .philosophy__card-number {
-    opacity: 0.2;
-    transform: translateY(-3px);
+.philosophy__card:hover {
+    transform: translateY(-2px);
 }
 
 .philosophy__card-header {
     display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
+    align-items: flex-start;
+    justify-content: space-between;
     margin-bottom: var(--spacing-md);
 }
 
-.philosophy__icon-box {
+.philosophy__title-wrapper {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    gap: var(--spacing-sm);
 }
 
-.philosophy__card-icon {
-    width: 38px;
-    height: 38px;
+.philosophy__naked-icon {
+    width: 28px;
+    height: 28px;
     transition: transform 0.3s ease;
 }
 
-.philosophy__card:hover .philosophy__card-icon {
-    transform: scale(1.12);
+.philosophy__card:hover .philosophy__naked-icon {
+    transform: scale(1.1);
+}
+
+.philosophy__badge {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    color: var(--color-text-secondary);
+    transition: color 0.3s ease, border-color 0.3s ease;
 }
 
 .philosophy__card-title {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h3);
+    text-transform: uppercase;
+    transition: color 0.3s ease;
 }
 
 .philosophy__card-desc {
-    font-size: 1.1rem;
-    line-height: 1.6rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-lg);
+    flex-grow: 1; 
+}
+
+/* DATA MOCKUP (Bento element at the bottom) */
+.philosophy__mockup {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: var(--spacing-md);
+    border-radius: 4px;
+    margin-top: auto;
+}
+
+.mockup__label {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-sm);
+    font-family: var(--font-heading);
+}
+
+/* 1. KETO MACRO BAR */
+.macro-bar {
+    display: flex;
+    height: 8px;
+    border-radius: 2px;
+    overflow: hidden;
+    gap: 2px;
+}
+.macro-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0; 
+}
+.macro-segment--fat { background-color: var(--color-fats, #F59E0B); }
+.macro-segment--protein { background-color: var(--color-protein, #EF4444); }
+.macro-segment--carbs { background-color: var(--color-carbs, #10B981); }
+
+/* 2. STREAK GRID */
+.streak-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+.streak-box {
+    aspect-ratio: 1;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+}
+.streak-box.is-active {
+    background-color: var(--color-accent);
+}
+
+/* 3. LIVE METRICS */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-sm);
+}
+.metric-box {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+.metric-value {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+.metric-unit {
+    font-size: 0.7rem;
     color: var(--color-text-secondary);
 }
 
+/* WARIANTY KART (HOVER STATES) */
 .philosophy__card.philosophy__card--keto:hover {
     border-bottom: 4px solid var(--color-protein);
 }
-
-.philosophy__card--keto .philosophy__card-number {
+.philosophy__card--keto:hover .philosophy__naked-icon,
+.philosophy__card--keto:hover .philosophy__card-title,
+.philosophy__card--keto:hover .philosophy__badge {
     color: var(--color-protein);
 }
-
-.philosophy__card--keto .philosophy__icon-box {
-    background-color: rgba(255, 75, 75, 0.1);
-    border: 1px solid rgba(255, 75, 75, 0.25);
-}
-
-.philosophy__card--keto .philosophy__card-icon,
-.philosophy__card--keto .philosophy__card-title {
-    color: var(--color-protein);
+.philosophy__card--keto:hover .philosophy__badge {
+    border-color: var(--color-protein);
 }
 
 .philosophy__card.philosophy__card--fight:hover {
     border-bottom: 4px solid var(--color-accent);
 }
-
-.philosophy__card--fight .philosophy__card-icon,
-.philosophy__card--fight .philosophy__card-title {
+.philosophy__card--fight:hover .philosophy__naked-icon,
+.philosophy__card--fight:hover .philosophy__card-title,
+.philosophy__card--fight:hover .philosophy__badge {
     color: var(--color-accent);
 }
-
-.philosophy__card--fight .philosophy__card-number {
-    color: var(--color-accent);
-}
-
-.philosophy__card--fight .philosophy__icon-box {
-    background-color: rgba(var(--color-accent-rgb), 0.1);
-    border: 1px solid rgba(var(--color-accent-rgb), 0.25);
+.philosophy__card--fight:hover .philosophy__badge {
+    border-color: var(--color-accent);
 }
 
 .philosophy__card.philosophy__card--track:hover {
     border-bottom: 4px solid var(--color-carbs);
 }
-
-.philosophy__card--track .philosophy__card-number {
+.philosophy__card--track:hover .philosophy__naked-icon,
+.philosophy__card--track:hover .philosophy__card-title,
+.philosophy__card--track:hover .philosophy__badge {
     color: var(--color-carbs);
 }
-
-.philosophy__card--track .philosophy__card-icon,
-.philosophy__card--track .philosophy__card-title {
-    color: var(--color-carbs);
-}
-
-.philosophy__card--track .philosophy__icon-box {
-    background-color: rgba(var(--color-primary-rgb), 0.1);
-    border: 1px solid rgba(var(--color-primary-rgb), 0.25);
+.philosophy__card--track:hover .philosophy__badge {
+    border-color: var(--color-carbs);
 }
 
 /* ABOUT SECTION */
@@ -330,15 +384,32 @@
 }
 
 .about__image-wrapper {
+    position: relative;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     transition: all 0.3s ease;
 }
 
 .about__image-wrapper:hover {
     border-color: var(--color-accent);
-    box-shadow: 0 8px 25px rgba(var(--color-accent-rgb), 0.25);
+}
+
+.about__image-wrapper:first-child{
+    grid-column: span 2;
+}
+
+.about__image-wrapper::after{
+    content: '';
+    position: absolute;
+    inset:0;
+    background: rgba(30,30,30,0.75);
+    transform-origin: right ;
+    transform:scaleX(1);
+}
+
+.about__image-wrapper:hover::after{
+    transform: scaleX(0);
 }
 
 .about__image {
@@ -351,7 +422,6 @@
 }
 
 .about__image-wrapper:hover .about__image {
-    transform: scale(1.06);
     filter: brightness(1.05);
 }
 
@@ -417,16 +487,6 @@
     max-width: 300px;
     margin: 0 auto;
     filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 15px rgba(var(--color-accent-rgb), 0.12));
-}
-
-@keyframes float {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-12px);
-    }
 }
 
 .timeline__marker {

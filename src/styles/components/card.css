@@ -11,7 +11,7 @@
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-2px);
     border-color: var(--color-primary);
 }
 
@@ -128,7 +128,7 @@
 }
 
 .bento-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-2px);
     border-color: var(--color-accent);
 }
 
