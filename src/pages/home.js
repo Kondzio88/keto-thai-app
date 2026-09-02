@@ -8,15 +8,19 @@ export const renderHome = () => {
             <section class="hero">
                 <div class="hero__container page-container">
                     <div class="hero__content">
-                        <span class="hero__kicker">Metodyka z tajskich ringów dla każdego sportowca</span>
+                        <span class="hero__kicker">KETO THAI — SYSTEM METABOLICZNY</span>
                         <h1 class="hero__title">
-                            <span class="hero__title--main">Zbuduj forme życia</span>
-                            <span class="hero__title--sub">NA czystym paliwie.</span>
+                            <span class="hero__title-sub">TWOJE CIAŁO</span>
+                            <span class="hero__title-sub">TWOJE PALIWO</span>
+                            <span class="hero__title-sub">TWOJA WALKA</span>
                         </h1>
-                        <p class="hero__desc">Nowy Ty w zdrowym, metabolicznym stylu Keto Thai.</p>
+                        <p class="hero__desc">
+                            Precyzyjne makro. Sprawdzone przepisy. Protokół spalania tłuszczu oparty na 15 latach
+                            doświadczeń z tajskich ringów.
+                        </p>
                         <div class="hero__actions">
-                            <a href="/dashboard" class="btn btn--primary" data-link>Twój Dashboard</a>
-                            <a href="/recipes" class="btn btn--secondary" data-link>Przepisy Keto</a>
+                            <a href="/dashboard" class="btn btn--primary" data-link>Oblicz swoje makro</a>
+                            <a href="/camp" class="btn btn--secondary" data-link>Fighter's Camp</a>
                         </div>
                     </div>
                 </div>
@@ -29,14 +33,12 @@ export const renderHome = () => {
                     <h2 class="philosophy__title">Dlaczego Keto Thai?</h2>
                     <div class="philosophy__grid reveal">
                         <!-- KARTA 1 -->
-                        <article class="philosophy__card philosophy__card--keto">
+                        <article class="philosophy__card">
                             <header class="philosophy__card-header">
-                                <div class="philosophy__title-wrapper">
-                                    <i data-lucide="beef" class="philosophy__naked-icon"></i>
-                                    <h3 class="philosophy__card-title">Czyste Paliwo</h3>
-                                </div>
+                                <i data-lucide="beef" class="philosophy__naked-icon"></i>
                                 <span class="philosophy__badge">01</span>
                             </header>
+                            <h3 class="philosophy__card-title">Czyste Paliwo</h3>
                             <p class="philosophy__card-desc">
                                 Przeprogramuj organizm na spalanie tłuszczu. Stabilna energia i brak zjazdów cukrowych.
                             </p>
@@ -51,16 +53,15 @@ export const renderHome = () => {
                         </article>
 
                         <!-- KARTA 2 -->
-                        <article class="philosophy__card philosophy__card--fight">
+                        <article class="philosophy__card">
                             <header class="philosophy__card-header">
-                                <div class="philosophy__title-wrapper">
-                                    <i data-lucide="brain" class="philosophy__naked-icon"></i>
-                                    <h3 class="philosophy__card-title">Umysł Wojownika</h3>
-                                </div>
+                                <i data-lucide="brain" class="philosophy__naked-icon"></i>
                                 <span class="philosophy__badge">02</span>
                             </header>
+                            <h3 class="philosophy__card-title">Umysł Wojownika</h3>
                             <p class="philosophy__card-desc">
-                                Dyscyplina z tajskich campów. Budujemy charakter, który nie poddaje się na macie ani w życiu.
+                                Dyscyplina z tajskich campów. Budujemy charakter, który nie poddaje się na macie ani w
+                                życiu.
                             </p>
                             <div class="philosophy__mockup">
                                 <span class="mockup__label">OBECNA SERIA</span>
@@ -77,14 +78,12 @@ export const renderHome = () => {
                         </article>
 
                         <!-- KARTA 3 -->
-                        <article class="philosophy__card philosophy__card--track">
+                        <article class="philosophy__card">
                             <header class="philosophy__card-header">
-                                <div class="philosophy__title-wrapper">
-                                    <i data-lucide="line-chart" class="philosophy__naked-icon"></i>
-                                    <h3 class="philosophy__card-title">Pełna Kontrola</h3>
-                                </div>
+                                <i data-lucide="line-chart" class="philosophy__naked-icon"></i>
                                 <span class="philosophy__badge">03</span>
                             </header>
+                            <h3 class="philosophy__card-title">Pełna Kontrola</h3>
                             <p class="philosophy__card-desc">
                                 Panel analityczny monitoruje Twoje makro i wagę z precyzją. Zawsze wiesz, gdzie jesteś.
                             </p>
@@ -159,7 +158,13 @@ export const renderHome = () => {
                                     class="about__image"
                                 />
                             </div>
-                           
+                            <div class="about__image-wrapper">
+                                <img
+                                    src="https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=600"
+                                    alt="Walka w ringu"
+                                    class="about__image"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

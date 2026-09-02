@@ -10,16 +10,18 @@ Większość zadań z poprzedniej sesji (sekcje Philosophy, layout Camp, formula
 
 ### Co zrobiliśmy w dzisiejszej sesji:
 
-1. **Inicjalizacja środowiska Impeccable (`/impeccable init`)**:
-   * Przeanalizowanie strategii biznesowej i wygenerowanie ostatecznego dokumentu `PRODUCT.md`, który na stałe definiuje nasz cel (Lead Magnet dla mentoringu 1-on-1), grupę docelową i styl "Dark Fighter".
-   * Ustawienie konfiguracji projektowej na `comp-first` (najpierw wizja, potem kod).
-2. **Ustalenie UX dla Dashboardu (`/impeccable shape dashboard`)**:
-   * Przeanalizowanie referencji wizualnej z Dribbble (`ui/dashboardUI.png`) i odseparowanie świetnej architektury informacji od niewłaściwego dla nas "miękkiego" stylu.
-   * Wygenerowanie i zaakceptowanie finalnego **SHAPE BRIEF** dla trackera (Bento Grid, koncentryczne wykresy).
-3. **Wybór ostatecznego kierunku wizualnego (Visual Discovery)**:
-   * Wygenerowanie i przeanalizowanie referencyjnych widoków dla wszystkich kluczowych stron (Dashboard, Home, Recipes, Knowledge, Onboarding).
-   * Ostateczny wybór i zatwierdzenie stylu **Taktyczny Minimalizm (Stealth UI)** jako obowiązującego fundamentu projektowego.
-   * Całkowite przebudowanie i nadpisanie pliku `KETO_THAI_DESIGN_GUIDELINES.md` uwzględniając twarde zasady (czerń absolutna, brak krawędzi, oświetlenie radialne) oraz ścieżki do obrazów referencyjnych (Golden Fixtures).
+1. **Przebudowa Sekcji 'Historia i filozofia' (About)**:
+   - Zaprojektowanie układu "Wariant A" (Asymetryczna siatka Masonry dla 4 zdjęć).
+2. **Zaawansowana Architektura Sekcji 'Kroki' (Steps)**:
+   - Wdrożenie Wariantu B (Podzielona linia czasu w pełni zsynchronizowana ze scrollowaniem).
+   - Wykorzystanie nowoczesnego API `animation-timeline: view()` do płynnego zapalania się poszczególnych linii (lasera) i węzłów.
+   - Rozwiązanie zaawansowanego błędu renderowania CSS z przenikającym tłem węzłów (użycie `brightness` zamiast `opacity`).
+3. **Standaryzacja Typografii i Nagłówków**:
+   - Usunięcie przestarzałych gradientów i efekciarstwa (`::first-letter`).
+   - Wdrożenie architektury "Tactical Terminal" (złote ukośniki `// ` przed białymi, czystymi nagłówkami sekcji) jako globalnego standardu w `home.css`.
+4. **Kinowy Wariant Sekcji 'Camp Offer' (Cinematic Split)**:
+   - Usunięcie pudełkowego `box-shadow` oraz tła, aby element wtapiał się w czerń.
+   - Zastosowanie zaawansowanego maskowania `mask-image: linear-gradient(...)` dla zdjęcia na urządzeniach mobilnych i desktopach, dającego efekt wyłaniania się fotografii z mroku.
 
 ---
 
@@ -30,7 +32,6 @@ Większość zadań z poprzedniej sesji (sekcje Philosophy, layout Camp, formula
 2. **Masowa naprawa naruszeń z Audytu Anti-Slop (CSS):**
    * Eliminacja 26 zaokrągleń > 4px w `card.css`, `home.css`, `camp.css`, `modal.css`, `filters.css` (wszędzie pigułki 999px i karty 16-24px).
    * Usunięcie zakazanej, nieskończonej animacji `@keyframes float` z `home.css`.
-   * Oczyszczenie tekstu `.camp-offer__title` (`home.css`) z zakazanego gradientu (krytyczne naruszenie manifestu).
    * Poprawienie dostępności (`outline: none` bez `:focus-visible` w `filters.css` i `modal.css`).
    * Wymiana `100vh` na `100dvh` w `modal.css`.
    * Zamiana latających kart na hover (`translateY(-5px)` w `card.css`, `camp.css`) na dopuszczalne -2px lub całkowite usunięcie.

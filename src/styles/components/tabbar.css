@@ -49,6 +49,10 @@
     text-transform: uppercase;
 }
 
+.tabbar__link:hover{
+    color: var(--color-accent);
+}
+
 /* Stan aktywny — Cinematic Glow */
 .tabbar__link--active {
     color: var(--color-accent);
@@ -59,6 +63,11 @@
 .tabbar__link:focus-visible {
     outline: var(--focus-outline);
     outline-offset: -2px;
+}
+
+/* Ukrywanie elementów desktop-only na mobile */
+.tabbar__link--desktop-only {
+    display: none;
 }
 
 /* ================================================
@@ -84,6 +93,10 @@
         flex: 0;
         padding: 0.75rem 0;
         width: 100%;
+    }
+
+    .tabbar__link--desktop-only {
+        display: flex;
     }
 
     .tabbar__icon {

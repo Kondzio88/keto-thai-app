@@ -3,7 +3,7 @@
     min-height: 100dvh;
     background: url("../../assets/homePicture.jpg") 70% / cover no-repeat;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     overflow: hidden;
     padding-bottom: var(--spacing-xl);
 }
@@ -18,12 +18,12 @@
     background:
         linear-gradient(
             to left,
-            rgba(18, 18, 18, 0.95) 0%,
-            rgba(18, 18, 18, 0.8) 35%,
-            rgba(18, 18, 18, 0.2) 65%,
+            rgba(5, 5, 5, 0.95) 0%,
+            rgba(5, 5, 5, 0.8) 35%,
+            rgba(5, 5, 5, 0.2) 65%,
             transparent 100%
         ),
-        linear-gradient(to top, rgba(18, 18, 18, 1) 0%, transparent 25%);
+        linear-gradient(to top, rgba(5, 5, 5, 1) 0%, transparent 25%);
     z-index: 1;
 }
 
@@ -68,29 +68,19 @@
     line-height: 1.05;
     margin-bottom: var(--spacing-md);
     text-transform: uppercase;
-    color: var(--color-text-primary);
 }
 
-.hero__title--main {
+.hero__title-sub {
     display: block;
-    font-size: clamp(3rem, 8vw, 6rem); /* Gigantyczne! */
-    color: var(--color-text-primary);
-}
-
-.hero__title--main::first-letter {
-    font-size: clamp(3.5rem, 8.2vw, 6.8rem);
-    color: var(--color-accent);
-}
-
-.hero__title--sub {
-    display: block;
-    font-size: clamp(1.7rem, 4vw, 2.8rem);
-    color: var(--color-accent);
+    font-style: italic;
+    background: var(--heading-luminance);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .hero__desc {
     font-size: var(--font-size-lead);
-    color: var(--color-text-secondary);
+    color: var(--color-text-lead);
     line-height: 1.6;
     margin-bottom: var(--spacing-xl);
 }
@@ -105,7 +95,7 @@
 /* PHILOSOPHY SECTION */
 
 .philosophy {
-    padding: var(--spacing-lg) 0;
+    padding: var(--spacing-xl) 0;
 }
 
 .philosophy__kicker {
@@ -123,11 +113,7 @@
     text-transform: uppercase;
     margin-bottom: var(--spacing-xl);
     font-size: var(--font-size-h2);
-}
-
-.philosophy__title::first-letter {
-    font-size: clamp(3rem, 5vw, 5rem);
-    color: var(--color-accent);
+    color: var(--color-text-primary);
 }
 
 .philosophy__grid {
@@ -140,74 +126,61 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-color: var(--color-surface);
-    padding: var(--spacing-lg);
+    background-color: transparent;
+    padding: var(--spacing-lg) var(--spacing-md);
     border-radius: 4px;
-    border: 1px solid var(--color-border);
-    border-bottom: 4px solid var(--color-border);
-    transition: border-bottom-color 0.3s ease, transform 0.3s ease;
+    border: none;
+    transition: background 0.3s ease;
 }
 
 .philosophy__card:hover {
-    transform: translateY(-2px);
+    background: var(--cinematic-glow);
 }
 
 .philosophy__card-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: var(--spacing-md);
-}
-
-.philosophy__title-wrapper {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
 }
 
 .philosophy__naked-icon {
     width: 28px;
     height: 28px;
-    transition: transform 0.3s ease;
-}
-
-.philosophy__card:hover .philosophy__naked-icon {
-    transform: scale(1.1);
+    color: var(--color-accent);
+    stroke-width: 1.5;
 }
 
 .philosophy__badge {
     font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 0.9rem;
-    padding: 4px 8px;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    color: var(--color-text-secondary);
-    transition: color 0.3s ease, border-color 0.3s ease;
+    font-size: 0.95rem;
+    color: var(--color-accent);
+    letter-spacing: 1px;
 }
 
 .philosophy__card-title {
+    color: var(--color-text-primary);
     font-family: var(--font-heading);
     font-size: var(--font-size-h3);
     text-transform: uppercase;
-    transition: color 0.3s ease;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-md);
+    text-align: center;
 }
 
 .philosophy__card-desc {
-    font-size: 1rem;
+    font-size: 0.95rem;
     line-height: 1.6;
-    color: var(--color-text-secondary);
+    color: var(--color-text-lead);
     margin-bottom: var(--spacing-lg);
-    flex-grow: 1; 
+    flex-grow: 1;
 }
 
-/* DATA MOCKUP (Bento element at the bottom) */
+/* DATA MOCKUP (Minimalistyczne wskaźniki bez szarych pudełek) */
 .philosophy__mockup {
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: var(--spacing-md);
-    border-radius: 4px;
     margin-top: auto;
+    padding-top: var(--spacing-sm);
 }
 
 .mockup__label {
@@ -215,27 +188,36 @@
     font-size: 0.65rem;
     letter-spacing: 1px;
     color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
     font-family: var(--font-heading);
+    text-transform: uppercase;
 }
 
 /* 1. KETO MACRO BAR */
 .macro-bar {
     display: flex;
-    height: 8px;
+    height: 4px;
     border-radius: 2px;
     overflow: hidden;
     gap: 2px;
 }
+
 .macro-segment {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0; 
+    font-size: 0;
 }
-.macro-segment--fat { background-color: var(--color-fats, #F59E0B); }
-.macro-segment--protein { background-color: var(--color-protein, #EF4444); }
-.macro-segment--carbs { background-color: var(--color-carbs, #10B981); }
+
+.macro-segment--fat {
+    background-color: var(--color-fats);
+}
+.macro-segment--protein {
+    background-color: var(--color-protein);
+}
+.macro-segment--carbs {
+    background-color: var(--color-carbs);
+}
 
 /* 2. STREAK GRID */
 .streak-grid {
@@ -243,11 +225,13 @@
     grid-template-columns: repeat(7, 1fr);
     gap: 4px;
 }
+
 .streak-box {
     aspect-ratio: 1;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.06);
     border-radius: 2px;
 }
+
 .streak-box.is-active {
     background-color: var(--color-accent);
 }
@@ -258,57 +242,25 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-sm);
 }
+
 .metric-box {
     display: flex;
     align-items: baseline;
     gap: 4px;
 }
+
 .metric-value {
     font-family: var(--font-heading);
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: var(--color-text-primary);
 }
+
 .metric-unit {
     font-size: 0.7rem;
-    color: var(--color-text-secondary);
-}
-
-/* WARIANTY KART (HOVER STATES) */
-.philosophy__card.philosophy__card--keto:hover {
-    border-bottom: 4px solid var(--color-protein);
-}
-.philosophy__card--keto:hover .philosophy__naked-icon,
-.philosophy__card--keto:hover .philosophy__card-title,
-.philosophy__card--keto:hover .philosophy__badge {
-    color: var(--color-protein);
-}
-.philosophy__card--keto:hover .philosophy__badge {
-    border-color: var(--color-protein);
-}
-
-.philosophy__card.philosophy__card--fight:hover {
-    border-bottom: 4px solid var(--color-accent);
-}
-.philosophy__card--fight:hover .philosophy__naked-icon,
-.philosophy__card--fight:hover .philosophy__card-title,
-.philosophy__card--fight:hover .philosophy__badge {
     color: var(--color-accent);
-}
-.philosophy__card--fight:hover .philosophy__badge {
-    border-color: var(--color-accent);
-}
-
-.philosophy__card.philosophy__card--track:hover {
-    border-bottom: 4px solid var(--color-carbs);
-}
-.philosophy__card--track:hover .philosophy__naked-icon,
-.philosophy__card--track:hover .philosophy__card-title,
-.philosophy__card--track:hover .philosophy__badge {
-    color: var(--color-carbs);
-}
-.philosophy__card--track:hover .philosophy__badge {
-    border-color: var(--color-carbs);
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 /* ABOUT SECTION */
@@ -340,16 +292,11 @@
     text-transform: uppercase;
 }
 
-.about__title::first-letter {
-    font-size: clamp(3rem, 5vw, 5rem);
-    color: var(--color-accent);
-}
-
 .about__desc {
     margin-bottom: var(--spacing-md);
     font-size: 1.1rem;
-    color: var(--color-text-secondary);
-    line-height: 1.6rem;
+    color: var(--color-text-lead);
+    line-height: 1.65rem;
 }
 
 .about__desc strong {
@@ -378,8 +325,8 @@
 
 .about__gallery {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-md);
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xs);
     transition: all 0.3s ease;
 }
 
@@ -387,29 +334,25 @@
     position: relative;
     overflow: hidden;
     border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: border-color 0.3s ease;
 }
 
 .about__image-wrapper:hover {
-    border-color: var(--color-accent);
+    border-color: rgba(var(--color-accent-rgb), 0.4);
 }
 
-.about__image-wrapper:first-child{
-    grid-column: span 2;
+.about__image-wrapper:first-child {
+    grid-row: span 2;
 }
 
-.about__image-wrapper::after{
-    content: '';
-    position: absolute;
-    inset:0;
-    background: rgba(30,30,30,0.75);
-    transform-origin: right ;
-    transform:scaleX(1);
+.about__image-wrapper:nth-child(4) {
+    grid-column: 2;
+    grid-row: 2 / span 2;
 }
 
-.about__image-wrapper:hover::after{
-    transform: scaleX(0);
+.about__image-wrapper:first-child .about__image {
+    aspect-ratio: 3/4; /* Proporcja portretowa (pionowa) */
 }
 
 .about__image {
@@ -418,10 +361,13 @@
     object-fit: cover;
     display: block;
     aspect-ratio: 4/3;
-    transition: all 0.3s ease;
+    transition:
+        transform 0.4s ease,
+        filter 0.4s ease;
 }
 
 .about__image-wrapper:hover .about__image {
+    transform: scale(1.03);
     filter: brightness(1.05);
 }
 
@@ -434,13 +380,12 @@
 .steps__title {
     font-family: var(--font-heading);
     text-align: center;
-    font-size: var(--font-size-h2);
-    margin-bottom: var(--spacing-lg);
-}
-
-.steps__title::first-letter {
-    font-size: clamp(3rem, 5vw, 5rem);
-    color: var(--color-accent);
+    font-size: var(--font-size-h2); /* Używamy fluid typography z global.css! */
+    margin-bottom: var(--spacing-xl);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -1px; /* Ciasne ułożenie */
+    color: var(--color-text-primary);
 }
 
 .timeline__item {
@@ -453,12 +398,12 @@
 
 .timeline__step-num {
     display: block;
-    font-size: 1.2rem;
+    font-size: var(--font-size-kicker); /* Używamy zmiennej z global.css! */
     font-weight: 800;
-    letter-spacing: 2px;
+    letter-spacing: 3px; /* Szeroki rozstaw liter */
     text-transform: uppercase;
     color: var(--color-accent);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
 }
 
 .timeline__subtitle {
@@ -466,13 +411,9 @@
     text-transform: uppercase;
     font-size: var(--font-size-h3);
     line-height: 1.2;
-    margin-bottom: var(--spacing-md);
-}
-
-.timeline__subtitle::first-letter {
-    font-size: clamp(1.8rem, 3vw, 2.3rem);
-    color: var(--color-accent);
-    letter-spacing: 1px;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-primary);
+    letter-spacing: -0.5px;
 }
 
 .timeline__desc {
@@ -502,14 +443,9 @@
 .camp-offer__card {
     display: grid;
     grid-template-columns: 1fr;
-    background-color: var(--color-surface);
-    padding: var(--spacing-lg);
-    gap: var(--spacing-lg);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow:
-        0 20px 40px rgba(0, 0, 0, 0.6),
-        0 0 25px rgba(var(--color-accent-rgb), 0.08);
+    gap: var(--spacing-xl);
+    align-items: center;
+    /* CELOWO USUNIĘTE: background, border, box-shadow, padding - teraz sekcja oddycha mrokiem */
 }
 
 .camp-offer__content {
@@ -578,9 +514,10 @@
 }
 
 .camp-offer__image {
-    overflow: hidden;
-    border-radius: 8px;
-    aspect-ratio: 16 / 9;
+    width: 100%;
+    /* Efekt zanikania zdjęcia w czerń na urządzeniach mobilnych (w dół) */
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
 }
 
 .camp-offer__img {
@@ -597,14 +534,10 @@
 }
 
 .faq__title {
+    text-transform: uppercase;
     text-align: center;
     font-size: var(--font-size-h2);
     margin-bottom: var(--spacing-lg);
-}
-
-.faq__title::first-letter {
-    font-size: clamp(3rem, 5vw, 5rem);
-    color: var(--color-accent);
 }
 
 .accordion {
@@ -735,23 +668,27 @@
         position: relative;
     }
 
-    .timeline::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: var(--color-accent);
-    }
-
     .timeline__item {
+        position: relative;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 80px;
         padding: var(--spacing-lg);
+    }
+
+    /* Oś czasu podzielona na niezależne segmenty 
+       (łączą środek obecnego kroku ze środkiem następnego) */
+    .timeline__item:not(:last-child)::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        height: calc(100% + 80px); /* 100% kafelka + 80px marginesu do następnego */
+        width: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(var(--color-accent-rgb), 0.15);
+        z-index: 0;
     }
 
     .timeline__item:nth-child(even) {
@@ -774,20 +711,115 @@
     .timeline__marker {
         position: absolute;
         left: 50%;
-        transform: translateX(-50%);
-        display: block;
+        top: 50%; /* Fizyczne wyśrodkowanie markera w pionie */
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background-color: var(--color-background);
+        border: 1px solid rgba(var(--color-accent-rgb), 0.5);
+        box-shadow: 0 0 20px rgba(var(--color-accent-rgb), 0.4);
+        z-index: 2; /* Marker jest ZAWSZE nad linią */
+    }
+
+    /* Animacja dla KÓŁEK (Usunięto opacity, aby czarne tło kółka było zawsze 100% nieprzezroczyste) */
+    @keyframes nodeLightUp {
+        0% {
+            filter: brightness(0.3);
+        }
+        50% {
+            filter: brightness(1.3);
+        }
+        100% {
+            filter: brightness(0.3);
+        }
+    }
+
+    /* Animacja dla ODCINKÓW LINII */
+    @keyframes lineLightUp {
+        0% {
+            background-color: rgba(var(--color-accent-rgb), 0.15);
+            box-shadow: none;
+        }
+        50% {
+            background-color: var(--color-accent);
+            box-shadow: 0 0 15px var(--color-accent);
+        }
+        100% {
+            background-color: rgba(var(--color-accent-rgb), 0.15);
+            box-shadow: none;
+        }
+    }
+
+    @supports (animation-timeline: view()) {
+        .timeline__marker {
+            animation: nodeLightUp linear both;
+            animation-timeline: view();
+            animation-range: cover 0% cover 100%;
+        }
+
+        .timeline__item:not(:last-child)::before {
+            animation: lineLightUp linear both;
+            animation-timeline: view();
+            animation-range: cover 0% cover 100%;
+        }
+    }
+
+    .timeline__node-num {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 24px;
         height: 24px;
         border-radius: 50%;
-        background-color: var(--color-surface);
-        border: 3px solid var(--color-accent);
-        box-shadow: 0 0 15px rgba(var(--color-accent-rgb), 0.6);
+        background-color: var(--color-accent);
+        color: #000000;
+        font-weight: 800;
+        font-family: var(--font-heading);
+        font-size: 0.9rem;
+        box-shadow: 0 0 10px var(--color-accent);
     }
 
     .camp-offer__card {
         grid-template-columns: repeat(2, 1fr);
-        gap: var(--spacing-sm);
+        gap: var(--spacing-xl);
     }
+    
+    .camp-offer__image {
+        /* Na komputerze zdjęcie jest z prawej strony, więc zamazujemy je w lewą stronę (ku tekstowi) oraz w dół */
+        -webkit-mask-image: linear-gradient(to left bottom, black 40%, transparent 100%);
+        mask-image: linear-gradient(to left bottom, black 40%, transparent 100%);
+    }
+}
+
+/* ------------------------------------- */
+/* TACTICAL TERMINAL TITLES (SLASH //)  */
+/* ------------------------------------- */
+
+.about__title,
+.steps__title,
+.camp-offer__title,
+.faq__title,
+.philosophy__title {
+    /* Upewniamy się, że same tytuły są czyste i brutalistyczne (wymusza błędy z gradientami) */
+    color: var(--color-text-primary);
+    background: none; 
+    -webkit-text-fill-color: initial; 
+}
+
+.about__title::before,
+.steps__title::before,
+.camp-offer__title::before,
+.faq__title::before,
+.philosophy__title::before {
+    content: "// ";
+    color: var(--color-accent);
+    font-weight: 900;
+    margin-right: 12px;
+    opacity: 0.8;
 }
 
 /* REVEAL SCROOL CLASSES */

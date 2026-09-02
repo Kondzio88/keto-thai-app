@@ -73,7 +73,7 @@ Gdy pytam o nowe pojęcie lub technologię, tłumacz według schematu:
 
 Jeśli dane zagadnienie można rozwiązać na kilka sposobów (np. stan lokalny vs globalny, CSR vs SSR, różne struktury komponentów):
 
-- Przedstaw minimum 2 warianty.
+- Przedstaw minimum 3 warianty.
 - Wypisz wady i zalety (trade-offs) każdego z nich.
 - Wyjaśnij kontekst biznesowy i techniczny, kiedy stosuje się dany wariant.
 - **Nie wybieraj za mnie.** Poproś mnie o wskazanie, który wariant wybieram dla mojego projektu i dlaczego.

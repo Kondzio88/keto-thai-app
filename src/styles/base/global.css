@@ -6,16 +6,17 @@
     
     --color-tabbar-bg: rgba(5, 5, 5, 0.85); /* Dla dolnego paska PWA */
     --cinematic-glow: radial-gradient(circle at 50% 0%, rgba(var(--color-accent-rgb), 0.05), transparent 70%);
-    --heading-luminance: linear-gradient(90deg, rgba(255,255,255,0.6), #ffffff 50%, rgba(255,255,255,0.6));
+    --heading-luminance: linear-gradient(135deg, var(--color-accent) 0%, #f5e6c8 50%, var(--color-accent)100%);
 
-    /* Macro Colors (zgodnie z PLAN.md) */
-    --color-protein: var(--color-accent); /* Złoto dla białka */
-    --color-fats: #2ecc71; /* Zieleń dla tłuszczu */
-    --color-carbs: #ef4444; /* Czerwień dla węgli (kolor ostrzegawczy) */
+    /* Macro Colors (Zgaszona Paleta Taktyczna) */
+    --color-protein: var(--color-accent); /* Tajskie Złoto #D4AF37 */
+    --color-fats: #e4e4e7; /* Zgaszona szmaragdowa zieleń */
+    --color-carbs: rgba(255, 255, 255, 0.15); /* Zgaszony koral / terakota */
 
     /* Tekst */
     --color-text-primary: #f9fafb;
     --color-text-secondary: #6b7280; /* Mocno przyciemniony, by wzmocnić mrok */
+    --color-text-lead: #b0b0b0;
     --color-input-bg: transparent; /* Brak tła inputów - tylko bottom border */
 
     /* PWA i Dostępność */

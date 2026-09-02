@@ -56,7 +56,7 @@ Aby interfejs pozostał Stealth, każda linijka CSS łamiąca te zasady to bug k
 1. **Zakaz używania Box-Shadow na elementach:** Żadnych "miękkich", płynnych cieni, które powodują, że panele wyglądają jak unoszący się w powietrzu plastik.
 2. **Zakaz widocznych obramowań paneli:** `border: 1px solid rgba(...)` na kartach niszczy efekt niewidzialności. 
 3. **Pigułkowe kształty (Pill Shapes):** Zero promieniowania `border-radius` powyżej `4px` (lub maksymalnie `8px` dla bardzo określonych, dużych elementów kontenerowych przy zdjęciach).
-4. **Gradient Text:** Zakaz używania kolorowych/tęczowych gradientów na tekście (`background-clip: text`). **Wyjątek:** dopuszczalny jest wyłącznie subtelny monochromatyczny gradient luminance (biały → jaśniejszy biały → biały) na głównych nagłówkach (H1/H2), symulujący padanie reflektora. Efekt musi być ledwo zauważalny — filmowy, nie dekoracyjny.
+4. **Styl Nagłówków Sekcji (Tactical Terminal):** Nagłówki w sekcjach (np. "Twój Plan Działania", "Historia i Filozofia") muszą być czysto białe i pozbawione gradientów. Wyróżniamy je dodając przedrostek z dwóch ukośników w kolorze złotym (`// `) w pseudoelemencie `::before`. Tworzy to surowy, inżynieryjny klimat. 
 5. **Animacje layoutu (Layout Thrashing):** Zakaz zmiany wartości `width`, `height`, `margin` czy `padding` w transakcjach hover (płynność). Używamy wyłącznie `transform` (np. `translateY`) oraz `opacity`.
 
 ---
