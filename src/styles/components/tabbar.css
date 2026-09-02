@@ -1,0 +1,97 @@
+/* ================================================
+   BOTTOM TAB BAR — Stealth UI (Mobile-First)
+   Na Mobile: dolny pasek z ikonami (strefa kciuka)
+   Na Desktop (>=768px): boczny Sidebar po lewej
+   ================================================ */
+
+.tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--color-tabbar-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding-bottom: var(--safe-area-bottom);
+}
+
+/* Pojedyncza zakładka */
+.tabbar__link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.625rem 0;
+    flex: 1;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Ikona Lucide */
+.tabbar__icon {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.5;
+}
+
+/* Etykieta pod ikoną */
+.tabbar__label {
+    font-family: var(--font-main);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Stan aktywny — Cinematic Glow */
+.tabbar__link--active {
+    color: var(--color-accent);
+    background: var(--cinematic-glow);
+}
+
+/* Focus dla klawiatury (Dostępność) */
+.tabbar__link:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: -2px;
+}
+
+/* ================================================
+   DESKTOP SIDEBAR (>=768px)
+   Tab Bar przenosi się na lewą krawędź jako
+   wąski pionowy panel
+   ================================================ */
+
+@media (min-width: 768px) {
+    .tabbar {
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 5rem;
+        height: 100dvh;
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--spacing-md);
+        padding-bottom: 0;
+    }
+
+    .tabbar__link {
+        flex: 0;
+        padding: 0.75rem 0;
+        width: 100%;
+    }
+
+    .tabbar__icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .tabbar__label {
+        font-size: 0.5625rem;
+    }
+}

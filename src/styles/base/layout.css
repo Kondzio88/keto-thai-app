@@ -1,9 +1,16 @@
 .page-container {
-    padding-top:calc(80px + var(--spacing-xl)) ;
-    padding-bottom: var(--spacing-xl);
+    padding-top: var(--spacing-xl);
+    padding-bottom: calc(4rem + var(--safe-area-bottom) + var(--spacing-xl));
     max-width: 1200px;
     margin: 0 auto;
     width: 90%;
+}
+
+@media (min-width: 768px) {
+    .page-container {
+        padding-bottom: var(--spacing-xl);
+        margin-left: 5rem; /* Offset pod Sidebar */
+    }
 }
 
 .container {

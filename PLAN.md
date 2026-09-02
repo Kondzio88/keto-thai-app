@@ -29,6 +29,7 @@ Wizualna tożsamość łączy surowość sportów walki z klinicznym podejściem
 - **Typografia:** `Oswald` (dynamiczne, rzucające się w oczy nagłówki) oraz `Inter` (maksymalnie czytelny tekst ciągły i interfejs trackera).
     - System _Fluid Typography_ oparty na tokenach CSS (`clamp()`): `--font-size-hero`, `--font-size-h2`, `--font-size-h3`, `--font-size-lead`, `--font-size-kicker`.
 - **Wzorce UX (User Experience):**
+    - PWA-Ready Navigation (Bottom Tab Bar na Mobile, Sidebar na Desktop).
     - Skeleton Loaders (ekrany ładowania udające docelowy interfejs).
     - Toast Notifications (powiadomienia wysuwające się z rogu ekranu).
     - Natywny element `<details>` dla rozwijanych list.

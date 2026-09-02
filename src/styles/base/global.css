@@ -1,26 +1,28 @@
 :root {
-    --color-primary-rgb: 16, 185, 129;
-    --color-accent-rgb: 255, 115, 0;
-
-    --color-primary: rgb(var(--color-primary-rgb));
+    /* Stealth Colors */
+    --color-background: #050505;
+    --color-accent-rgb: 212, 175, 55; /* Tajskie Złoto #D4AF37 */
     --color-accent: rgb(var(--color-accent-rgb));
+    
+    --color-tabbar-bg: rgba(5, 5, 5, 0.85); /* Dla dolnego paska PWA */
+    --cinematic-glow: radial-gradient(circle at 50% 0%, rgba(var(--color-accent-rgb), 0.05), transparent 70%);
+    --heading-luminance: linear-gradient(90deg, rgba(255,255,255,0.6), #ffffff 50%, rgba(255,255,255,0.6));
 
-    --color-background: #0a0a0a;
-    --color-surface: #181818;
+    /* Macro Colors (zgodnie z PLAN.md) */
+    --color-protein: var(--color-accent); /* Złoto dla białka */
+    --color-fats: #2ecc71; /* Zieleń dla tłuszczu */
+    --color-carbs: #ef4444; /* Czerwień dla węgli (kolor ostrzegawczy) */
 
-    --color-header-bg: rgba(10, 10, 10, 0.85);
-
-    --color-protein: #ff4b4b;
-    --color-fats: #f59e0b;
-    --color-carbs: #34d399;
-
+    /* Tekst */
     --color-text-primary: #f9fafb;
-    --color-text-secondary: #9ca3af;
+    --color-text-secondary: #6b7280; /* Mocno przyciemniony, by wzmocnić mrok */
+    --color-input-bg: transparent; /* Brak tła inputów - tylko bottom border */
 
-    --color-border: #2d2d2d;
-    --color-input-bg: #121212;
-    --shadow-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2);
+    /* PWA i Dostępność */
+    --safe-area-bottom: env(safe-area-inset-bottom, 1rem);
+    --focus-outline: 2px solid var(--color-accent);
 
+    /* Typografia (Płynna) */
     --font-main: "Inter", system-ui, sans-serif;
     --font-heading: "Oswald", sans-serif;
 
@@ -30,6 +32,7 @@
     --font-size-lead: clamp(1rem, 2vw, 1.15rem);
     --font-size-kicker: 0.85rem;
 
+    /* Fluid Spacing (Matematyczne odstępy) */
     --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
     --spacing-sm: clamp(0.5rem, 2vw, 0.75rem);
     --spacing-md: clamp(1rem, 3vw, 1.5rem);
@@ -42,4 +45,5 @@ body {
     color: var(--color-text-primary);
     background-color: var(--color-background);
     overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent; /* PWA: Blokada systemowego podświetlenia na dotyk */
 }

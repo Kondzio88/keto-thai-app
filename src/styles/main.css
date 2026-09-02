@@ -2,7 +2,7 @@
 @import "./base/global.css";
 @import "./components/button.css";
 @import "./pages/home.css";
-@import "./components/header.css";
+@import "./components/tabbar.css";
 @import "./base/layout.css";
 @import "./components/card.css";
 @import "./components/form.css";

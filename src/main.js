@@ -1,24 +1,39 @@
 import { initRouter } from "./router.js";
 
+/**
+ * Podświetla aktywną zakładkę w Bottom Tab Bar
+ * na podstawie aktualnej ścieżki URL.
+ */
+const updateActiveTab = () => {
+    let path = window.location.pathname;
+
+    if (path.includes("/keto-thai-app")) {
+        path = path.replace("/keto-thai-app", "") || "/";
+    }
+
+    const links = document.querySelectorAll(".tabbar__link");
+
+    links.forEach((link) => {
+        const href = link.getAttribute("href");
+        const isActive = href === path;
+
+        link.classList.toggle("tabbar__link--active", isActive);
+    });
+};
+
 document.addEventListener("DOMContentLoaded", () => {
-    // INIT RUTER
     initRouter();
 
-    // MOBILE MENU FUNC
-    const menuBtn = document.getElementById("mobile-menu-btn");
-    const mainNav = document.getElementById("main-nav");
+    // Aktualizuj aktywną zakładkę po każdej nawigacji
+    updateActiveTab();
+    window.addEventListener("popstate", updateActiveTab);
 
-    if (menuBtn && mainNav) {
-        menuBtn.addEventListener("click", () => {
-            menuBtn.classList.toggle("is-active");
-            mainNav.classList.toggle("is-active");
-        });
-
-        mainNav.addEventListener("click", (event) => {
-            if (event.target.matches(".header__link")) {
-                menuBtn.classList.remove("is-active");
-                mainNav.classList.remove("is-active");
-            }
+    // Nasłuchuj kliknięć w Tab Bar (router obsługuje nawigację, my odświeżamy aktywność)
+    const tabbar = document.getElementById("tabbar");
+    if (tabbar) {
+        tabbar.addEventListener("click", () => {
+            // Krótkie opóźnienie, by router zdążył zmienić URL
+            requestAnimationFrame(updateActiveTab);
         });
     }
 });

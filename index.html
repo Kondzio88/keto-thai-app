@@ -13,42 +13,30 @@
         <link rel="stylesheet" href="./src/styles/main.css" />
     </head>
     <body>
-        <!-- GLOBAL NAVIGATION -->
+        <!-- BOTTOM TAB BAR (PWA Navigation) -->
 
-        <header class="header">
-            <div class="header__container">
-                <a href="/" class="header__logo" data-link>KETO<span class="header__logo-accent">THAI</span></a>
-
-                <button class="header__toggle" aria-label="Menu" id="mobile-menu-btn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-
-                <nav class="header__nav" id="main-nav">
-                    <ul class="header__menu">
-                        <li class="header__item">
-                            <a class="header__link" href="/" data-link>Home</a>
-                        </li>
-                        <li class="header__item">
-                            <a class="header__link" href="/dashboard" data-link>Dashboard</a>
-                        </li>
-                        <li class="header__item">
-                            <a class="header__link" href="/camp" data-link>Camp Pro</a>
-                        </li>
-                        <li class="header__item">
-                            <a class="header__link" href="/recipes" data-link>Przepisy</a>
-                        </li>
-                        <li class="header__item">
-                            <a class="header__link" href="/knowledge" data-link>Wiedza</a>
-                        </li>
-                        <li class="header__item">
-                            <a class="header__link" href="/contact" data-link>Kontakt</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
+        <nav class="tabbar" id="tabbar" aria-label="Main">
+            <a class="tabbar__link tabbar__link--active" href="/" data-link>
+                <i data-lucide="home" class="tabbar__icon"></i>
+                <span class="tabbar__label">Home</span>
+            </a>
+            <a class="tabbar__link" href="/dashboard" data-link>
+                <i data-lucide="activity" class="tabbar__icon"></i>
+                <span class="tabbar__label">Tracker</span>
+            </a>
+            <a class="tabbar__link" href="/recipes" data-link>
+                <i data-lucide="chef-hat" class="tabbar__icon"></i>
+                <span class="tabbar__label">Przepisy</span>
+            </a>
+            <a class="tabbar__link" href="/knowledge" data-link>
+                <i data-lucide="book-open" class="tabbar__icon"></i>
+                <span class="tabbar__label">Wiedza</span>
+            </a>
+            <a class="tabbar__link" href="/camp" data-link>
+                <i data-lucide="swords" class="tabbar__icon"></i>
+                <span class="tabbar__label">Camp</span>
+            </a>
+        </nav>
 
         <!-- MAIN APP DIV  -->
 
