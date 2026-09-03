@@ -1,3 +1,5 @@
+import { saveState, loadState } from '../state/store.js';
+
 const userProfile = {
     gender: "male",
     age: 33,
@@ -8,16 +10,11 @@ const userProfile = {
 };
 
 export const saveUser = (userData) => {
-    localStorage.setItem("keto_user", JSON.stringify(userData));
+    saveState("keto_user", userData);
 };
 
 export const getUser = () => {
-    const saveData = localStorage.getItem("keto_user");
-    if (saveData) {
-        return JSON.parse(saveData);
-    } else {
-        return null;
-    }
+    return loadState("keto_user");
 };
 
 export const clearUser = () => {

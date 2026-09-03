@@ -507,4 +507,21 @@ export const renderCamp = () => {
     `;
 };
 
-export const initCamp = () => {};
+export const initCamp = () => {
+    const form = document.getElementById("camp-apply-form");
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+
+        const dataObject = Object.fromEntries(formData);
+
+        form.innerHTML = `
+            <div class="success-box">
+                <h3>Sukces!</h3>
+                <p>Wszystko zadziałało jak należy.</p>
+            </div>
+        `;
+    });
+};
