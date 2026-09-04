@@ -2,7 +2,6 @@ import { html } from "../utils/template.js";
 
 import { RECIPES_DATA } from "../data/recipesData.js";
 
-
 export const renderRecipes = () => {
     return html` <main class="page-container">
         <header class="page-header">
@@ -24,6 +23,7 @@ export const renderRecipes = () => {
             </div>
         </div>
         <section class="grid-layout">${generateCardsHTML(RECIPES_DATA)}</section>
+        <section class="recipe-detail is-hidden" id="recipe-detail"></section>
     </main>`;
 };
 
@@ -61,20 +61,73 @@ const generateCardsHTML = (recepiesArray) => {
         .join("");
 };
 
+const genrateRecipeDetailHTML = (recipe) => {
+    return html`
+        <article class="recipe">
+            <nav class="recipe__nav">
+                <button class="btn btn--outline" id="btn-back">← Wróć do przepisów</button>
+            </nav>
+
+            <div class="recipe__image-container">
+                <img src="${recipe.imageUrl}" alt="${recipe.title}" class="recipe__image" loading="lazy" />
+                <span class="card__badge">${recipe.calories} kcal</span>
+                <span class="card__time">${recipe.time}</span>
+            </div>
+
+            <header class="recipe__header">
+                <h2 class="recipe__title">${recipe.title}</h2>
+
+                <div class="card__macros">
+                    <div class="macro macro--protein" title="Protein">
+                        <i data-lucide="beef" class="macro__icon"></i>
+                        <span class="macro__value">${recipe.protein}g</span>
+                    </div>
+                    <div class="macro macro--fats" title="Fats">
+                        <i data-lucide="droplet" class="macro__icon"></i>
+                        <span class="macro__value">${recipe.fats}g</span>
+                    </div>
+                    <div class="macro macro--carbs" title="Carbs">
+                        <i data-lucide="wheat" class="macro__icon"></i>
+                        <span class="macro__value">${recipe.carbs}g</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="recipe__section">
+                <h3 class="recipe__section-title">// Składniki</h3>
+                <ul class="recipe__list recipe__list--ingredients">
+                    ${recipe.ingredients.map((item) => html`<li class="recipe__list-item">${item}</li>`).join("")}
+                </ul>
+            </section>
+
+            <section class="recipe__section">
+                <h3 class="recipe__section-title">// Sposób przygotowania</h3>
+                <ol class="recipe__list recipe__list--instructions">
+                    ${recipe.instructions.map((step) => html`<li class="recipe__list-item">${step}</li>`).join("")}
+                </ol>
+            </section>
+
+            <footer class="recipe__footer">
+                <button class="btn btn--primary" id="btn-add-to-day">Dodaj do mojego dnia</button>
+            </footer>
+        </article>
+    `;
+};
+
 export const initRecipes = () => {
     const gridLayout = document.querySelector(".grid-layout");
     const btnsCategorys = document.querySelectorAll(".filter-btn");
 
-    gridLayout.addEventListener('click', (e) => {
-        const clickedCard = e.target.closest('.card')
-        if(!clickedCard) return
+    gridLayout.addEventListener("click", (e) => {
+        const clickedCard = e.target.closest(".card");
+        if (!clickedCard) return;
 
-        const mealId = clickedCard.dataset.id
+        const mealId = clickedCard.dataset.id;
 
-        const foundRecipe = RECIPES_DATA.find(x => x.id === mealId)
+        const foundRecipe = RECIPES_DATA.find((x) => x.id === mealId);
 
-        console.log(foundRecipe)
-    })
+        console.log(foundRecipe);
+    });
 
     const updateGrid = (recipesToRender) => {
         gridLayout.innerHTML = generateCardsHTML(recipesToRender);

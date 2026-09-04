@@ -1,43 +1,47 @@
 # Podsumowanie Postępów – Keto Thai App
 
-## Stan obecny (po pełnym audycie plików JS, CSS i MD)
+## Stan obecny (Single Source of Truth)
 
-Aplikacja Keto Thai to Vanilla JS SPA. Główne sekcje (Home, Dashboard, Recipes, Onboarding, Camp) są już osadzone w architekturze. Przeanalizowałem wszystkie pliki pod kątem zgodności z `KETO_THAI_DESIGN_GUIDELINES.md`, `PLAN.md` oraz `STRATEGY.md`. Usunęliśmy już AI-slop z sekcji Home (Bento-Widgety, nagie ikony) oraz wdrożyliśmy premium layout dla formularza Camp.
+Aplikacja Keto Thai to Vanilla JS SPA. Zgodnie z najnowszą rewizją systemu, **jedyne i ostateczne źródło prawdy dla warstwy wizualnej stanowi plik `DESIGN.md`** („Keto Thai: Dziennik Treningowy” oparty na metodyce `impeccable`). Zastępuje on wcześniejsze szkice i wytyczne (`KETO_THAI_DESIGN_GUIDELINES.md`).
+- **Koncepcja wizualna:** Fizyczny dziennik treningowy trenera na macie Muay Thai (papier kraft `--paper`, podłoże maty `--ground`, ołówek trenera `--red`, kreda `--amber`, atrament urzędowy `--blue`). Zero `box-shadow`, zero AI-slopu, surowe detale fizyczne (taśma, dziurki segregatora, pieczątki).
+- **Typografia:** Big Shoulders Stencil (nagłówki), Martian Mono (pomiary, makro, tagi), Public Sans (tekst ciągły).
+- **Tryby ekranów:** Home i Camp w trybie *Persuade*, Dashboard, Recipes i Onboarding w trybie *Operate*, Knowledge w trybie *Read*.
 
 ---
 
 ### Co zrobiliśmy w dzisiejszej sesji:
 
-1. **Eksploracja Kierunków UI (Design):**
-   - Wygenerowano 10 zróżnicowanych koncepcji interfejsu (w tym m.in. Stealth Minimalist, Tactical Military, Dark Neobrutalism) do wglądu i wyboru jako docelowy fundament wizualny aplikacji. Zapisano je w pliku `UI_Design_Explorations.md`.
-2. **Naprawa Głównego Lejka Sprzedażowego (`camp.js`):**
-   - Zaimplementowano funkcję `initCamp()`. Przechwycono zdarzenie `submit`, zablokowano przeładowywanie strony (`e.preventDefault()`).
-   - Dane pobierane są asynchronicznie przez obiekt `FormData`, a po kliknięciu wstrzykiwany jest "Success State" za pomocą modyfikacji `.innerHTML`.
-3. **Czysta Architektura Zarządzania Stanem (`store.js`):**
-   - Stworzono wzorzec Repozytorium w `src/state/store.js` dla `localStorage` (`saveState`, `loadState`), wprowadzając zabezpieczenie (Guard) przed próbą dekodowania wartości `null`.
-   - Zrefaktoryzowano `src/services/userService.js`, usuwając z niego bezpośrednie odwołania do `localStorage` (zasada DRY i SoC).
-4. **Rozbudowa i separacja bazy danych przepisów (`recipesData.js`):**
-   - Ogromna tablica przepisów została usunięta z pliku widoku (`recipes.js`) i przeniesiona do osobnego modułu z danymi.
-   - Przepisy rozszerzono o klucze dla widoku szczegółów: `time`, `ingredients` (tablica) oraz `instructions` (tablica).
-5. **Delegacja Zdarzeń dla Siatki Przepisów:**
-   - Wdrożono wydajny nasłuchiwacz kliknięć oparty na delegacji zdarzeń do rodzica (`.grid-layout`). Dodano zabezpieczenie wczesnego powrotu (`if (!clickedCard) return`) i zbudowano algorytm do wyszukiwania danych klikniętego przepisu za pomocą `.find()`.
+1. **Definicja i Wdrożenie Nowego Design Systemu (`DESIGN.md`):**
+   - Oparcie stylistyki na rygorze sali treningowej (sportowy notes/formularz zamiast generycznego wellness).
+   - Zdefiniowanie ścisłej palety 9 tokenów barwnych z rygorystycznym kontrastem WCAG AA oraz zasadą elewacji opartej na papierze kraft bez użycia cieni.
+2. **Architektura Sub-view dla Przepisów (`recipes.js`):**
+   - Wybór i zatwierdzenie **Wariantu A** (przełączanie widoczności za pomocą klas zamiast niszczenia DOM), gwarantującego zachowanie stanu filtrów, wpisanych kalorii i pozycji przewijania po powrocie z widoku dania.
+3. **Semantyczna Struktura i BEM Widoku Szczegółów Przepisu:**
+   - Dodanie dedykowanego, ukrytego kontenera `<section class="recipe-detail is-hidden" id="recipe-detail">` do szablonu głównego w `renderRecipes()`.
+   - Zaprojektowanie poprawnej semantycznie struktury HTML (`<article>`, `<nav>`, `<header>`, `<section>`, `<footer`) w metodologii BEM (`recipe__header`, `recipe__macros`, `recipe__list` itd.).
+   - Wykorzystanie semantycznych tagów list: `<ul>` dla składników oraz `<ol>` dla numerowanych etapów przygotowania.
+   - Reużycie gotowych klas makroskładników (`card__macros`, `macro`) z zachowaniem zasady DRY.
+4. **Analiza Konwersji Typów w JavaScript (Type Coercion):**
+   - Przeanalizowanie działania silnika JS podczas rzutowania tablic w Template Literals (`Array.prototype.toString()` wstrzykujące przecinki).
+   - Wdrożenie wzorca `.map().join("")` do czystego łączenia węzłów DOM.
 
 ---
 
-### Plan Prac na Następną Sesję (Do Zrobienia)
+### Plan Prac na Następną Sesję (Do Zrobienia):
 
-1. **Dokończenie Wstrzykiwania HTML Widoku Szczegółów Przepisu (Priorytet):**
-   * Stan prac zatrzymał się na odnalezieniu przepisu w tablicy po kliknięciu (`recipes.js`). Należy zbudować logikę Wariantu B (Sub-view), która podmienia kontener, ukrywa filtry i listę, a w ich miejsce wstrzykuje wygenerowany z tablic widok szczegółów ze składnikami i przyciskiem "Zjedzone", obsługując również powrót ("Wstecz").
-2. **Stworzenie kompozycji Dashboardu w kodzie (Comp-First):**
-   * Przygotowanie tokenów i zaprogramowanie interfejsu Trackera (HTML/CSS) w oparciu o zatwierdzony w wytycznych styl Stealth UI.
-3. **Masowa naprawa naruszeń z Audytu Anti-Slop (CSS):**
-   * Eliminacja 26 zaokrągleń > 4px w `card.css`, `home.css`, `camp.css`, `modal.css`, `filters.css`.
-   * Usunięcie zakazanej animacji `@keyframes float` z `home.css`.
-   * Poprawienie dostępności (`outline: none` bez `:focus-visible` w `filters.css` i `modal.css`).
-   * Wymiana `100vh` na `100dvh` w `modal.css`.
-   * Zamiana latających kart na hover (`translateY(-5px)`) na dopuszczalne -2px lub usunięcie.
-4. **Nowy Design Nawigacji i Linków (Header / Navbar Redesign):**
-   * Przeprojektowanie głównej nawigacji (Desktop & Mobile) w `header.css` i logika w `main.js`.
-5. **Architektura Tracker & Recipes (Kolejne etapy z PLAN.md):**
-   * Wdrożenie wyszukiwarki produktów z Debounce do Dashboardu.
-   * Funkcja "Add to my day" w zakładce Przepisy (`recipes.js`), przekazująca makro do globalnego stanu użytkownika.
+1. **Spięcie Logiki Przełączania Widoku Szczegółów Przepisu (`recipes.js`):**
+   - Wstrzyknięcie przygotowanej funkcji `generateRecipeDetailHTML(recipe)` do `#recipe-detail` w handlerze kliknięcia karty (`initRecipes`).
+   - Przełączanie klasy `.is-hidden` (ukrywanie filtrów i siatki, pokazywanie szczegółów).
+   - Obsługa przycisku powrotu `#btn-back` (odwrócenie stanu widoczności).
+   - Inicjalizacja ikon SVG w nowo wstrzykniętym fragmencie (`window.lucide?.createIcons()`).
+2. **Aktualizacja Tokenów CSS pod `DESIGN.md` (`global.css`):**
+   - Zastąpienie starych zmiennych nową paletą barw (`--ground: #15130F`, `--ground2: #1D1A14`, `--paper: #E7DFC6`, `--ink: #1D1A14`, `--bone: #EFE9D8`, `--red: #C23B2E`, `--amber: #D98C2B`, `--blue: #3E6E86`).
+   - Podpięcie fontów Google Fonts: *Big Shoulders Stencil*, *Martian Mono*, *Public Sans*.
+   - Dodanie globalnej klasy narzędziowej `.is-hidden { display: none !important; }`.
+3. **Ostylowanie Widoku Szczegółów Przepisu (`card.css`):**
+   - Ostylowanie kontenera `.recipe` w układzie czytania (max-width ~760px, wycentrowany), z dużym zdjęciem i estetyką kartki z notesu treningowego.
+4. **Implementacja Funkcji "Dodaj do mojego dnia":**
+   - Podpięcie zdarzenia kliknięcia w `#btn-add-to-day` i przekazanie makroskładników potrawy do stanu dziennego w `store.js`.
+5. **Dostosowanie Pozostałych Widoków do `DESIGN.md`:**
+   - Przebudowa Dashboardu w trybie *Operate* (skanowalność, autorskie detale z notesu, tabele pomiarowe).
+   - Dostosowanie nawigacji (Mobile Tab Bar z kropką `--red`, Desktop Sidebar).

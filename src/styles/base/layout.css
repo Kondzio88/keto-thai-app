@@ -80,3 +80,7 @@
     background-color: var(--color-protein);
     color: #ffffff;
 }
+
+.is-hidden {
+    display: none !important;
+}
