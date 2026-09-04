@@ -11,37 +11,45 @@ Aplikacja Keto Thai to Vanilla JS SPA. Zgodnie z najnowszą rewizją systemu, **
 
 ### Co zrobiliśmy w dzisiejszej sesji:
 
-1. **Definicja i Wdrożenie Nowego Design Systemu (`DESIGN.md`):**
-   - Oparcie stylistyki na rygorze sali treningowej (sportowy notes/formularz zamiast generycznego wellness).
-   - Zdefiniowanie ścisłej palety 9 tokenów barwnych z rygorystycznym kontrastem WCAG AA oraz zasadą elewacji opartej na papierze kraft bez użycia cieni.
-2. **Architektura Sub-view dla Przepisów (`recipes.js`):**
-   - Wybór i zatwierdzenie **Wariantu A** (przełączanie widoczności za pomocą klas zamiast niszczenia DOM), gwarantującego zachowanie stanu filtrów, wpisanych kalorii i pozycji przewijania po powrocie z widoku dania.
-3. **Semantyczna Struktura i BEM Widoku Szczegółów Przepisu:**
-   - Dodanie dedykowanego, ukrytego kontenera `<section class="recipe-detail is-hidden" id="recipe-detail">` do szablonu głównego w `renderRecipes()`.
-   - Zaprojektowanie poprawnej semantycznie struktury HTML (`<article>`, `<nav>`, `<header>`, `<section>`, `<footer`) w metodologii BEM (`recipe__header`, `recipe__macros`, `recipe__list` itd.).
-   - Wykorzystanie semantycznych tagów list: `<ul>` dla składników oraz `<ol>` dla numerowanych etapów przygotowania.
-   - Reużycie gotowych klas makroskładników (`card__macros`, `macro`) z zachowaniem zasady DRY.
-4. **Analiza Konwersji Typów w JavaScript (Type Coercion):**
-   - Przeanalizowanie działania silnika JS podczas rzutowania tablic w Template Literals (`Array.prototype.toString()` wstrzykujące przecinki).
-   - Wdrożenie wzorca `.map().join("")` do czystego łączenia węzłów DOM.
+1. **Spięcie Logiki Przełączania Widoku Szczegółów Przepisu (`src/pages/recipes.js`):**
+   - Wdrożenie deterministycznego przełączania klas `.is-hidden` (jawne ukrywanie `.filters` oraz `.grid-layout`, odsłanianie `#recipe-detail`).
+   - Wstrzykiwanie szablonu dania za pomocą `genrateRecipeDetailHTML(foundRecipe)` i automatyczne odświeżanie wektorowych ikon Lucide (`window.lucide?.createIcons()`).
+   - Obsługa powrotu (`#btn-back`) z mechanizmem zwalniania zasobów DOM (`recipeDetail.innerHTML = ""` – Garbage Collection / zapobieganie migotaniu starej treści) oraz resetem aktywnego przepisu.
+
+2. **Architektura Serwisu Posiłków (`src/services/mealService.js`):**
+   - Wybór i implementacja **Wariantu 2** (dedykowany serwis domenowy `mealService.js` pod kluczem `keto_meals`), gwarantujący zasadę pojedynczej odpowiedzialności (SRP) i przygotowujący aplikację pod przyszłą relacyjną bazę danych (Supabase).
+   - Oparcie struktury danych na mapie dat (Dictionary / Hash Map: `{ "YYYY-MM-DD": [ ...posiłki ] }`), co zapewnia natychmiastowy dostęp w czasie O(1), brak konieczności iteracji po całym roku i naturalny reset licznika o północy.
+   - Zastosowanie mechanizmu **Bracket Notation** (`meals[today] = []`) do dynamicznego tworzenia kluczy dziennych.
+   - Wdrożenie funkcji:
+     - `getAllMeals()` – bezpieczny odczyt bazy z fallbackiem na pusty obiekt `{}`.
+     - `saveMeals(meals)` – adapter zapisu do `store.js`.
+     - `addMeal(recipe)` – dodawanie posiłku z generowaniem unikalnego `id`, godziny (`HH:MM`), parametrów makro oraz zabezpieczeniem *Guard Clause*.
+     - `getTodayMeal()` – pobieranie tablicy dań z bieżącego dnia z fallbackiem na `[]`.
+
+3. **Integracja Przycisku "Dodaj do mojego dnia" (`#btn-add-to-day`):**
+   - Zastosowanie wzorca **Event Delegation** na kontenerze `#recipe-detail` (jeden stały listener obsługujący oba przyciski: powrót i dodanie dania, zapobiegający wyciekom pamięci).
+   - Bezpieczne przekazanie obiektu dania do akcji dodawania za pomocą **domknięcia (Closure)**: `let currentRecipe = null`.
+   - Zabezpieczenie interfejsu przed wieloklikiem (Double Click): natychmiastowa zmiana etykiety na `✓ Dodano do dnia!` oraz ustawienie `disabled = true`.
+   - Pomyślna weryfikacja zapisu posiłku w `localStorage` pod kluczem `keto_meals`.
 
 ---
 
 ### Plan Prac na Następną Sesję (Do Zrobienia):
 
-1. **Spięcie Logiki Przełączania Widoku Szczegółów Przepisu (`recipes.js`):**
-   - Wstrzyknięcie przygotowanej funkcji `generateRecipeDetailHTML(recipe)` do `#recipe-detail` w handlerze kliknięcia karty (`initRecipes`).
-   - Przełączanie klasy `.is-hidden` (ukrywanie filtrów i siatki, pokazywanie szczegółów).
-   - Obsługa przycisku powrotu `#btn-back` (odwrócenie stanu widoczności).
-   - Inicjalizacja ikon SVG w nowo wstrzykniętym fragmencie (`window.lucide?.createIcons()`).
-2. **Aktualizacja Tokenów CSS pod `DESIGN.md` (`global.css`):**
-   - Zastąpienie starych zmiennych nową paletą barw (`--ground: #15130F`, `--ground2: #1D1A14`, `--paper: #E7DFC6`, `--ink: #1D1A14`, `--bone: #EFE9D8`, `--red: #C23B2E`, `--amber: #D98C2B`, `--blue: #3E6E86`).
-   - Podpięcie fontów Google Fonts: *Big Shoulders Stencil*, *Martian Mono*, *Public Sans*.
-   - Dodanie globalnej klasy narzędziowej `.is-hidden { display: none !important; }`.
-3. **Ostylowanie Widoku Szczegółów Przepisu (`card.css`):**
-   - Ostylowanie kontenera `.recipe` w układzie czytania (max-width ~760px, wycentrowany), z dużym zdjęciem i estetyką kartki z notesu treningowego.
-4. **Implementacja Funkcji "Dodaj do mojego dnia":**
-   - Podpięcie zdarzenia kliknięcia w `#btn-add-to-day` i przekazanie makroskładników potrawy do stanu dziennego w `store.js`.
-5. **Dostosowanie Pozostałych Widoków do `DESIGN.md`:**
-   - Przebudowa Dashboardu w trybie *Operate* (skanowalność, autorskie detale z notesu, tabele pomiarowe).
-   - Dostosowanie nawigacji (Mobile Tab Bar z kropką `--red`, Desktop Sidebar).
+1. **Odczyt i Dynamiczny Bilans w Dashboardzie (`src/pages/dashboard.js`):**
+   - Zaimportowanie `getTodayMeal()` do `dashboard.js`.
+   - Zsumowanie zjedzonych kalorii i makroskładników w bieżącym dniu za pomocą metody tablicowej `.reduce()`.
+   - Wyliczenie i wyświetlenie pozostałego limitu: *Zapotrzebowanie z Onboardingu (`dietPlan`) minus Zjedzone posiłki*.
+   - Dynamiczna aktualizacja wykresu kołowego Chart.js (pokazywanie realnego spożycia vs limit).
+
+2. **Lista Zjedzonych Posiłków w Dashboardzie (zgodnie z `PLAN.md`):**
+   - Wyrenderowanie listy zjedzonych dań w danym dniu (godzina wpisu, tytuł, kalorie, makro, miniatura).
+   - Dodanie metody `deleteMeal(date, mealId)` w `mealService.js` (użycie `.filter()`) i spięcie jej z przyciskiem "Usuń" przy każdym posiłku.
+
+3. **Date Controller w Dashboardzie (`PLAN.md` L72):**
+   - Dodanie nawigacji między dniami (`< Wczoraj | Dzisiaj | Jutro >`) sterującej kluczem daty i odświeżającej bilans dla wybranego dnia.
+
+4. **Wdrożenie Design Systemu z `DESIGN.md`:**
+   - Aktualizacja tokenów CSS i fontów w `global.css` / `variables.css` (Big Shoulders Stencil, Martian Mono, Public Sans, paleta maty i papieru kraft).
+   - Ostylowanie widoku szczegółów dania w `src/pages/recipes.js` pod estetykę karty z notesu treningowego.
+   - Przebudowa Dashboardu w trybie *Operate*.

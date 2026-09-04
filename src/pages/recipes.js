@@ -1,6 +1,6 @@
 import { html } from "../utils/template.js";
-
 import { RECIPES_DATA } from "../data/recipesData.js";
+import { addMeal } from "../services/mealService.js";
 
 export const renderRecipes = () => {
     return html` <main class="page-container">
@@ -117,6 +117,10 @@ const genrateRecipeDetailHTML = (recipe) => {
 export const initRecipes = () => {
     const gridLayout = document.querySelector(".grid-layout");
     const btnsCategorys = document.querySelectorAll(".filter-btn");
+    const recipeDetail = document.querySelector("#recipe-detail");
+    const filtersDiv = document.querySelector(".filters");
+
+    let currentRecipe = null;
 
     gridLayout.addEventListener("click", (e) => {
         const clickedCard = e.target.closest(".card");
@@ -126,7 +130,35 @@ export const initRecipes = () => {
 
         const foundRecipe = RECIPES_DATA.find((x) => x.id === mealId);
 
-        console.log(foundRecipe);
+        currentRecipe = foundRecipe;
+
+        recipeDetail.innerHTML = genrateRecipeDetailHTML(foundRecipe);
+
+        filtersDiv.classList.add("is-hidden");
+        gridLayout.classList.add("is-hidden");
+        recipeDetail.classList.remove("is-hidden");
+
+        window.lucide?.createIcons();
+    });
+
+    recipeDetail.addEventListener("click", (e) => {
+        const btnBack = e.target.closest("#btn-back");
+        const btnAdd = e.target.closest("#btn-add-to-day");
+
+        if (btnBack) {
+            gridLayout.classList.remove("is-hidden");
+            filtersDiv.classList.remove("is-hidden");
+            recipeDetail.classList.add("is-hidden");
+
+            recipeDetail.innerHTML = "";
+            currentRecipe = null
+        }
+
+        if (btnAdd && currentRecipe) {
+            addMeal(currentRecipe);
+            btnAdd.textContent = "✓ Dodano do dnia!";
+            btnAdd.disabled = true;
+        }
     });
 
     const updateGrid = (recipesToRender) => {
