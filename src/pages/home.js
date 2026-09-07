@@ -6,6 +6,7 @@ export const renderHome = () => {
         <main>
             <!-- 1. HERO SECTION -->
             <section class="hero paper">
+            <span class="hero__stamp stamp">SEZON 01</span>
                 <div class="hero__container page-container">
                     <div class="hero__content">
                         <h1 class="hero__title">
@@ -41,14 +42,14 @@ export const renderHome = () => {
             <!-- 2. PHILOSOPHY SECTION -->
             <section class="philosophy">
                 <div class="philosophy__container container">
-                    <span class="philosophy__kicker">3 filary systemu</span>
                     <h2 class="philosophy__title">Dlaczego Keto Thai?</h2>
+                    <span class="philosophy__kicker tag">3 filary systemu</span>
                     <div class="philosophy__grid reveal">
                         <!-- KARTA 1 -->
-                        <article class="philosophy__card">
+                        <article class="philosophy__card philosophy__card--scorecard">
                             <header class="philosophy__card-header">
                                 <i data-lucide="beef" class="philosophy__naked-icon"></i>
-                                <span class="philosophy__badge">01</span>
+                              
                             </header>
                             <h3 class="philosophy__card-title">Czyste Paliwo</h3>
                             <p class="philosophy__card-desc">
@@ -65,10 +66,9 @@ export const renderHome = () => {
                         </article>
 
                         <!-- KARTA 2 -->
-                        <article class="philosophy__card">
+                        <article class="philosophy__card  philosophy__card--note">
                             <header class="philosophy__card-header">
                                 <i data-lucide="brain" class="philosophy__naked-icon"></i>
-                                <span class="philosophy__badge">02</span>
                             </header>
                             <h3 class="philosophy__card-title">Umysł Wojownika</h3>
                             <p class="philosophy__card-desc">
@@ -90,10 +90,9 @@ export const renderHome = () => {
                         </article>
 
                         <!-- KARTA 3 -->
-                        <article class="philosophy__card">
+                        <article class="philosophy__card philosophy__card--stamp">
                             <header class="philosophy__card-header">
                                 <i data-lucide="line-chart" class="philosophy__naked-icon"></i>
-                                <span class="philosophy__badge">03</span>
                             </header>
                             <h3 class="philosophy__card-title">Pełna Kontrola</h3>
                             <p class="philosophy__card-desc">
@@ -123,8 +122,8 @@ export const renderHome = () => {
                     <div class="about__layout reveal">
                         <!-- Lewa Kolumna: Tekst -->
                         <div class="about__content">
-                            <span class="about__kicker">Historia i filozofia</span>
                             <h2 class="about__title">Z tajskiej maty do Twojej kuchni</h2>
+                            <span class="about__kicker tag">Historia i filozofia</span>
                             <p class="about__desc">
                                 Przez lata trenowałem sztuki walki, szukając idealnego sposobu na budowanie formy i
                                 zbijanie wagi przed startami. Klasyczne diety często kończyły się spadkiem mocy i
@@ -154,28 +153,27 @@ export const renderHome = () => {
                                     src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=600"
                                     alt="Trening Muay Thai"
                                     class="about__image"
+                                    loading="lazy"
                                 />
+                                <span class="about__image-caption mono">FOTO 02 — TRENING, LAMAI CAMP</span>
                             </div>
                             <div class="about__image-wrapper">
                                 <img
                                     src="https://images.unsplash.com/photo-1607349913338-fca6f7fc42d0?q=80&w=600"
                                     alt="Keto jedzenie"
                                     class="about__image"
+                                    loading="lazy"
                                 />
+                                <span class="about__image-caption mono">FOTO 03 — KUCHNIA KETO</span>
                             </div>
                             <div class="about__image-wrapper">
                                 <img
                                     src="https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=600"
                                     alt="Walka w ringu"
                                     class="about__image"
+                                    loading="lazy"
                                 />
-                            </div>
-                            <div class="about__image-wrapper">
-                                <img
-                                    src="https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=600"
-                                    alt="Walka w ringu"
-                                    class="about__image"
-                                />
+                                <span class="about__image-caption mono">FOTO 04 — WALKA W RINGU</span>
                             </div>
                         </div>
                     </div>

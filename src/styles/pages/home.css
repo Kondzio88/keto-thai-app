@@ -5,6 +5,12 @@
     overflow: hidden;
 }
 
+.hero__stamp{
+    position: absolute;
+    top: 18px;
+    right: 25px;
+}
+
 .hero__container {
     display: grid;
     grid-template-columns: 1fr;
@@ -116,8 +122,7 @@
 
 .philosophy__kicker {
     display: block;
-    color: var(--color-accent);
-    font-size: var(--font-size-kicker);
+    color: var(--amber);
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -129,7 +134,7 @@
     text-transform: uppercase;
     margin-bottom: var(--spacing-xl);
     font-size: var(--font-size-h2);
-    color: var(--color-text-primary);
+    color: var(--bone);
 }
 
 .philosophy__grid {
@@ -141,42 +146,25 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    background-color: transparent;
     padding: var(--spacing-lg) var(--spacing-md);
-    border-radius: 4px;
     border: none;
-    transition: background 0.3s ease;
-}
-
-.philosophy__card:hover {
-    background: var(--cinematic-glow);
 }
 
 .philosophy__card-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     margin-bottom: var(--spacing-md);
 }
 
 .philosophy__naked-icon {
     width: 28px;
     height: 28px;
-    color: var(--color-accent);
+    color: var(--amber);
     stroke-width: 1.5;
 }
 
-.philosophy__badge {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--color-accent);
-    letter-spacing: 1px;
-}
-
 .philosophy__card-title {
-    color: var(--color-text-primary);
+    color: var(--bone);
     font-family: var(--font-heading);
     font-size: var(--font-size-h3);
     text-transform: uppercase;
@@ -188,7 +176,7 @@
 .philosophy__card-desc {
     font-size: 0.95rem;
     line-height: 1.6;
-    color: var(--color-text-lead);
+    color: var(--bone-dim);
     margin-bottom: var(--spacing-lg);
     flex-grow: 1;
 }
@@ -203,10 +191,52 @@
     display: block;
     font-size: 0.65rem;
     letter-spacing: 1px;
-    color: var(--color-text-secondary);
+    color: var(--bone-dim);
     margin-bottom: var(--spacing-xs);
-    font-family: var(--font-heading);
+    font-family: var(--font-mono);
     text-transform: uppercase;
+}
+
+/* KARTA 1 — fragment karty punktacji: jedyny kontener na --paper w tej sekcji */
+.philosophy__card--scorecard {
+    background-color: var(--paper);
+    padding-bottom: calc(var(--spacing-lg) + 14px);
+    clip-path: polygon(
+        0% 0%, 100% 0%, 100% 92%,
+        92% 97%, 84% 91%, 76% 97%, 68% 92%, 60% 97%,
+        52% 91%, 44% 97%, 36% 92%, 28% 97%, 20% 91%,
+        12% 97%, 4% 92%, 0% 97%
+    );
+}
+
+.philosophy__card--scorecard .philosophy__card-title,
+.philosophy__card--scorecard .mockup__label {
+    color: var(--ink);
+}
+
+.philosophy__card--scorecard .philosophy__card-desc {
+    color: var(--ink-dim);
+}
+
+.philosophy__card--scorecard .philosophy__mockup {
+    border-top: 1px dashed var(--ink-faint);
+}
+
+/* KARTA 2 — notatka na marginesie: bez tła, bez ramki, wsunięta pod kątem */
+.philosophy__card--note {
+    transform: rotate(-1.2deg);
+}
+
+.philosophy__card--note .philosophy__card-title,
+.philosophy__card--note .philosophy__card-desc {
+    text-align: left;
+}
+
+/* KARTA 3 — pieczątka: sam wynik oprawiony jak zatwierdzona metryka */
+.philosophy__mockup--stamped {
+    border: 2px solid var(--red);
+    padding: var(--spacing-sm) var(--spacing-md);
+    transform: rotate(-2deg);
 }
 
 /* 1. KETO MACRO BAR */
@@ -226,13 +256,13 @@
 }
 
 .macro-segment--fat {
-    background-color: var(--color-fats);
+    background-color: var(--amber);
 }
 .macro-segment--protein {
-    background-color: var(--color-protein);
+    background-color: var(--red);
 }
 .macro-segment--carbs {
-    background-color: var(--color-carbs);
+    background-color: var(--blue);
 }
 
 /* 2. STREAK GRID */
@@ -249,7 +279,7 @@
 }
 
 .streak-box.is-active {
-    background-color: var(--color-accent);
+    background-color: var(--amber);
 }
 
 /* 3. LIVE METRICS */
@@ -269,12 +299,12 @@
     font-family: var(--font-heading);
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--color-text-primary);
+    color: var(--bone);
 }
 
 .metric-unit {
     font-size: 0.7rem;
-    color: var(--color-accent);
+    color: var(--amber);
     font-weight: 600;
     letter-spacing: 0.5px;
 }
@@ -293,11 +323,8 @@
 
 .about__kicker {
     display: block;
-    color: var(--color-accent);
-    font-size: var(--font-size-kicker);
+    color: var(--amber);
     font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
     margin-bottom: var(--spacing-xs);
 }
 
@@ -306,35 +333,36 @@
     font-size: var(--font-size-h2);
     margin-bottom: var(--spacing-md);
     text-transform: uppercase;
+    color: var(--bone);
 }
 
 .about__desc {
     margin-bottom: var(--spacing-md);
     font-size: 1.1rem;
-    color: var(--color-text-lead);
+    color: var(--bone-dim);
     line-height: 1.65rem;
 }
 
 .about__desc strong {
-    color: var(--color-text-primary);
+    color: var(--bone);
     font-weight: 700;
 }
 
 .about__author {
     margin-top: var(--spacing-lg);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--bone-dim);
     padding-top: var(--spacing-md);
 }
 
 .about__author-name {
     font-weight: 700;
-    color: var(--color-text-primary);
+    color: var(--bone);
     font-size: 1.1rem;
 }
 
 .about__author-role {
-    color: var(--color-accent);
-    font-size: var(--font-size-kicker);
+    color: var(--amber);
+    font-size: var(--font-size-tag);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -349,22 +377,22 @@
 .about__image-wrapper {
     position: relative;
     overflow: hidden;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: border-color 0.3s ease;
+    border: 1px solid var(--bone-faint);
 }
 
-.about__image-wrapper:hover {
-    border-color: rgba(var(--color-accent-rgb), 0.4);
+.about__image-caption {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 4px 8px;
+    background-color: var(--ground);
+    color: var(--bone-dim);
+    font-size: 9px;
 }
 
 .about__image-wrapper:first-child {
     grid-row: span 2;
-}
-
-.about__image-wrapper:nth-child(4) {
-    grid-column: 2;
-    grid-row: 2 / span 2;
 }
 
 .about__image-wrapper:first-child .about__image {
@@ -803,7 +831,6 @@
 /* TACTICAL TERMINAL TITLES (SLASH //)  */
 /* ------------------------------------- */
 
-.about__title,
 .steps__title,
 .camp-offer__title,
 .faq__title,
@@ -814,7 +841,6 @@
     -webkit-text-fill-color: initial;
 }
 
-.about__title::before,
 .steps__title::before,
 .camp-offer__title::before,
 .faq__title::before,

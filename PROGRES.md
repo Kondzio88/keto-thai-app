@@ -2,67 +2,47 @@
 
 ## Stan obecny (Single Source of Truth)
 
-Aplikacja Keto Thai to Vanilla JS SPA. Zgodnie z najnowszą rewizją systemu, **jedyne i ostateczne źródło prawdy dla warstwy wizualnej stanowi plik `DESIGN.md`** („Keto Thai: Dziennik Treningowy” oparty na metodyce `impeccable`). Zastępuje on wcześniejsze szkice i wytyczne (`KETO_THAI_DESIGN_GUIDELINES.md`).
-- **Koncepcja wizualna:** Fizyczny dziennik treningowy trenera na macie Muay Thai (papier kraft `--paper`, podłoże maty `--ground`, ołówek trenera `--red`, kreda `--amber`, atrament urzędowy `--blue`). Zero `box-shadow`, zero AI-slopu, surowe detale fizyczne (taśma, dziurki segregatora, pieczątki).
-- **Typografia:** Big Shoulders Stencil (nagłówki), Martian Mono (pomiary, makro, tagi), Public Sans (tekst ciągły).
-- **Tryby ekranów:** Home i Camp w trybie *Persuade*, Dashboard, Recipes i Onboarding w trybie *Operate*, Knowledge w trybie *Read*.
-- **Migracja tokenów CSS:** świadomie **odrzucono** podejście "alias tymczasowy" (mapowanie starych nazw zmiennych na nowe). Kierunek: usuwać stare, nieistniejące nazwy (`--color-accent`, `--color-text-primary` itd.) i zastępować je bezpośrednio dziewięcioma tokenami z `DESIGN.md` sekcja 3, plik po pliku, zaczynając od tych najbardziej widocznych (`button.css` zrobiony, reszta w kolejce).
+Aplikacja Keto Thai to Vanilla JS SPA. Jedyne i ostateczne źródło prawdy dla warstwy wizualnej to `DESIGN.md` („Keto Thai: Dziennik Treningowy", metodyka `impeccable`, mockup referencyjny podlinkowany w nagłówku dokumentu).
+- **Koncepcja wizualna:** fizyczny dziennik treningowy trenera na macie Muay Thai (papier kraft `--paper`, mata `--ground`/`--ground2`, ołówek trenera `--red`, kreda `--amber`, atrament `--blue`). Zero `box-shadow`, zero glow, zero AI-slopu — detale fizyczne (taśma, dziurki, pieczątka) zamiast dekoracji.
+- **Typografia:** Big Shoulders Stencil (nagłówki), Martian Mono (dane/tagi/nawigacja), Public Sans (tekst ciągły).
+- **Nawigacja:** mobile = górny `topbar` (logo + hamburger) + dolny `tabbar` z 4 pozycjami core; desktop ≥768px = `topbar` chowa się, `tabbar` rozszerza się w lewy sidebar.
+- **Migracja tokenów CSS:** kierunek „usuń stare zmienne, wstaw prosto 9 tokenów z `DESIGN.md`" — bez aliasów-mostków. Zrobione: `button.css`, `tabbar.css`, `topbar.css`, oraz w `home.css`: Hero, Philosophy, About. **W kolejce:** `steps`/`camp-offer`/`faq` w `home.css`, oraz `camp.css`, `card.css`, `filters.css`, `form.css`, `modal.css`, `banner.css`, `layout.css`.
+- **Narzędzie:** skill `impeccable` (`.claude/skills/impeccable/`) używany do audytów i jako checklista (`craft-floor.md`) przy każdej edycji UI. Hook detektora **włączony** (`$impeccable hooks on`) — automatyczny mechaniczny skan po każdej edycji pliku UI w tej sesji.
 
 ---
 
-### Co zrobiliśmy w dzisiejszej sesji:
+### Co zrobiliśmy w dzisiejszej sesji (Hero → Philosophy → About):
 
-1. **Raport strategiczny biznesowo-marketingowy (`ROADMAP.md`, nowy plik w katalogu głównym):**
-   - Audyt aplikacji wobec `STRATEGY.md`: mocne/słabe strony, synergia z social mediami (Instagram/Facebook), budowa social proof, pozyskiwanie klientów online (diety) i lokalnie (treningi w Tychach).
-   - Zidentyfikowano krytyczne luki lejka sprzedażowego: formularz `/camp` nie wysyła danych donikąd, zero social proof, brak linków do social mediów w całej aplikacji, zepsute deep-linki na GitHub Pages, brak SEO/Open Graph.
-   - Rozpisana mapa drogowa naprawy w fazach (0–3), z priorytetem na odblokowanie lejka przed rozwojem nowych funkcji.
+1. **Hero — plakietka `.stamp` „SEZON 01"** dodana jako niezależny element w rogu całej sekcji `.hero` (Wariant C — poza gridem content/media, `position: absolute` względem `.hero`). Rotacja taśmy zdjęcia (`-15°/+17°`) świadomie zostawiona inna niż literalny zapis `DESIGN.md` (`-8°/+7°`) — **`DESIGN.md` jeszcze nie zaktualizowany o tę decyzję**, do zrobienia następnym razem.
 
-2. **Diagnoza niespójności tokenów CSS (`global.css` vs `home.css`/`camp.css`/`button.css`):**
-   - Znaleziono 18 zmiennych CSS używanych w kodzie, ale nigdzie niezdefiniowanych (`--color-accent`, `--color-text-primary`, `--cinematic-glow` i inne) — przeglądarka po cichu odrzuca takie deklaracje (`var()` do niczego), bez błędu w konsoli.
-   - Podjęto decyzję architektoniczną: **bez aliasów-mostków**, migracja bezpośrednia, plik po pliku.
+2. **Philosophy — przebudowa 3 kart z identycznej „skorupy" na 3 różne fizyczne kontenery** (Wariant A, zgodny z zakazem z `DESIGN.md` sekcja 6 „nigdy identyczny rząd kart ikona+nagłówek+tekst"):
+   - Czyste Paliwo → `.philosophy__card--scorecard` (tło `--paper`, `clip-path` z poszarpaną dolną krawędzią, linia przerywana nad danymi).
+   - Umysł Wojownika → `.philosophy__card--note` (bez tła/ramki, lekki `rotate`, tekst do lewej).
+   - Pełna Kontrola → `.philosophy__mockup--stamped` (obramowanie `--red` w stylu pieczątki wokół metryk).
+   - Usunięto dekoracyjne plakietki `01/02/03` (`.philosophy__badge`) i martwy hover `--cinematic-glow`.
+   - Poprawiona kolejność kicker/nagłówek (kicker pod `h2`, nie nad — zakaz bez wyjątków z sekcji 4).
+   - Zmapowano kolory na tokeny `DESIGN.md`: `macro-bar` fat/protein/carbs → `--amber`/`--red`/`--blue` (dosłowne przypisanie z tabeli palety), `streak-box.is-active` → `--amber`, `metric-value` → `--bone`, `metric-unit` → `--amber`.
 
-3. **`global.css` — dodanie trzech reużywalnych klas "świata" (`DESIGN.md` sekcja 5–6):**
-   - `.paper`, `.stamp`, `.hole` — wartości (obramowanie, obrót, wymiary) zweryfikowane bezpośrednio względem zatwierdzonego mockupu referencyjnego (`DESIGN.md:6`), nie wymyślone od zera.
+3. **About — czyszczenie i wzmocnienie sekcji:**
+   - 7 martwych tokenów (`--color-accent`, `--color-text-primary`, `--color-text-lead`, `--font-size-kicker`, `--color-accent-rgb`) zmapowanych na `--amber`/`--bone`/`--bone-dim`.
+   - Usunięty zduplikowany czwarty kafelek galerii (dwa identyczne zdjęcia „Walka w ringu") — galeria działa teraz na 3 zdjęciach, layout bento auto-dostosował się bez dodatkowego CSS.
+   - Dodane podpisy `FOTO 0X — [opis]` (mono) i `loading="lazy"` na zdjęciach galerii.
+   - **Próba z taśmą (`.tape`) na zdjęciach galerii odrzucona** — źle wyglądała w kontekście `overflow: hidden` (potrzebnego do efektu zoom na hover). Finalnie: cienkie obramowanie `1px solid var(--bone-faint)`, zero `border-radius` — zgodne z sekcją 5 `DESIGN.md` (linia/obramowanie jako jedna z trzech dopuszczalnych elewacji).
+   - **Nowy token `--bone-faint`** dodany w `global.css` (`color-mix(in srgb, var(--bone) 18%, transparent)`), analogicznie do istniejących `--ink-dim`/`--ink-faint`.
+   - Usunięty prefiks `::before { content: "// " }` („TACTICAL TERMINAL TITLES") z `about__title` — zdjęty jako nieuzasadniony w świecie produktu (dziennik treningowy, nie „terminal/hacker"), mechanicznie powielony i oparty na martwym tokenie. **Zostaje jeszcze na `steps__title`, `camp-offer__title`, `faq__title`, `philosophy__title`** — decyzja o usunięciu z reszty odłożona na później.
 
-4. **Naprawa struktury sekcji Hero (`src/pages/home.js`, `src/styles/pages/home.css`):**
-   - Zdiagnozowano i naprawiono błąd architektoniczny: `.hero__container` niósł jednocześnie `page-container` (ograniczenie szerokości treści) i `.paper` (skóra wizualna) — kolizja dwóch odpowiedzialności dawała niezamierzoną ciemną "obramówkę" wokół jasnej karty.
-   - Rozwiązanie: `.paper` przeniesiony na zewnętrzny `<section class="hero paper">`, `page-container` wrócił do jednej roli (szerokość treści). Hero renderuje się teraz jako pełnowymiarowa "okładka dziennika" zgodnie z referencją.
-
-5. **Przebudowa `src/styles/components/button.css` zgodnie z dokładną specyfikacją z mockupu:**
-   - Font zmieniony z Big Shoulders Stencil na Martian Mono, `font-size: 13px`, `letter-spacing: .04em` (po drodze złapany i poprawiony błąd jednostki `rem` zamiast `em`).
-   - `.btn--primary`: płaskie wypełnienie `--red` (usunięty gradient ze "lśnieniem" i ad-hoc hex), tekst `--bone`.
-   - `.btn--secondary`: proste obramowanie `1px solid --bone-dim` (usunięty gradientowy `border-image`), asymetryczny padding (`14px/24px` vs `13px/24px`) kompensujący grubość obramowania.
-   - Dodany wariant `.hero .btn--secondary` pod przycisk stojący na papierze (`--ink`/`opacity: .7`) — zweryfikowane, że nie koliduje z przyciskami na `/camp` (inna nazwa sekcji).
-   - Dodany wspólny efekt kliknięcia `:active { transform: scale(0.96) rotate(-1.5deg) }` ("przybicie pieczątki", nawiązanie do `.stamp`), świadomie bez animacji na `:hover` (zakaz "latania" z `DESIGN.md` sekcja 6).
-   - `border-radius` ujednolicony do `2px` (górna granica z `DESIGN.md`).
-
-6. **Zdiagnozowane, ale jeszcze niewdrożone poprawki kolorów w Hero** — `.hero__title`, `.hero__tag`, `.hero__desc`, `.hero__caption` nadal mają twarde jasne kolory (`--bone`/`--amber`/`--bone-dim`) sprzed zmiany tła na papier. Ustalony mechanizm naprawy (`--ink` + `opacity` per element, wartości `.55`/`.75`/`.5` z referencji) — czeka na wdrożenie.
+4. **Audyt skillem `impeccable`** (`$impeccable audit`, tryb czysto diagnostyczny) ujawnił: gradient text w `camp-offer__title` (potwierdzone przez `detect.mjs`, poza dzisiejszym zakresem — dodany scoped `ignore-value` w `.impeccable/config.json` do czasu pracy nad `camp-offer`), oraz że `PRODUCT.md` wciąż opisuje stary system „Dark Fighter" (złoto/zieleń/Oswald) sprzeczny z obowiązującym `DESIGN.md` — niezaktualizowany, nie ruszony w tej sesji.
 
 ---
 
 ### Plan Prac na Następną Sesję (Do Zrobienia):
 
-1. **Dokończenie kolorów w Hero (`src/styles/pages/home.css`):**
-   - `.hero__tag` → `color: var(--ink); opacity: .55`
-   - `.hero__desc` → `color: var(--ink); opacity: .75`
-   - `.hero__caption` → `color: var(--ink); opacity: .5`
-   - `.hero__title` → posprzątać martwe `color: var(--bone)` (realnie nieaktywne, bo `.hero__title-sub` nadpisuje własnym `--ink`, ale wprowadza w błąd przy czytaniu kodu)
-
-2. **Decyzje otwarte w Hero:**
-   - Czy `.hero__photo-card` (ciemne tło `--ground2`) zostaje jako świadomy wygląd "zdjęcia oprawionego w ciemny passe-partout", czy wymaga przemyślenia teraz, gdy hero jest papierem
-   - Czy tytuł H1 ma zostać przy 2 liniach ("TWOJE CIAŁO" / "TWOJA WALKA"), czy wraca 3-liniowa wersja z "TWOJE PALIWO"
-   - Dodanie plakietki `.stamp` "Sezon 01" w rogu hero (element z referencji, jeszcze nieobecny w markupie)
-
-3. **Hover przycisków — decyzja niepodjęta:** trzy warianty na stole (wzmocnienie obramowania ghost / brak hover w ogóle / delikatny `filter: brightness()` na primary) — czeka na wybór kierunku.
-
-4. **Decyzja architektoniczna — `color` + `opacity` vs token `color-mix()` w `global.css`:** otwarta rozmowa o tym, czy centralizować powtarzające się pary kolor+przezroczystość w jeden token, czy zostać przy dwóch osobnych właściwościach jak w referencji. Do rozstrzygnięcia, gdy pojawi się więcej takich przypadków w kodzie.
-
-5. **Migracja pozostałych plików CSS ze starych nazw zmiennych** (`camp.css`, `card.css`, `form.css`, `modal.css`, `banner.css`, `filters.css`, `tabbar.css`, `header.css`) — `button.css` zrobiony jako pierwszy, reszta wciąż odwołuje się do tych samych 18 nieistniejących zmiennych.
-
-6. **"3 Filary" na Home (`src/pages/home.js`):** trzy identyczne karty ikona+nagłówek+tekst zamiast trzech różnych kontenerów wymaganych przez `DESIGN.md` (postrzępiona karta papieru / pieczątka / notatka na marginesie) — jeszcze nietknięte.
-
-7. **Sekcja About — zdjęcia:** galeria wciąż korzysta ze zdjęć stockowych z Unsplash (w tym jeden zduplikowany URL) zamiast własnych zdjęć autora.
-
-8. **Zaległości z `ROADMAP.md` (warstwa biznesowa, poza samym designem):** formularz `/camp` nie wysyła danych, brak stopki z linkami social media, zepsute deep-linki na GitHub Pages, brak Open Graph/SEO, `/knowledge` i `/contact` to puste zaślepki mimo obecności w nawigacji.
-
-9. Wciąż nieukończone od poprzedniej sesji: `getTodayMeal()` w Dashboardzie, lista zjedzonych posiłków, `deleteMeal()`, Date Controller.
+1. **Sekcja `steps`, `camp-offer`, `faq`** — te same porządki co dziś w `philosophy`/`about`: martwe tokeny, kolejność kicker/nagłówek (jeśli dotyczy), oraz decyzja o prefiksie `//` na pozostałych 4 nagłówkach (usunąć wszędzie, zostawić jako celowy motyw, czy inny miks).
+2. **Naprawić `gradient-text` w `camp-offer__title`** — ignore w hooku jest tymczasowy, zdjąć go po naprawie (`node .claude/skills/impeccable/scripts/hook-admin.mjs ignore-value gradient-text ...` → usunąć wpis albo nadpisać po fixie).
+3. **Zaktualizować `PRODUCT.md`** — sekcja „Brand Commitments" wciąż opisuje stary „Dark Fighter", koliduje z `DESIGN.md`.
+4. **Rozstrzygnąć rozjazd rotacji taśmy w hero** (`-15°/+17°` w kodzie vs `-8°/+7°` w `DESIGN.md`) — zaktualizować dokument albo kod.
+5. **Migracja reszty CSS ze starych zmiennych:** `camp.css`, `card.css`, `filters.css`, `form.css`, `modal.css`, `banner.css`, `layout.css`.
+6. **Rozstrzygnąć rozjazd nawigacji** (z poprzedniej sesji, wciąż otwarty) — kropka `--red` Ø4px vs obecny kolor `--amber` w stanie aktywnym tabbara — i ewentualnie zaktualizować `DESIGN.md`.
+7. **Finalny wybór logo** — Karta Ważenia jest w topbarze; `.tabbar__logo` na desktopie wciąż ma tekst „KT" zamiast finalnego znaku.
+8. **`ROADMAP.md` Faza 0:** formularz leada (Web3Forms), naprawa deep-linków (`404.html`), meta/SEO/Open Graph, stopka social media, treść `/knowledge` i `/contact`.
+9. **Dashboard — pętla posiłków:** `dashboard.js` nie importuje `mealService.js` — dopiąć `getTodayMeal()`, listę zjedzonych posiłków, `deleteMeal()`, Date Controller.

@@ -14,6 +14,7 @@
     --ink-faint:color-mix(in srgb, var(--ink)  55% ,transparent);
     --bone: #efe9d8; /* Tekst podstawowy na macie (kontrast 18.9:1) */
     --bone-dim: #a79e88; /* Tekst drugorzędny na macie (kontrast 6.97:1 — AA) */
+    --bone-faint: color-mix(in srgb, var(--bone) 18%, transparent); /* Cienkie obramowania na macie */
 
     --red: #c23b2e; /* Ołówek trenera: wypełnienie CTA, duże liczby, pieczątki */
     --amber: #d98c2b; /* Kreda: tłuszcz, aktywne taby, jedyny akcent w małym tekście */

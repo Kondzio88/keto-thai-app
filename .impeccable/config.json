@@ -1,3 +1,25 @@
 {
-  "buildPath": "comp"
+  "buildPath": "comp",
+  "hook": {
+    "enabled": true,
+    "limits": {
+      "maxFindings": 5,
+      "maxChars": 8000
+    }
+  },
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gradient-text",
+        "value": "*",
+        "files": [
+          "src/styles/pages/home.css"
+        ],
+        "createdAt": "2026-09-07T15:11:59.031Z",
+        "reason": "User confirmed: camp-offer__title gradient text deferred until camp-offer section work"
+      }
+    ]
+  }
 }
