@@ -5,15 +5,14 @@ export const renderHome = () => {
     return html`
         <main>
             <!-- 1. HERO SECTION -->
-            <section class="hero">
+            <section class="hero paper">
                 <div class="hero__container page-container">
                     <div class="hero__content">
-                        <span class="hero__kicker">KETO THAI — SYSTEM METABOLICZNY</span>
                         <h1 class="hero__title">
                             <span class="hero__title-sub">TWOJE CIAŁO</span>
-                            <span class="hero__title-sub">TWOJE PALIWO</span>
                             <span class="hero__title-sub">TWOJA WALKA</span>
                         </h1>
+                        <p class="hero__tag tag">KETO THAI — SYSTEM METABOLICZNY</p>
                         <p class="hero__desc">
                             Precyzyjne makro. Sprawdzone przepisy. Protokół spalania tłuszczu oparty na 15 latach
                             doświadczeń z tajskich ringów.
@@ -21,6 +20,19 @@ export const renderHome = () => {
                         <div class="hero__actions">
                             <a href="/dashboard" class="btn btn--primary" data-link>Oblicz swoje makro</a>
                             <a href="/camp" class="btn btn--secondary" data-link>Fighter's Camp</a>
+                        </div>
+                    </div>
+
+                    <div class="hero__media">
+                        <div class="hero__photo-card">
+                            <span class="tape tape--tl" aria-hidden="true"></span>
+                            <span class="tape tape--br" aria-hidden="true"></span>
+                            <img
+                                src="${getBase()}/src/assets/homePicture.jpg"
+                                alt="Trening Muay Thai"
+                                class="hero__photo"
+                            />
+                            <figcaption class="hero__caption mono">FOTO 01 — LAMAI CAMP, KOH SAMUI</figcaption>
                         </div>
                     </div>
                 </div>

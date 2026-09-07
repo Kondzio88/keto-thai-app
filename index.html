@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pl">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,15 +7,49 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Oswald:wght@200..700&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;900&family=Martian+Mono:wght@400..700&family=Public+Sans:ital,wght@0,400..600;1,400..600&display=swap"
             rel="stylesheet"
         />
         <link rel="stylesheet" href="./src/styles/main.css" />
     </head>
     <body>
-        <!-- BOTTOM TAB BAR (PWA Navigation) -->
+        <!-- TOP BAR  -->
+        <header class="topbar" id="topbar">
+            <a href="/" data-link class="topbar__logo">
+                <svg class="topbar__logo-mark" viewBox="0 0 320 138" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Keto Thai">
+                    <text x="160" y="66" text-anchor="middle"
+                          font-family="'Big Shoulders Stencil', 'Arial Narrow', Impact, sans-serif"
+                          font-weight="900" font-size="46" letter-spacing="-1" fill="#efe9d8">KETO</text>
+                    <line x1="18" y1="80" x2="302" y2="80" stroke="#d98c2b" stroke-width="4" />
+                    <text x="160" y="128" text-anchor="middle"
+                          font-family="'Big Shoulders Stencil', 'Arial Narrow', Impact, sans-serif"
+                          font-weight="900" font-size="46" letter-spacing="-1" fill="#d98c2b">THAI</text>
+                </svg>
+            </a>
+            <button
+                type="button"
+                class="topbar__toggle"
+                id="topbar-toggle"
+                aria-expanded="false"
+                aria-controls="topbar-drawer"
+                aria-label="Więcej"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </header>
 
+        <div class="topbar__drawer" id="topbar-drawer">
+            <nav class="topbar__drawer-nav" aria-label="Więcej">
+                <a href="/knowledge" data-link>Wiedza</a>
+                <a href="/contact" data-link>Kontakt</a>
+            </nav>
+        </div>
+
+        <!-- BOTTOM TAB BAR / DESKTOP SIDEBAR (PWA Navigation) -->
         <nav class="tabbar" id="tabbar" aria-label="Main">
+            <a href="/" data-link class="tabbar__logo">KT</a>
             <a class="tabbar__link tabbar__link--active" href="/" data-link>
                 <i data-lucide="home" class="tabbar__icon"></i>
                 <span class="tabbar__label">Home</span>
@@ -28,13 +62,13 @@
                 <i data-lucide="chef-hat" class="tabbar__icon"></i>
                 <span class="tabbar__label">Przepisy</span>
             </a>
-            <a class="tabbar__link" href="/knowledge" data-link>
-                <i data-lucide="book-open" class="tabbar__icon"></i>
-                <span class="tabbar__label">Wiedza</span>
-            </a>
             <a class="tabbar__link" href="/camp" data-link>
                 <i data-lucide="swords" class="tabbar__icon"></i>
                 <span class="tabbar__label">Camp</span>
+            </a>
+            <a class="tabbar__link tabbar__link--desktop-only" href="/knowledge" data-link>
+                <i data-lucide="book-open" class="tabbar__icon"></i>
+                <span class="tabbar__label">Wiedza</span>
             </a>
             <a class="tabbar__link tabbar__link--desktop-only" href="/contact" data-link>
                 <i data-lucide="mail" class="tabbar__icon"></i>

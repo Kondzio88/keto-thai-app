@@ -21,8 +21,37 @@ const updateActiveTab = () => {
     });
 };
 
+/**
+ * Otwiera/zamyka szufladę "Więcej" w górnym pasku (topbar).
+ */
+const initTopbarDrawer = () => {
+    const topbar = document.getElementById("topbar");
+    const toggle = document.getElementById("topbar-toggle");
+    const drawer = document.getElementById("topbar-drawer");
+
+    if (!topbar || !toggle || !drawer) return;
+
+    const closeDrawer = () => {
+        topbar.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
+    };
+
+    toggle.addEventListener("click", () => {
+        const isOpen = topbar.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    // Klik w link wewnątrz szuflady zamyka ją (router obsłuży nawigację)
+    drawer.addEventListener("click", (event) => {
+        if (event.target.closest("a")) {
+            closeDrawer();
+        }
+    });
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     initRouter();
+    initTopbarDrawer();
 
     // Aktualizuj aktywną zakładkę po każdej nawigacji
     updateActiveTab();

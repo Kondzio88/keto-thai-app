@@ -1,50 +1,111 @@
 :root {
-    /* Stealth Colors */
-    --color-background: #050505;
-    --color-accent-rgb: 212, 175, 55; /* Tajskie Złoto #D4AF37 */
-    --color-accent: rgb(var(--color-accent-rgb));
-    
-    --color-tabbar-bg: rgba(5, 5, 5, 0.85); /* Dla dolnego paska PWA */
-    --cinematic-glow: radial-gradient(circle at 50% 0%, rgba(var(--color-accent-rgb), 0.05), transparent 70%);
-    --heading-luminance: linear-gradient(135deg, var(--color-accent) 0%, #f5e6c8 50%, var(--color-accent)100%);
+    /* ==========================================================================
+           1. COLOR SYSTEM (DESIGN.md — Sekcja 3)
+           Jedyna dopuszczalna paleta: 9 tokenów. Zero hexów ad-hoc w komponentach.
+           ========================================================================== */
+    --ground: #15130f; /* Tło główne — mata treningowa */
+    --ground2: #1d1a14; /* Panele na ciemnym (sidebar, dolny pasek, bloki) */
 
-    /* Macro Colors (Zgaszona Paleta Taktyczna) */
-    --color-protein: var(--color-accent); /* Tajskie Złoto #D4AF37 */
-    --color-fats: #e4e4e7; /* Zgaszona szmaragdowa zieleń */
-    --color-carbs: rgba(255, 255, 255, 0.15); /* Zgaszony koral / terakota */
+    --paper: #e7dfc6; /* Karty / strony dziennika — jedyna elewacja */
+    --paper-dim: #c9bfa0; /* Zakładki teczek, drugorzędne elementy papierowe */
 
-    /* Tekst */
-    --color-text-primary: #f9fafb;
-    --color-text-secondary: #6b7280; /* Mocno przyciemniony, by wzmocnić mrok */
-    --color-text-lead: #b0b0b0;
-    --color-input-bg: transparent; /* Brak tła inputów - tylko bottom border */
+    --ink: #1d1a14; /* Tekst na papierze (kontrast 13.0:1) */
+    --ink-dim: color-mix( in srgb, var(--ink) 77%,transparent);
+    --ink-faint:color-mix(in srgb, var(--ink)  55% ,transparent);
+    --bone: #efe9d8; /* Tekst podstawowy na macie (kontrast 18.9:1) */
+    --bone-dim: #a79e88; /* Tekst drugorzędny na macie (kontrast 6.97:1 — AA) */
 
-    /* PWA i Dostępność */
-    --safe-area-bottom: env(safe-area-inset-bottom, 1rem);
-    --focus-outline: 2px solid var(--color-accent);
+    --red: #c23b2e; /* Ołówek trenera: wypełnienie CTA, duże liczby, pieczątki */
+    --amber: #d98c2b; /* Kreda: tłuszcz, aktywne taby, jedyny akcent w małym tekście */
+    --blue: #3e6e86; /* Atrament urzędowy: węgle, linie pomiarowe, notatki */
 
-    /* Typografia (Płynna) */
-    --font-main: "Inter", system-ui, sans-serif;
-    --font-heading: "Oswald", sans-serif;
+    /* ==========================================================================
+           2. TYPOGRAFIA I KROJE PISMA (DESIGN.md — Sekcja 4)
+           ========================================================================== */
+    --font-main: "Public Sans", system-ui, -apple-system, sans-serif;
+    --font-heading: "Big Shoulders Stencil", sans-serif;
+    --font-mono: "Martian Mono", monospace;
 
-    --font-size-hero: clamp(2.5rem, 5vw, 4.5rem);
+    /* Fluid Typography (clamp) — skalowanie bez skokowych media queries */
+    --font-size-hero: clamp(2.5rem, 6vw, 6rem); /* Max 6rem (96px) wg DESIGN.md */
     --font-size-h2: clamp(2rem, 4.5vw, 3.5rem);
     --font-size-h3: clamp(1.4rem, 2.5vw, 1.8rem);
     --font-size-lead: clamp(1rem, 2vw, 1.15rem);
-    --font-size-kicker: 0.85rem;
+    --font-size-tag: 11px; /* Sztywny floor dla tagów mono */
 
-    /* Fluid Spacing (Matematyczne odstępy) */
+    /* Tracking (letter-spacing) wg reguł z craft-floor.md */
+    --tracking-display: -0.02em; /* Nigdy poniżej -0.04em */
+    --tracking-mono: 0.06em; /* Uppercase tagi i dane */
+
+    /* ==========================================================================
+           3. FLUID SPACING (Zachowany rytm matematyczny)
+           ========================================================================== */
     --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
     --spacing-sm: clamp(0.5rem, 2vw, 0.75rem);
     --spacing-md: clamp(1rem, 3vw, 1.5rem);
     --spacing-lg: clamp(1.5rem, 4vw, 3rem);
     --spacing-xl: clamp(3rem, 6vw, 6rem);
+
+    /* ==========================================================================
+           4. PWA I DOSTĘPNOŚĆ (A11Y)
+           ========================================================================== */
+    --safe-area-bottom: env(safe-area-inset-bottom, 1rem);
+    --focus-outline: 2px solid var(--amber); /* Amber ma kontrast 6.8:1 na ground */
 }
 
+/* ==========================================================================
+       GLOBAL RESET I BAZA BODY
+       ========================================================================== */
 body {
     font-family: var(--font-main);
-    color: var(--color-text-primary);
-    background-color: var(--color-background);
+    color: var(--bone);
+    background-color: var(--ground);
+    line-height: 1.6;
     overflow-x: hidden;
-    -webkit-tap-highlight-color: transparent; /* PWA: Blokada systemowego podświetlenia na dotyk */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ==========================================================================
+       GLOBALNE KLASY NARZĘDZIOWE ŚWIATA (DESIGN.md)
+       ========================================================================== */
+.stencil {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+    line-height: 1.05;
+}
+
+.mono,
+.tag {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+}
+
+.paper {
+    background-color: var(--paper);
+    color: var(--ink);
+}
+
+.stamp {
+    display: inline-block;
+    border: 3px solid var(--red);
+    color: var(--red);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    padding: 8px 14px;
+    transform: rotate(-6deg);
+}
+
+.hole {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: var(--ground);
+    flex-shrink: 0;
 }
