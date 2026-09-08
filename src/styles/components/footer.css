@@ -1,0 +1,137 @@
+/* ================================================
+   SITE FOOTER — globalny, poza #app, widoczny na
+   każdej trasie. "Ostatnia strona dziennika": kraft
+   papier (.paper), ta sama linia perforacji co
+   w .steps / .accordion, żadnej nowej dekoracji.
+   ================================================ */
+
+.site-footer {
+    padding: var(--spacing-xl) 0 calc(4.5rem + var(--safe-area-bottom));
+}
+
+.site-footer__top {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px dashed var(--ink-faint);
+}
+
+.site-footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.site-footer__logo {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+}
+
+.site-footer__tagline {
+    color: var(--ink-dim);
+    font-size: 0.95rem;
+    max-width: 40ch;
+}
+
+.site-footer__nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.site-footer__nav a {
+    color: var(--ink-dim);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.site-footer__nav a:hover {
+    color: var(--red);
+}
+
+.site-footer__contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+}
+
+.site-footer__contact-label {
+    color: var(--ink-dim);
+}
+
+.site-footer__email {
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid var(--ink-faint);
+}
+
+.site-footer__email:hover {
+    color: var(--red);
+    border-color: var(--red);
+}
+
+.site-footer__socials {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.site-footer__social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    color: var(--ink);
+    transition: color 0.2s ease;
+}
+
+.site-footer__social:hover {
+    color: var(--red);
+}
+
+.site-footer__social svg {
+    width: 18px;
+    height: 18px;
+}
+
+.site-footer__bottom {
+    padding-top: var(--spacing-lg);
+    text-align: center;
+}
+
+.site-footer__copyright {
+    color: var(--ink-faint);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+@media (min-width: 768px) {
+    .site-footer {
+        /* Czyści boczny sidebar tabbara na desktopie — te same wartości co #app w layout.css */
+        padding-left: 5rem;
+        padding-bottom: var(--spacing-xl);
+    }
+
+    .site-footer__top {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .site-footer__nav {
+        flex-direction: row;
+        gap: var(--spacing-lg);
+    }
+
+    .site-footer__bottom {
+        text-align: left;
+    }
+}

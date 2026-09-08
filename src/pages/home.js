@@ -42,11 +42,11 @@ export const renderHome = () => {
             <!-- 2. PHILOSOPHY SECTION -->
             <section class="philosophy">
                 <div class="philosophy__container container">
-                    <h2 class="philosophy__title">Dlaczego Keto Thai?</h2>
+                    <h2 class="philosophy__title reveal">Dlaczego Keto Thai?</h2>
                     <span class="philosophy__kicker tag">3 filary systemu</span>
-                    <div class="philosophy__grid reveal">
+                    <div class="philosophy__grid">
                         <!-- KARTA 1 -->
-                        <article class="philosophy__card philosophy__card--scorecard">
+                        <article class="philosophy__card philosophy__card--scorecard reveal">
                             <header class="philosophy__card-header">
                                 <i data-lucide="beef" class="philosophy__naked-icon"></i>
                               
@@ -66,7 +66,7 @@ export const renderHome = () => {
                         </article>
 
                         <!-- KARTA 2 -->
-                        <article class="philosophy__card  philosophy__card--note">
+                        <article class="philosophy__card philosophy__card--note reveal">
                             <header class="philosophy__card-header">
                                 <i data-lucide="brain" class="philosophy__naked-icon"></i>
                             </header>
@@ -90,7 +90,7 @@ export const renderHome = () => {
                         </article>
 
                         <!-- KARTA 3 -->
-                        <article class="philosophy__card philosophy__card--stamp">
+                        <article class="philosophy__card reveal">
                             <header class="philosophy__card-header">
                                 <i data-lucide="line-chart" class="philosophy__naked-icon"></i>
                             </header>
@@ -98,7 +98,7 @@ export const renderHome = () => {
                             <p class="philosophy__card-desc">
                                 Panel analityczny monitoruje Twoje makro i wagę z precyzją. Zawsze wiesz, gdzie jesteś.
                             </p>
-                            <div class="philosophy__mockup">
+                            <div class="philosophy__mockup philosophy__mockup--stamped">
                                 <span class="mockup__label">METRYKA</span>
                                 <div class="metrics-grid">
                                     <div class="metric-box">
@@ -184,24 +184,24 @@ export const renderHome = () => {
 
             <section class="steps">
                 <div class="steps__container container">
-                    <h2 class="steps__title">Twój plan działania</h2>
+                    <h2 class="steps__title reveal">Twój plan działania</h2>
 
                     <div class="timeline">
-                        <!-- Krok 1 (Onboarding) -->
+                        <!-- Wpis 01 (Onboarding) -->
                         <div class="timeline__item reveal">
                             <div class="timeline__content reveal reveal--left">
-                                <span class="timeline__step-num">Krok 1</span>
                                 <h3 class="timeline__subtitle">Oblicz swoje makro</h3>
+                                <span class="timeline__step-num">Krok 1</span>
                                 <p class="timeline__desc">
                                     Koniec ze zgadywaniem. Wypełnij krótki kwestionariusz, a nasz system wyliczy
                                     dokładne zapotrzebowanie na czyste, ketogeniczne paliwo na podstawie Twojego celu.
                                 </p>
                             </div>
 
-                            <div class="timeline__marker"></div>
-
                             <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Onboardingu -->
+                                <span class="tape tape--tl" aria-hidden="true"></span>
+                                <span class="tape tape--br" aria-hidden="true"></span>
                                 <img
                                     src="${getBase()}/src/assets/iphonMobileOnboarding.png"
                                     alt="Widok kwestionariusza aplikacji"
@@ -210,21 +210,21 @@ export const renderHome = () => {
                             </div>
                         </div>
 
-                        <!-- Krok 2 (Przepisy) -->
+                        <!-- Wpis 02 (Przepisy) -->
                         <div class="timeline__item reveal">
                             <div class="timeline__content reveal reveal--left">
-                                <span class="timeline__step-num">Krok 2</span>
                                 <h3 class="timeline__subtitle">Odkrywaj keto smaki</h3>
+                                <span class="timeline__step-num">Krok 2</span>
                                 <p class="timeline__desc">
                                     Otrzymujesz dostęp do bazy tajskich i klasycznych dań. Filtruj posiłki po kaloriach
                                     i kategoriach, by zawsze trzymać się wytyczonego planu.
                                 </p>
                             </div>
 
-                            <div class="timeline__marker"></div>
-
                             <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Przepisów -->
+                                <span class="tape tape--tl" aria-hidden="true"></span>
+                                <span class="tape tape--br" aria-hidden="true"></span>
                                 <img
                                     src="${getBase()}/src/assets/iphonMobileRecipes.png"
                                     alt="Widok bazy przepisów w aplikacji"
@@ -233,21 +233,21 @@ export const renderHome = () => {
                             </div>
                         </div>
 
-                        <!-- Krok 3 (Dashboard) -->
+                        <!-- Wpis 03 (Dashboard) -->
                         <div class="timeline__item reveal">
                             <div class="timeline__content reveal reveal--left">
-                                <span class="timeline__step-num">Krok 3</span>
                                 <h3 class="timeline__subtitle">Śledź swój progres</h3>
+                                <span class="timeline__step-num">Krok 3</span>
                                 <p class="timeline__desc">
                                     Zapisuj wagę, analizuj wykresy i obserwuj, jak Twoje ciało staje się maszyną do
                                     spalania tłuszczu. Liczby na Twoim Dashboardzie nie kłamią.
                                 </p>
                             </div>
 
-                            <div class="timeline__marker"></div>
-
                             <div class="timeline__visual reveal reveal--right">
                                 <!-- Podmień ścieżkę do swojego zdjęcia Dashboardu -->
+                                <span class="tape tape--tl" aria-hidden="true"></span>
+                                <span class="tape tape--br" aria-hidden="true"></span>
                                 <img
                                     src="${getBase()}/src/assets/iphonMobileDashboard.png"
                                     alt="Widok wykresów progresu"
@@ -259,22 +259,34 @@ export const renderHome = () => {
                 </div>
             </section>
 
-            <!-- 5 CAMP OFER SECTION  -->
+            <!-- 5. CAMP OFFER SECTION -->
 
             <section class="camp-offer">
                 <div class="camp-offer__container container">
                     <div class="camp-offer__card reveal">
                         <div class="camp-offer__content">
-                            <span class="camp-offer__badge">Program Hybrydowy</span>
-                            <h2 class="camp-offer__title">12 Tygodniowy Fighter's Camp</h2>
-                            <p class="camp-offer__desc">Połącz dietę keto z reżimem treningowym pod moim okiem!</p>
+                            <span class="camp-offer__stamp stamp">Program Hybrydowy</span>
+
+                            <div class="camp-offer__weeks">
+                                <span class="camp-offer__weeks-num">12</span>
+                                <span class="camp-offer__weeks-unit">Tygodni<br />Transformacji</span>
+                            </div>
+
+                            <h2 class="camp-offer__title">12-Tygodniowy Fighter's Camp</h2>
+                            <p class="camp-offer__desc">
+                                To nie kolejna apka z licznikiem kalorii. Codzienny kontakt, cotygodniowa analiza
+                                wideo i korekta makro w czasie rzeczywistym — dokładnie tak, jak rozliczam
+                                zawodników na macie.
+                            </p>
                             <ul class="camp-offer__list">
                                 <li>
-                                    <i data-lucide="shield-check" class="camp-offer--icon"></i>Indywidualne Prowadzenie
+                                    <i data-lucide="message-circle" class="camp-offer--icon"></i>Codzienny kontakt i rozliczanie
                                 </li>
-                                <li><i data-lucide="shield-check" class="camp-offer--icon"></i>Analiza postępów</li>
                                 <li>
-                                    <i data-lucide="shield-check" class="camp-offer--icon"></i>Dietetyczne wsparcie PRO
+                                    <i data-lucide="video" class="camp-offer--icon"></i>Cotygodniowa sesja wideo (30 min)
+                                </li>
+                                <li>
+                                    <i data-lucide="activity" class="camp-offer--icon"></i>Korekta makro w czasie rzeczywistym
                                 </li>
                             </ul>
 
@@ -296,12 +308,27 @@ export const renderHome = () => {
 
             <section class="faq">
                 <div class="faq__container container">
-                    <h2 class="faq__title">Najczęsciej zadawane pytania</h2>
+                    <h2 class="faq__title reveal">Najczęściej zadawane pytania</h2>
 
                     <div class="accordion">
                         <div class="accordion__item">
                             <button class="accordion__header">
-                                <span class="accordion__question">Czy dieta keto jest bezpieczna</span>
+                                <span class="accordion__question">Czym właściwie jest dieta ketogeniczna?</span>
+                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                            </button>
+
+                            <div class="accordion__content">
+                                <p class="accordion__answer">
+                                    To sposób odżywiania, który przestawia organizm z czerpania energii z węglowodanów
+                                    na spalanie tłuszczu (stan ketozy) — bardzo niska podaż węglowodanów, wysoka
+                                    tłuszczów, umiarkowana białka.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="accordion__item">
+                            <button class="accordion__header">
+                                <span class="accordion__question">Czy dieta keto jest bezpieczna?</span>
                                 <i data-lucide="chevron-down" class="accordion__icon"></i>
                             </button>
 
@@ -386,6 +413,21 @@ export const renderHome = () => {
                                 <p class="accordion__answer">
                                     Nasz kalkulator opiera się na specyfice sportów o wysokiej intensywności,
                                     automatycznie wylicza sztywny keto-split i daje gotowe, przetestowane receptury.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="accordion__item">
+                            <button class="accordion__header">
+                                <span class="accordion__question">Czy aplikacja jest płatna?</span>
+                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                            </button>
+
+                            <div class="accordion__content">
+                                <p class="accordion__answer">
+                                    Kalkulator, przepisy i tracker są całkowicie darmowe. Jeśli chcesz przyspieszyć
+                                    efekty pod moim okiem, oferuję dodatkowo płatny 12-tygodniowy Fighter's Camp
+                                    z indywidualnym mentoringiem.
                                 </p>
                             </div>
                         </div>

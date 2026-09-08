@@ -12,13 +12,13 @@
     "ignoreFiles": [],
     "ignoreValues": [
       {
-        "rule": "gradient-text",
+        "rule": "layout-transition",
         "value": "*",
         "files": [
-          "src/styles/pages/home.css"
+          "src/styles/components/topbar.css"
         ],
-        "createdAt": "2026-09-07T15:11:59.031Z",
-        "reason": "User confirmed: camp-offer__title gradient text deferred until camp-offer section work"
+        "createdAt": "2026-09-08T07:10:34.701Z",
+        "reason": "6-item text-only mobile drawer, negligible layout cost; grid-template-rows alternative caused a real collapse bug in the user's browser (reverted after user report)"
       }
     ]
   }

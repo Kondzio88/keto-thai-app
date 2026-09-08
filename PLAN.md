@@ -4,6 +4,10 @@ Aplikacja "Keto Thai" to nowoczesna aplikacja typu **SPA (Single Page Applicatio
 
 - **Renderowanie:** Cały interfejs jest wstrzykiwany dynamicznie do jednego pliku `index.html` przez czysty JavaScript (Client-Side Rendering).
 - **Routing:** Własny silnik oparty na `History API` (`window.history.pushState` i zdarzeniu `popstate`), wykorzystujący zjawisko Event Delegation do przechwytywania nawigacji.
+- **Guard Onboarding ↔ Dashboard (`src/router.js`, `renderContent`):** przed renderem trasy silnik sprawdza `getUser()` (`src/services/userService.js`, odczyt `localStorage["keto_user"]`).
+    - Brak zapisanego użytkownika (`!user`) i próba wejścia na trasę spoza białej listy publicznych ścieżek (`/`, `/onboarding`, `/recipes`, `/knowledge`, `/contact`, `/camp`) → twarde przekierowanie na `/onboarding` (obecnie jedyna trasa poza tą listą to `/dashboard`, więc de facto: niezapisany użytkownik nie wejdzie na Dashboard bez przejścia Onboardingu).
+    - Zapisany użytkownik (`user` istnieje) i próba wejścia na `/onboarding` → przekierowanie na `/dashboard` (nie przechodzi ponownie kwestionariusza).
+    - Przekierowanie robione przez `window.history.replaceState` (nie dokłada wpisu do historii przeglądarki).
 - **Zarządzanie Stanem (State Management):** Ścisłe oddzielenie warstwy danych od interfejsu. Historia wagi, zjedzone posiłki i ustawienia użytkownika będą przetrzymywane w globalnym obiekcie stanu, zapisywanym do `localStorage` (a docelowo w chmurze Supabase). Zmiana danych automatycznie wywołuje funkcję odświeżającą powiązane elementy na ekranie.
 - **Wydajność (Performance):** Zastosowanie techniki _Debounce_ przy wyszukiwaniu oraz _Intersection Observer_ do animacji, aby aplikacja działała w stałych 60 FPS.
 

@@ -142,6 +142,17 @@
     gap: var(--spacing-lg);
 }
 
+/* Karty wjeżdżają jedna po drugiej, nie wszystkie naraz */
+.philosophy__grid .philosophy__card:nth-child(1) {
+    transition-delay: 0s;
+}
+.philosophy__grid .philosophy__card:nth-child(2) {
+    transition-delay: 0.15s;
+}
+.philosophy__grid .philosophy__card:nth-child(3) {
+    transition-delay: 0.3s;
+}
+
 .philosophy__card {
     position: relative;
     display: flex;
@@ -429,7 +440,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: -1px; /* Ciasne ułożenie */
-    color: var(--color-text-primary);
+    color: var(--bone);
 }
 
 .timeline__item {
@@ -440,14 +451,22 @@
     gap: var(--spacing-lg);
 }
 
+/* Linia perforacji między wpisami dziennika — zamiast łączącej, świecącej osi */
+.timeline__item:not(:first-child) {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-xl);
+    border-top: 1px dashed var(--bone-faint);
+}
+
 .timeline__step-num {
     display: block;
-    font-size: var(--font-size-kicker); /* Używamy zmiennej z global.css! */
-    font-weight: 800;
-    letter-spacing: 3px; /* Szeroki rozstaw liter */
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px; /* Szeroki rozstaw liter */
     text-transform: uppercase;
-    color: var(--color-accent);
-    margin-bottom: var(--spacing-xs);
+    color: var(--amber);
+    margin-bottom: var(--spacing-sm);
 }
 
 .timeline__subtitle {
@@ -456,7 +475,7 @@
     font-size: var(--font-size-h3);
     line-height: 1.2;
     margin-bottom: var(--spacing-xs);
-    color: var(--color-text-primary);
+    color: var(--bone);
     letter-spacing: -0.5px;
 }
 
@@ -464,18 +483,17 @@
     max-width: 400px;
     font-size: 1.1rem;
     line-height: 1.65;
-    color: var(--color-text-secondary);
+    color: var(--bone-dim);
+}
+
+.timeline__visual {
+    position: relative;
 }
 
 .timeline__image {
     width: 100%;
     max-width: 300px;
     margin: 0 auto;
-    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 15px rgba(var(--color-accent-rgb), 0.12));
-}
-
-.timeline__marker {
-    display: none;
 }
 
 /* CAMP-OFfER SECTION */
@@ -489,7 +507,8 @@
     grid-template-columns: 1fr;
     gap: var(--spacing-xl);
     align-items: center;
-    /* CELOWO USUNIĘTE: background, border, box-shadow, padding - teraz sekcja oddycha mrokiem */
+    background-color: var(--paper);
+    padding: var(--spacing-lg);
 }
 
 .camp-offer__content {
@@ -499,17 +518,32 @@
     gap: var(--spacing-md);
 }
 
-.camp-offer__badge {
+.camp-offer__stamp {
     align-self: flex-start;
-    padding: var(--spacing-xs) var(--spacing-md);
-    font-size: var(--font-size-kicker);
-    letter-spacing: 2px;
-    text-transform: uppercase;
+}
+
+.camp-offer__weeks {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-sm);
+}
+
+.camp-offer__weeks-num {
+    font-family: var(--font-heading);
+    font-size: clamp(4rem, 10vw, 6rem);
+    font-weight: 900;
+    line-height: 0.85;
+    color: var(--red);
+}
+
+.camp-offer__weeks-unit {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
     font-weight: 700;
-    background-color: rgba(var(--color-accent-rgb), 0.12);
-    border: 1px solid rgba(var(--color-accent-rgb), 0.3);
-    color: var(--color-accent);
-    border-radius: 999px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    line-height: 1.3;
 }
 
 .camp-offer__title {
@@ -519,14 +553,11 @@
     font-weight: 800;
     line-height: 1.15;
     text-transform: uppercase;
-    background: linear-gradient(135deg, #ffffff 20%, var(--color-accent) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--ink);
 }
 
 .camp-offer__desc {
-    color: var(--color-text-secondary);
+    color: var(--ink-dim);
     font-size: 1.1rem;
     line-height: 1.6;
 }
@@ -543,11 +574,11 @@
     gap: var(--spacing-sm);
     font-size: 1.05rem;
     font-weight: 500;
-    color: var(--color-text-primary);
+    color: var(--ink);
 }
 
 .camp-offer--icon {
-    color: var(--color-accent);
+    color: var(--red);
     width: 20px;
     height: 20px;
     flex-shrink: 0;
@@ -582,31 +613,22 @@
     text-align: center;
     font-size: var(--font-size-h2);
     margin-bottom: var(--spacing-lg);
+    color: var(--bone);
 }
 
 .accordion {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
 }
 
 .accordion__item {
-    padding: var(--spacing-md);
-    background-color: var(--color-surface);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: var(--spacing-md) 0;
     transition: all 0.3s ease;
 }
 
-.accordion__item.is-active {
-    border-color: rgba(var(--color-accent-rgb), 0.4);
-    box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(var(--color-accent-rgb), 0.08);
-}
-
-.accordion__item:hover {
-    border-color: rgba(255, 255, 255, 0.2);
+/* Linia perforacji między pytaniami — ten sam motyw co w .steps */
+.accordion__item:not(:first-child) {
+    border-top: 1px dashed var(--bone-faint);
 }
 
 .accordion__header {
@@ -623,11 +645,16 @@
 
 .accordion__question {
     font-size: 1.3rem;
-    color: var(--color-text-primary);
+    color: var(--bone);
+    transition: color 0.2s ease;
+}
+
+.accordion__item:hover .accordion__question {
+    color: var(--amber);
 }
 
 .accordion__icon {
-    color: var(--color-text-primary);
+    color: var(--bone);
     transition: transform 0.3s ease;
     flex-shrink: 0;
 }
@@ -638,7 +665,7 @@
 
 .accordion__item.is-active .accordion__question,
 .accordion__item.is-active .accordion__icon {
-    color: var(--color-accent);
+    color: var(--amber);
     font-weight: 700;
 }
 
@@ -654,7 +681,7 @@
 }
 
 .accordion__answer {
-    color: var(--color-text-secondary);
+    color: var(--bone-dim);
     font-size: 1.05rem;
     opacity: 0;
     line-height: 1.6;
@@ -705,22 +732,7 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 80px;
         padding: var(--spacing-lg);
-    }
-
-    /* Oś czasu podzielona na niezależne segmenty 
-       (łączą środek obecnego kroku ze środkiem następnego) */
-    .timeline__item:not(:last-child)::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        height: calc(100% + 80px); /* 100% kafelka + 80px marginesu do następnego */
-        width: 2px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(var(--color-accent-rgb), 0.15);
-        z-index: 0;
     }
 
     .timeline__item:nth-child(even) {
@@ -740,81 +752,6 @@
         width: 45%;
     }
 
-    .timeline__marker {
-        position: absolute;
-        left: 50%;
-        top: 50%; /* Fizyczne wyśrodkowanie markera w pionie */
-        transform: translate(-50%, -50%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background-color: var(--color-background);
-        border: 1px solid rgba(var(--color-accent-rgb), 0.5);
-        box-shadow: 0 0 20px rgba(var(--color-accent-rgb), 0.4);
-        z-index: 2; /* Marker jest ZAWSZE nad linią */
-    }
-
-    /* Animacja dla KÓŁEK (Usunięto opacity, aby czarne tło kółka było zawsze 100% nieprzezroczyste) */
-    @keyframes nodeLightUp {
-        0% {
-            filter: brightness(0.3);
-        }
-        50% {
-            filter: brightness(1.3);
-        }
-        100% {
-            filter: brightness(0.3);
-        }
-    }
-
-    /* Animacja dla ODCINKÓW LINII */
-    @keyframes lineLightUp {
-        0% {
-            background-color: rgba(var(--color-accent-rgb), 0.15);
-            box-shadow: none;
-        }
-        50% {
-            background-color: var(--color-accent);
-            box-shadow: 0 0 15px var(--color-accent);
-        }
-        100% {
-            background-color: rgba(var(--color-accent-rgb), 0.15);
-            box-shadow: none;
-        }
-    }
-
-    @supports (animation-timeline: view()) {
-        .timeline__marker {
-            animation: nodeLightUp linear both;
-            animation-timeline: view();
-            animation-range: cover 0% cover 100%;
-        }
-
-        .timeline__item:not(:last-child)::before {
-            animation: lineLightUp linear both;
-            animation-timeline: view();
-            animation-range: cover 0% cover 100%;
-        }
-    }
-
-    .timeline__node-num {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background-color: var(--color-accent);
-        color: #000000;
-        font-weight: 800;
-        font-family: var(--font-heading);
-        font-size: 0.9rem;
-        box-shadow: 0 0 10px var(--color-accent);
-    }
-
     .camp-offer__card {
         grid-template-columns: repeat(2, 1fr);
         gap: var(--spacing-xl);
@@ -827,30 +764,6 @@
     }
 }
 
-/* ------------------------------------- */
-/* TACTICAL TERMINAL TITLES (SLASH //)  */
-/* ------------------------------------- */
-
-.steps__title,
-.camp-offer__title,
-.faq__title,
-.philosophy__title {
-    /* Upewniamy się, że same tytuły są czyste i brutalistyczne (wymusza błędy z gradientami) */
-    color: var(--color-text-primary);
-    background: none;
-    -webkit-text-fill-color: initial;
-}
-
-.steps__title::before,
-.camp-offer__title::before,
-.faq__title::before,
-.philosophy__title::before {
-    content: "// ";
-    color: var(--color-accent);
-    font-weight: 900;
-    margin-right: 12px;
-    opacity: 0.8;
-}
 
 /* REVEAL SCROOL CLASSES */
 

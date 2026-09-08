@@ -79,7 +79,7 @@
 }
 
 .topbar.is-open + .topbar__drawer {
-    max-height: 160px;
+    max-height: 60vh;
 }
 
 .topbar__drawer-nav {

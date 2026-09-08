@@ -34,17 +34,6 @@
     padding-left: var(--spacing-md);
 }
 
-.page-header__title {
-    font-family: var(--font-heading);
-    font-size: 2.5rem;
-    text-transform: uppercase;
-    line-height: 1.2;
-}
-
-.page-header__desc {
-    color: var(--color-text-secondary);
-    font-size: 1.1rem;
-}
 
 .grid-layout {
     display: grid;
