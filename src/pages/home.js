@@ -6,18 +6,20 @@ export const renderHome = () => {
         <main>
             <!-- 1. HERO SECTION -->
             <section class="hero paper">
-            <span class="hero__stamp stamp">SEZON 01</span>
+                <span class="hero__stamp stamp">SEZON 01</span>
                 <div class="hero__container page-container">
                     <div class="hero__content">
                         <h1 class="hero__title">
                             <span class="hero__title-sub">TWOJE CIAŁO</span>
                             <span class="hero__title-sub">TWOJA WALKA</span>
                         </h1>
-                        <p class="hero__tag tag">Kalkulator makro i przepisy keto — dla aktywnych i dla tych, którzy dopiero zaczynają</p>
+                        <p class="hero__tag tag">
+                            Kalkulator makro i przepisy keto — dla aktywnych i dla tych, którzy dopiero zaczynają
+                        </p>
                         <p class="hero__desc">
-                            Stabilna energia, zero zjazdów mocy — metoda wykuta w 15 latach treningu Muay Thai
-                            i dopracowana w tajskich campach, przełożona na precyzyjny plan makro i sprawdzone
-                            przepisy. Bez rejestracji, wynik od razu.
+                            Stabilna energia, zero zjazdów mocy — metoda wykuta w 15 latach treningu Muay Thai i
+                            dopracowana w tajskich campach, przełożona na precyzyjny plan makro i sprawdzone przepisy.
+                            Bez rejestracji, wynik od razu.
                         </p>
                         <div class="hero__actions">
                             <a href="/dashboard" class="btn btn--primary" data-link>Oblicz swój plan</a>
@@ -50,7 +52,6 @@ export const renderHome = () => {
                         <article class="philosophy__card philosophy__card--scorecard reveal">
                             <header class="philosophy__card-header">
                                 <i data-lucide="beef" class="philosophy__naked-icon"></i>
-                              
                             </header>
                             <h3 class="philosophy__card-title">Czyste Paliwo</h3>
                             <p class="philosophy__card-desc">
@@ -77,7 +78,7 @@ export const renderHome = () => {
                                 który nie odpuszcza — w treningu i przy każdym posiłku.
                             </p>
                             <div class="philosophy__mockup">
-                                <span class="mockup__label">SERIA [PRZYKŁAD]</span>
+                                <span class="mockup__label">SERIA</span>
                                 <div class="streak-grid">
                                     <div class="streak-box is-active"></div>
                                     <div class="streak-box is-active"></div>
@@ -143,7 +144,9 @@ export const renderHome = () => {
                             </p>
                             <div class="about__author">
                                 <div class="about__author-name">Konrad Jacoszek</div>
-                                <div class="about__author-role">Instruktor Muay Thai (MEN) · dietetyka kliniczna (w trakcie)</div>
+                                <div class="about__author-role">
+                                    Instruktor Muay Thai (MEN) · dietetyka kliniczna (w trakcie)
+                                </div>
                             </div>
                         </div>
 
@@ -277,8 +280,8 @@ export const renderHome = () => {
                                 <h3 class="timeline__subtitle">Śledź swój progres</h3>
                                 <span class="timeline__step-num">Krok 3</span>
                                 <p class="timeline__desc">
-                                    Zapisuj wagę, analizuj wykresy i obserwuj, jak Twoje ciało staje się maszyną do
-                                    spalania tłuszczu. Liczby na Twoim Dashboardzie nie kłamią.
+                                    Zapisuj wagę, analizuj wykresy i obserwuj, jak Twoje ciało adaptuje się do pracy na
+                                    tłuszczu jako paliwie. Liczby na Twoim Dashboardzie nie kłamią.
                                 </p>
                             </div>
 
@@ -312,19 +315,22 @@ export const renderHome = () => {
 
                             <h2 class="camp-offer__title">12-Tygodniowy Fighter's Camp</h2>
                             <p class="camp-offer__desc">
-                                To nie kolejna apka z licznikiem kalorii. Codzienny kontakt, cotygodniowa analiza
-                                wideo i korekta makro w czasie rzeczywistym — dokładnie tak, jak rozliczam
-                                zawodników na macie.
+                                To nie kolejna apka z licznikiem kalorii. Codzienny kontakt, cotygodniowa analiza wideo
+                                i korekta makro w czasie rzeczywistym — dokładnie tak, jak rozliczam zawodników na
+                                macie.
                             </p>
                             <ul class="camp-offer__list">
                                 <li>
-                                    <i data-lucide="message-circle" class="camp-offer--icon"></i>Codzienny kontakt i rozliczanie
+                                    <i data-lucide="message-circle" class="camp-offer--icon"></i>Codzienny kontakt i
+                                    rozliczanie
                                 </li>
                                 <li>
-                                    <i data-lucide="video" class="camp-offer--icon"></i>Cotygodniowa sesja wideo (30 min)
+                                    <i data-lucide="video" class="camp-offer--icon"></i>Cotygodniowa sesja wideo (30
+                                    min)
                                 </li>
                                 <li>
-                                    <i data-lucide="activity" class="camp-offer--icon"></i>Korekta makro w czasie rzeczywistym
+                                    <i data-lucide="activity" class="camp-offer--icon"></i>Korekta makro w czasie
+                                    rzeczywistym
                                 </li>
                             </ul>
 
@@ -372,7 +378,7 @@ export const renderHome = () => {
 
                             <div class="accordion__content">
                                 <p class="accordion__answer">
-                                    Tak , o ile jest prowadzona z głową. Mam w tym kilku letnie doświadczenie.
+                                    Tak , o ile jest prowadzona z głową. Mam w tym kilkuletnie doświadczenie.
                                 </p>
                             </div>
                         </div>
@@ -464,11 +470,28 @@ export const renderHome = () => {
                             <div class="accordion__content">
                                 <p class="accordion__answer">
                                     Kalkulator, przepisy i tracker są całkowicie darmowe. Jeśli chcesz przyspieszyć
-                                    efekty pod moim okiem, oferuję dodatkowo płatny 12-tygodniowy Fighter's Camp
-                                    z indywidualnym mentoringiem.
+                                    efekty pod moim okiem, oferuję dodatkowo płatny 12-tygodniowy Fighter's Camp z
+                                    indywidualnym mentoringiem.
                                 </p>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. FINAL CTA SECTION -->
+            <section class="final-cta paper">
+                <div class="final-cta__container container reveal">
+                    <div class="final-cta__holes" aria-hidden="true">
+                        <span class="hole"></span>
+                        <span class="hole"></span>
+                    </div>
+                    <span class="final-cta__stamp stamp">START</span>
+                    <h2 class="final-cta__title">Zacznij dziś, albo idź na całość</h2>
+                    <span class="final-cta__kicker tag">Wybierz swoją ścieżkę</span>
+                    <div class="final-cta__actions">
+                        <a href="/dashboard" class="btn btn--primary" data-link>Rozpocznij za darmo</a>
+                        <a href="/camp" class="btn btn--secondary" data-link>Zobacz pełny program mentoringowy</a>
                     </div>
                 </div>
             </section>

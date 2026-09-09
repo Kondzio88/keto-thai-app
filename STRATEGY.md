@@ -4,7 +4,7 @@ Aplikacja Keto Thai działa w modelu Product-Led Growth. Nie jest produktem, na 
 
 Archetyp Wojownika (Szeroki Rynek): Wychodzimy poza dosłowność sportów walki. "Wojownik" to stan umysłu. Marka jest skierowana do każdej osoby aktywnej fizycznie, która szuka dyscypliny, chce przełamać stagnację i traktuje swoje ciało poważnie.
 
-Budowa Autorytetu: Połączenie 15 lat twardego doświadczenia sportowego (mentalność z tajskich campów) z twardą wiedzą z zakresu dietetyki klinicznej (hormony, ketoza, insulinooporność).
+Budowa Autorytetu: Połączenie 15 lat treningu Muay Thai, dopracowanego w tajskich campach, z twardą wiedzą z zakresu dietetyki klinicznej (hormony, ketoza, insulinooporność).
 
 Automatyczna Kwalifikacja: Aplikacja edukuje klienta. Kiedy użytkownik sam skorzysta z przepisów i poczyta Twoje artykuły, staje się "ciepłym leadem" gotowym na zakup usług premium.
 

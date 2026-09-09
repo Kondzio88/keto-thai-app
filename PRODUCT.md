@@ -24,7 +24,7 @@ Produkt działa w modelu Product-Led Growth jako zaawansowany darmowy "Lead Magn
 
 ## Positioning
 
-Unikalne połączenie 15 lat twardego doświadczenia sportowego (mentalność z tajskich campów Muay Thai) z twardą wiedzą z zakresu dietetyki klinicznej (hormony, ketoza, insulinooporność). Aplikacja nie coachuje miękko, lecz "rejestruje" wyniki. Przenosi rygor sportowy (sędziowska karta punktacji, fizyczny dziennik) na dyscyplinę żywieniową.
+Unikalne połączenie 15 lat treningu Muay Thai, dopracowanego w tajskich campach (Lamai Muay Thai Camp, Koh Samui), z twardą wiedzą z zakresu dietetyki klinicznej (hormony, ketoza, insulinooporność). Aplikacja nie coachuje miękko, lecz "rejestruje" wyniki. Przenosi rygor sportowy (sędziowska karta punktacji, fizyczny dziennik) na dyscyplinę żywieniową.
 
 ## Operating Context
 

@@ -57,12 +57,18 @@
 /* ==========================================================================
        GLOBAL RESET I BAZA BODY
        ========================================================================== */
+html {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+}
+
 body {
     font-family: var(--font-main);
     color: var(--bone);
     background-color: var(--ground);
     line-height: 1.6;
     overflow-x: hidden;
+    overscroll-behavior-x: none;
     -webkit-tap-highlight-color: transparent;
 }
 

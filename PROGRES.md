@@ -48,20 +48,49 @@ Kontynuacja tego samego dnia, po audycie z cz. 1 — realne przepisanie copy w `
 
 ---
 
+### Sesja 2026-09-09 (cz. 3) — Finałowe CTA, fix przewijania na mobile, audyt i plan `/camp`
+
+1. **🐛 Naprawiony bug: strona „wyjeżdżała" w bok przy przewijaniu palcem na mobile.** Diagnoza: `overflow-x: hidden` było ustawione **wyłącznie na `body`**, a fizykę gestu przeciągania przeglądarki mobilne liczą względem `<html>` (`documentElement`); dodatkowo klasa `.reveal` (`transform: translateY(40px)`) tworzy własny kontekst pozycjonowania, przez co przycinanie na poziomie `body` nie domykało się. Poprawka w `global.css`: `overflow-x: hidden` **oraz** `overscroll-behavior-x: none` na `html` i na `body`. **Rozróżnienie warte zapamiętania:** `overflow` przycina treść *wizualnie*, `overscroll-behavior` steruje *fizyką gestu* (rubber-band i propagacja scrolla do rodzica) — to dwie różne rzeczy i tu potrzebne były obie.
+
+2. **✅ Finałowe CTA wdrożone** — domyka priorytet 🔴1 z `MARKETING.md` i niezrealizowany od dawna wymóg `STRATEGY.md` §4. Nowa sekcja `final-cta` na końcu `home.js` (między FAQ a `</main>`): pełnoszerokościowa elewacja `.paper` (ten sam wzorzec co hero), para dziurek `.hole` — **pierwsze użycie tej klasy w projekcie**, była zdefiniowana w `global.css` i nigdzie niezastosowana — pieczątka `.stamp`, H2 „Zacznij dziś, albo idź na całość", kicker **pod** nagłówkiem (`DESIGN.md` §4), oraz dwie ścieżki: „Rozpocznij za darmo" → `/dashboard` i „Zobacz pełny program mentoringowy" → `/camp`, obie z `data-link`. `.reveal` na wewnętrznym kontenerze, nie na `<section>` (wzorzec z `about__layout` / `years-proof`). **Konieczny okazał się override `.final-cta .btn--secondary` na `--ink`** — domyślny `.btn--secondary` jest zaprojektowany pod ciemne tło (`--bone`/`--bone-dim`) i na papierze byłby prawie niewidoczny; identyczny problem był już wcześniej rozwiązany dla `.hero .btn--secondary`. Desktopowy układ przycisków w rzędzie dopisany do istniejącego media query.
+
+3. **Przechwytywanie leada (Web3Forms) — omówione koncepcyjnie, świadomie odłożone.** Ustalony zakres na dziś: same dwie ścieżki CTA tak, formularz e-mail nie. `MARKETING.md` traktuje to jako dwa osobne priorytety (🔴1 i 🔴4), mimo że poprzedni wpis w `PROGRES.md` zlepiał je w jeden punkt.
+
+4. **Korekta faktów w dokumentach źródłowych** (domyka punkt 6 z poprzedniej listy): `PRODUCT.md` §Positioning i `STRATEGY.md` §1 — „15 lat twardego doświadczenia sportowego (mentalność z tajskich campów)" → „15 lat treningu Muay Thai, dopracowanego w tajskich campach". Ten sam wzorzec, który wcześniej zastosowaliśmy w hero.
+
+5. **Decyzja: rezygnujemy z notacji `[PRZYKŁAD]` w interfejsie.** Karta 3 „Pełna Kontrola" **nie** dostaje dopisku (wbrew wcześniejszemu planowi), a istniejące `SERIA [PRZYKŁAD]` na Karcie 2 do zmiany — użytkownik ocenił formę jako „wyglądającą śmiesznie". **Zasada z `DESIGN.md` §7 (oznaczanie danych niepochodzących z realnej logiki) zostaje w mocy — zmienia się tylko forma.** Konkretny wariant nierozstrzygnięty: usunąć sam dopisek / zmienić na subtelniejszy / usunąć cały mockup streaka (źródłem problemu jest to, że funkcja „streak" nie istnieje nigdzie w kodzie).
+
+6. **Zdanie „maszyną do spalania tłuszczu" w Kroku 3 — rekomendacja zakwestionowana przez użytkownika, decyzja odłożona.** Ustalone rozróżnienie: problemem **nie jest prawdziwość** zdania (ketoza faktycznie przestawia organizm na tłuszcz), tylko to, czy adresuje ono wszystkie 3 cele z onboardingu — osoba na utrzymaniu wagi lub masie czyta to jako „ta sekcja nie jest dla mnie". Dwa warianty zamienne na stole, oryginał na razie zostaje.
+
+7. Literówka FAQ „kilku letnie" → „kilkuletnie" — poprawiona samodzielnie przez użytkownika.
+
+8. **🔍 Pełny audyt strony `/camp` + zatwierdzony plan przebudowy — w kodzie `camp.js`/`camp.css` NIC jeszcze nie zmienione.** Najważniejsze znaleziska:
+    - **`camp.css` (902 linie) odwołuje się 56× do zmiennych CSS, które nie istnieją w żadnym pliku projektu** (`--color-accent`, `--color-surface`, `--color-text-primary`, `--color-border`, `--font-size-kicker`…). Zweryfikowane: 75 wystąpień w 6 plikach, **zero definicji**. Skutek wg specyfikacji CSS (*invalid at computed-value time*): `background-color` → `transparent`, czyli **wszystkie karty na `/camp` renderują się bez tła**, a akcenty dziedziczą kolor tekstu. To nie „dług do posprzątania", tylko działająca usterka wizualna.
+    - **Sfabrykowany dowód społeczny:** `BATCH #04 • SEZON 2026` (sugeruje trzy wcześniejsze edycje przy zerowej liczbie podopiecznych), `#KT-8842-PRO`, `VIP ACCESS`, `ELITE BODY & PERFORMANCE` — do usunięcia.
+    - **Formularz aplikacyjny nic nie wysyła:** `initCamp` (`camp.js:510-527`) buduje `dataObject` z `FormData` i **porzuca go** — brak `fetch`, brak zapisu — po czym pokazuje „Sukces!". 100% zgłoszeń do jedynego płatnego produktu jest traconych.
+    - **Złamania `DESIGN.md`:** 5× kicker nad nagłówkiem (zakaz „bez wyjątków" z §4), 8 elementów z podwójną elewacją (tło + border naraz), hovery typu „unosząca się karta", zero `.reveal` (klasy żyją wyłącznie w `home.css`, nie globalnie).
+    - **Brak przedstawienia trenera** na stronie sprzedającej mentoring 1-na-1 — zero nazwiska, zero kwalifikacji. Stąd w planie nowa sekcja `camp-coach` na pozycji 2.
+    - **Decyzje właściciela:** (1) `fighter-card` → przebudowa na kartę deliverables (12 tygodni, 1-na-1, raport co 7 dni, wideo-analiza, protokół wyjścia); (2) **„Limit: 5 miejsc" uczyniony PRAWDĄ** — świadome zobowiązanie do max 5 osób naraz, co **unieważnia ustalenie z cz. 2 o fikcji** (kluczowe rozróżnienie: limit pojemności to twierdzenie o przyszłości, które można uczynić prawdziwym decyzją; „BATCH #04" to twierdzenie o przeszłości, którego uczynić prawdziwym się nie da); (3) bez ceny, ale z jednym zdaniem wyjaśniającym zasadę („cena po kwalifikacji"); (4) naprawa formularza poza zakresem planu — osobna sesja.
+    - Plan 5-etapowy zapisany w `C:\Users\jacos\.claude\plans\zrobi-em-to-sam-przechodzimy-sequential-moon.md`.
+
+---
+
 ### Plan Prac na Następną Sesję (Do Zrobienia):
 
-1. **About — dokończyć, gdy przyjdą materiały:** realne zdjęcia z Tajlandii do galerii (3 sloty) i do paska `years-proof` (5 kafelków + realne lata/miejsca zamiast placeholderów).
-2. **`/treningi-tychy` — zbudować szkielet trasy** (routing w `routes.js`, strona analogiczna do `/camp`/`/recipes`) + jedno zdanie z linkiem na home. Treść (lokalizacja, forma zajęć, dla kogo, kontakt) czeka na materiał od użytkownika.
-3. **Finałowe CTA + przechwytywanie leada (Web3Forms)** — wciąż priorytet 🔴 z `MARKETING.md`, niewdrożone; strona nadal kończy się na FAQ bez żadnej akcji.
-4. **Drobne poprawki uczciwości pozostałe w `home.js`:** Karta 3 „Pełna Kontrola" (`2450 KCAL` / `-0.8 KG/TYDZ` → oznaczyć `[PRZYKŁAD]`, ten sam wzorzec co naprawiona Karta 2); zdanie „…maszyną do spalania tłuszczu" w Steps (spójność z nową osią „stabilna energia" z hero); literówka FAQ #2 „kilku letnie" → „kilkuletnie"; stempel „SEZON 01" bez znaczenia sekwencyjnego (`DESIGN.md` §9); `aria-expanded` na przyciskach akordeonu FAQ.
-5. **`camp.js` — pełny przegląd uczciwości treści:** `BATCH #04`, `VIP ACCESS`, `#KT-8842-PRO`, „Limit: 5 miejsc" (potwierdzone jako fikcja) — zdecydować, co jest realne, co usunąć, czym ewentualnie zastąpić.
-6. **Korekta `PRODUCT.md` §Positioning i `STRATEGY.md` §1** — oba dokumenty wciąż zawierają „15 lat... z tajskich campów" + „twarda wiedza z zakresu dietetyki klinicznej" jako ustalony fakt — to ta sama nieścisłość, którą naprawiliśmy dziś w `home.js`, tylko w dokumentach źródłowych nadal nieodświeżona.
-7. **Reorder sekcji na home (Wariant B z `MARKETING.md`)** — nadal odłożone, wymaga korekt CSS pod nowe sąsiedztwo sekcji.
-8. **Meta description + Open Graph w `index.html`.**
-9. **Migracja reszty CSS ze starych zmiennych:** `camp.css`, `card.css`, `filters.css`, `form.css`, `modal.css`, `banner.css`, `layout.css`.
-10. **Rozstrzygnąć rozjazd nawigacji** (wciąż otwarty od kilku sesji) — kropka `--red` Ø4px vs obecny kolor `--amber` w stanie aktywnym tabbara — i ewentualnie zaktualizować `DESIGN.md`.
-11. **Finalny wybór logo** — Karta Ważenia jest w topbarze; `.tabbar__logo` na desktopie wciąż ma tekst „KT" zamiast finalnego znaku.
-12. **`ROADMAP.md` Faza 0 — pozostałe punkty:** naprawa deep-linków (`404.html`), treść `/knowledge` i `/contact`.
-13. **Dashboard — pętla posiłków:** `dashboard.js` nie importuje `mealService.js` — dopiąć `getTodayMeal()`, listę zjedzonych posiłków, `deleteMeal()`, Date Controller.
-14. **Podmienić placeholdery w footerze** — `href="#"` na Instagram/Facebook w `index.html` czeka na realne linki od użytkownika.
-15. **`.streak-box` (`home.css:290`)** — hardkodowany `rgba(255,255,255,0.06)` wciąż nienaprawiony (Karta 2 dostała nowe copy, ale nie ten token) — prosta, izolowana zamiana na `color-mix`.
+1. 🔴 **`/camp` Etap 1 — uczciwość treści** (plan zatwierdzony, zero wdrożone): usunięcie `BATCH #04` / `#KT-8842-PRO` / `VIP ACCESS` / `ELITE BODY & PERFORMANCE`, przebudowa `fighter-card` na kartę deliverables, zdanie o cenie, czyszczenie copy (znaki `│` w liniach 224/242/259, cudzysłowy wokół 4 opisów bento, interpunkcja w 211 i 331, Title Case w H1).
+2. 🔴 **Naprawa wysyłki formularza `/camp`** — najwyższy priorytet biznesowy całego projektu. Wzorzec gotowy w kodzie: nazwana funkcja `handleCampApplySubmit` (jak `handleOnboardingSubmit` w `onboarding.js:48`) + nowy serwis w `src/services/`. Do wyboru wariant odbioru leada (usługa zewnętrzna vs. własny backend).
+3. **`/camp` Etapy 2–5** — kicker pod nagłówkiem w 5 sekcjach, nowa sekcja `camp-coach`, migracja 56 martwych zmiennych w `camp.css` na tokeny, przeniesienie `.reveal` z `home.css` do `global.css`, świat dziennika w `camp.css`.
+4. **About — dokończyć, gdy przyjdą materiały:** realne zdjęcia z Tajlandii do galerii (3 sloty) i do paska `years-proof` (5 kafelków + realne lata/miejsca zamiast placeholderów). Dochodzi zdjęcie do nowej sekcji `camp-coach`.
+5. **`/treningi-tychy` — zbudować szkielet trasy** (routing w `routes.js`, strona analogiczna do `/camp`/`/recipes`) + jedno zdanie z linkiem na home. Treść (lokalizacja, forma zajęć, dla kogo, kontakt) czeka na materiał od użytkownika.
+6. **Przechwytywanie leada na home (Web3Forms)** — priorytet 🔴4 z `MARKETING.md`, świadomie odłożone; finałowe CTA już jest, ale nadal nie ma trzeciej ścieżki dla kogoś, kto dziś nie zakłada konta i nie aplikuje.
+7. **Dwie niedokończone decyzje z tej sesji:** (a) Karta 2 „Umysł Wojownika" — co zrobić z `SERIA [PRZYKŁAD]` (3 warianty na stole); (b) Krok 3 — czy zostawić „maszyną do spalania tłuszczu", czy zamienić na wariant obsługujący wszystkie 3 cele.
+8. **Pozostałe drobiazgi w `home.js`:** stempel „SEZON 01" bez znaczenia sekwencyjnego (`DESIGN.md` §9); `aria-expanded` na przyciskach akordeonu FAQ.
+9. **Reorder sekcji na home (Wariant B z `MARKETING.md`)** — nadal odłożone, wymaga korekt CSS pod nowe sąsiedztwo sekcji.
+10. **Meta description + Open Graph w `index.html`.**
+11. **Migracja reszty CSS ze starych zmiennych:** `card.css`, `filters.css`, `form.css`, `modal.css`, `banner.css`, `layout.css` (`camp.css` objęty planem `/camp`, punkt 3). Uwaga: to ten sam problem martwych zmiennych, który na `/camp` okazał się realną usterką wizualną — te pliki też warto sprawdzić pod tym kątem, nie tylko „posprzątać".
+12. **Rozstrzygnąć rozjazd nawigacji** (wciąż otwarty od kilku sesji) — kropka `--red` Ø4px vs obecny kolor `--amber` w stanie aktywnym tabbara — i ewentualnie zaktualizować `DESIGN.md`.
+13. **Finalny wybór logo** — Karta Ważenia jest w topbarze; `.tabbar__logo` na desktopie wciąż ma tekst „KT" zamiast finalnego znaku.
+14. **`ROADMAP.md` Faza 0 — pozostałe punkty:** naprawa deep-linków (`404.html`), treść `/knowledge` i `/contact`.
+15. **Dashboard — pętla posiłków:** `dashboard.js` nie importuje `mealService.js` — dopiąć `getTodayMeal()`, listę zjedzonych posiłków, `deleteMeal()`, Date Controller.
+16. **Podmienić placeholdery w footerze** — `href="#"` na Instagram/Facebook w `index.html` czeka na realne linki od użytkownika.
+17. **`.streak-box` (`home.css`)** — hardkodowany `rgba(255,255,255,0.06)` wciąż nienaprawiony — prosta, izolowana zamiana na `color-mix` (powiązane z decyzją o Karcie 2, punkt 7a).

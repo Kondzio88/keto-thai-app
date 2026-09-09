@@ -760,6 +760,62 @@
     padding: var(--spacing-md) 0;
 }
 
+.final-cta {
+    padding: var(--spacing-xl) 0;
+}
+
+.final-cta__container {
+    position: relative;
+    padding: var(--spacing-lg);
+    text-align: center;
+}
+
+.final-cta__holes {
+    position: absolute;
+    top: 5px;
+    left: 20px;
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.final-cta__stamp {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+}
+
+.final-cta__title {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    font-size: var(--font-size-h2);
+    color: var(--ink);
+    margin-bottom: var(--spacing-md);
+}
+
+.final-cta__kicker {
+    display: block;
+    color: var(--amber);
+    margin-bottom: var(--spacing-lg);
+}
+
+.final-cta__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.final-cta .btn--secondary {
+    color: var(--ink);
+    border-color: var(--ink);
+    opacity: 0.7;
+}
+
+.final-cta .btn--secondary:hover {
+    opacity: 1;
+}
+
 @media (min-width: 768px) {
     .hero__container {
         grid-template-columns: 1.15fr 0.85fr;
@@ -774,6 +830,12 @@
     .hero__actions .btn {
         width: 50%;
         text-align: center;
+    }
+
+    .final-cta__actions {
+        flex-direction: row;
+        justify-content: center;
+        max-width: none;
     }
 
     .philosophy__grid {
