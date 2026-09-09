@@ -103,6 +103,12 @@ Oto kompletna mapa Twojej aplikacji.
         - **Warstwa Danych:** Baza wpisów w `src/data/articles.js` jako punkt startowy.
         - **Formularz Dodawania Postów (Mini-CMS):** Interaktywny modal / widok umożliwiający dodanie nowego artykułu (tytuł, kategoria, treść, zdjęcie, tagi), który zapisuje wpis do `localStorage` (docelowo API/baza danych) i w locie łączy się z bazą statyczną, natychmiast odświeżając widok siatki.
 - `/contact`: Profesjonalny formularz do zapytań o indywidualną współpracę trenerską.
+- `/treningi-tychy` (ustalone 2026-09-09): Osobna trasa dla lokalnej oferty treningów personalnych Muay Thai na macie w Tychach i okolicach (`STRATEGY.md` §3 „Dominacja Lokalna"). Świadomie **nie** jest sekcją na `/` — mieszanie intencji „kalkulator makro" (produkt) z „trener personalny Tychy" (usługa lokalna) na jednej stronie rozmywałoby temat dla obu fraz w wyszukiwarce, a realne lokalne SEO i tak napędza Google Business Profile + dedykowany URL, nie treść na home. Home odsyła tu tylko jednym zdaniem z linkiem — to mały, dodatkowy lejek na lokalnego klienta, nie główna ścieżka produktu. Treść (lokalizacja, forma zajęć, dla kogo, kontakt) do dostarczenia — pełne uzasadnienie decyzji w `MARKETING.md` i `PROGRES.md` (sesja 2026-09-09 cz. 2).
+
+    **Lokalne SEO pod tę trasę (do zrobienia przy wdrożeniu, nie dziś):**
+    - **Google Business Profile (GBP)** — darmowy profil firmy w Google/Google Maps (karta w wynikach + "local pack" z mapką). Dla usługi lokalnej to zwykle większa dźwignia rankingowa niż sama treść strony — założyć jako pierwszy krok, niezależnie od tego, kiedy strona będzie gotowa.
+    - **Spójność NAP** (Name, Address, Phone) — nazwa, adres i telefon muszą być **identyczne wszędzie**: na `/treningi-tychy`, w GBP, na Facebooku/Instagramie. Rozjazd w którymkolwiek miejscu Google odczytuje jako sygnał niepewności/nieaktywności firmy i osłabia ranking lokalny.
+    - **Docelowo:** znacznik `LocalBusiness` (JSON-LD) na samej trasie, gdy adres/godziny/forma zajęć będą ustalone.
 
 ## 5. Struktura Folderów
 

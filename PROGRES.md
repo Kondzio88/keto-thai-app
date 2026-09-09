@@ -2,7 +2,7 @@
 
 ## Stan obecny (Single Source of Truth)
 
-Aplikacja Keto Thai to Vanilla JS SPA. Jedyne i ostateczne źródło prawdy dla warstwy wizualnej to `DESIGN.md` („Keto Thai: Dziennik Treningowy", metodyka `impeccable`, mockup referencyjny podlinkowany w nagłówku dokumentu).
+Aplikacja Keto Thai to Vanilla JS SPA. Jedyne i ostateczne źródło prawdy dla warstwy wizualnej to `DESIGN.md` („Keto Thai: Dziennik Treningowy", metodyka `impeccable`, mockup referencyjny podlinkowany w nagłówku dokumentu). **Jedyne i ostateczne źródło prawdy dla warstwy sprzedażowej i językowej (konwersja, struktura lejka, copywriting) to od dziś `MARKETING.md`** — analogiczna rola do `DESIGN.md`, tylko dla treści i struktury sprzedażowej zamiast wizualnej.
 - **Koncepcja wizualna:** fizyczny dziennik treningowy trenera na macie Muay Thai (papier kraft `--paper`, mata `--ground`/`--ground2`, ołówek trenera `--red`, kreda `--amber`, atrament `--blue`). Zero `box-shadow`, zero glow, zero AI-slopu — detale fizyczne (taśma, dziurki, pieczątka, linia perforacji) zamiast dekoracji.
 - **Typografia:** Big Shoulders Stencil (nagłówki), Martian Mono (dane/tagi/nawigacja), Public Sans (tekst ciągły).
 - **Nawigacja:** mobile = górny `topbar` (logo + hamburger z **6 realnymi linkami**, wcześniej tylko 2) + dolny `tabbar` z 4 pozycjami core; desktop ≥768px = `topbar` chowa się, `tabbar` rozszerza się w lewy sidebar.
@@ -12,7 +12,7 @@ Aplikacja Keto Thai to Vanilla JS SPA. Jedyne i ostateczne źródło prawdy dla 
 
 ---
 
-### Co zrobiliśmy w dzisiejszej sesji (Steps → Camp-offer → FAQ → Reveal → Footer):
+### Co zrobiliśmy w sesji Steps → Camp-offer → FAQ → Reveal → Footer:
 
 1. **Steps — nowy koncept „wpisy dziennika":** usunięty w całości świecący, animowany timeline (`box-shadow`, `rgba(--color-accent-rgb)`, `@keyframes nodeLightUp/lineLightUp`, `animation-timeline: view()`) — klasyczny AI-slop wzorzec. Zastąpiony linią perforacji (`border-top: 1px dashed`) między wpisami. Naprawiony kicker stojący nad nagłówkiem (`DESIGN.md` §4, zakaz bez wyjątków) — `Krok N` przeniesiony pod `<h3>`. Zdjęcia telefonów: `.tape` zamiast `drop-shadow`-glow. Wszystkie martwe tokeny wymienione.
 2. **Camp-offer — Kierunek A „Karta kwalifikacyjna":** świadomie odwrócona wcześniejsza decyzja „sekcja oddycha mrokiem" — karta dostała `--paper` (jedyna elewacja w tej sekcji). Odznaka-pigułka → reużyty komponent `.stamp`. Duży czerwony „12 Tygodni". **Naprawiony realny, znany od poprzedniej sesji bug:** gradient jako wypełnienie tekstu na `.camp-offer__title` (tymczasowy ignore w `.impeccable/config.json` — usunięty, bo naprawa jest trwała). Nowe copy (opis + 3 punkty z różnymi ikonami zamiast trzykrotnie tego samego `shield-check`).
@@ -25,14 +25,43 @@ Aplikacja Keto Thai to Vanilla JS SPA. Jedyne i ostateczne źródło prawdy dla 
 
 ---
 
+### Sesja 2026-09-09 — Audyt marketingowy strony `/` + dług CSS w `home.css`
+
+1. **Audyt marketingowy `home.js`** przeprowadzony w dwóch przejściach (struktura i lejek, potem copywriting i pozycjonowanie) i zapisany w całości w nowym pliku **`MARKETING.md`** — od teraz jedyne i ostateczne źródło prawdy dla warstwy sprzedażowej i językowej, analogicznie do roli `DESIGN.md` dla warstwy wizualnej. Kluczowe ustalenia: brak finałowego CTA na końcu strony (wymóg z `STRATEGY.md` §4, niewdrożony), zdjęcia ze stocka podpisane jako własne w sekcji About, obiecana w mockupie funkcja „streak" nieistniejąca nigdzie w kodzie, sprzeczność między copy skupionym niemal wyłącznie na spalaniu tłuszczu a onboardingiem, który realnie obsługuje 3 cele (redukcja/utrzymanie/przybranie wagi), sfabrykowany dowód społeczny `BATCH #04` w `camp.js` przy zerowej liczbie podopiecznych, brak jakiegokolwiek sygnału geograficznego (Tychy/Śląsk) w całej aplikacji. Pełna lista 22 twardych ustaleń, priorytetów wdrożenia i otwartych decyzji — w `MARKETING.md`.
+2. **Decyzje architektoniczne dla strony `/`:** wybrany Wariant B („Lejek") — przebudowa kolejności sekcji na Hero → Steps → About → Philosophy → Camp-offer → Tychy → FAQ → finałowe CTA (sekwencja co → kto → dlaczego → ile). Sekcja Philosophy zostaje przy 3 kartach — cofnięta wcześniejsza, błędnie uargumentowana rekomendacja redukcji do 2 (rzeczywistym problemem była zepsuta karta 2 obiecująca nieistniejącego streaka, nie liczba kart). Sekcja o treningach w Tychach: pełnoprawna sekcja na home, świadomie przyjęte ryzyko rozmycia pozycjonowania keto vs trener personalny.
+3. **⚠️ Do zrobienia w kolejnej sesji — jeszcze jedna, szczegółowa runda audytu copywritingu**, tym razem zdanie po zdaniu w `home.js` i `camp.js` (dziś ustalone kierunki i reguły ogólne — np. zmiana osi obietnicy z „spalanie tłuszczu" na „stabilna energia", reguła Muay Thai jako dowód a nie wymóg — ale bez pełnego przepisania każdego zdania). `MARKETING.md` pozostaje dokumentem determinującym wszystkie decyzje marketingowe i copywriterskie — każda przyszła zmiana treści na `/` i `/camp` ma być z nim zgodna.
+4. **Naprawa długu technicznego w `home.css`:** dwa zahardkodowane `rgba()` będące ręcznymi kopiami tokenów `--bone` i `--paper` (linie 76, 101 — `PROGRES.md` pkt 9 z poprzedniej sesji) zastąpione przez `color-mix(in srgb, var(--token) X%, transparent)`, co usuwa ryzyko cichego rozjazdu przy przyszłej zmianie wartości tokenu. Rozstrzygnięty też rozjazd rotacji taśmy (`PROGRES.md` pkt 2 z poprzedniej sesji, `DESIGN.md` §5 vs kod): kod zaktualizowany z `-15°/+17°` na `-8°/+7°`. Trzeci `rgba()` (`.streak-box`, linia 288, biały przy 6%) świadomie odłożony — żyje w mockupie funkcji „streak", która i tak zniknie lub zostanie przebudowana przy wdrażaniu poprawki karty 2 w Philosophy z `MARKETING.md`.
+
+---
+
+### Sesja 2026-09-09 (cz. 2) — Wdrożenie Hero/About + decyzje Tychy i Camp-offer
+
+Kontynuacja tego samego dnia, po audycie z cz. 1 — realne przepisanie copy w `home.js` zamiast tylko ustalenia reguł, plus dwie ważne korekty faktów od użytkownika.
+
+1. **Hero przepisany:** tag pod H1 przestał być żargonem („system metaboliczny") i mówi wprost co/dla kogo („kalkulator makro i przepisy keto — dla aktywnych i dla tych, którzy dopiero zaczynają"); opis zmienia oś obietnicy ze „spalania tłuszczu" na „stabilną energię" (obsługuje redukcję/utrzymanie/masę naraz, zgodnie z tym, że onboarding realnie oferuje 3 cele); dodany mikrotekst „bez rejestracji". CTA secondary zmienione z „Fighter's Camp" (drugi płatny produkt w 3. sekundzie) na „Zobacz, jak to działa" — scroll do `#steps` przez czysty anchor (bez `data-link`, bez JS), Camp zostaje osiągalny niżej w Camp-offer.
+2. **⚠️ Ważna korekta faktu (od użytkownika):** „15 lat" dotyczy stażu treningowego Muay Thai w ogóle — w samej Tajlandii autor spędził łącznie ok. 3 miesiące w 4 wyjazdach do Lamai Camp. Poprzednie sformułowanie „15 lat doświadczeń z tajskich ringów" (i identyczny błąd w `STRATEGY.md` §1 — patrz punkt 6 niżej) było nieprawdziwe. Poprawione w hero.
+3. **Karta 2 „Umysł Wojownika" naprawiona, nie usunięta:** zdanie „nie poddaje się na macie" zakładało, że czytelnik trenował Muay Thai — zmienione tak, by Muay Thai był podmiotem tylko w zdaniach o autorze (reguła z `MARKETING.md`). Mockup „OBECNA SERIA" (funkcja streak nieistniejąca w kodzie) oznaczony jako `SERIA [PRZYKŁAD]` zgodnie z `DESIGN.md` §7.
+4. **About:** podpis „Konrad / Keto Thai" → pełne imię i nazwisko „Konrad Jacoszek" + realna rola „Instruktor Muay Thai (MEN) · dietetyka kliniczna (w trakcie)". **Ważne rozróżnienie ustalone z użytkownikiem:** instruktor Muay Thai (MEN) jest ukończony, dietetyka kliniczna to kurs **w trakcie** — copy musi to odróżniać, nie wolno pisać jako ukończone ani używać nazwy „doradca żywieniowy" zamiast tego, dopóki kurs faktycznie się nie skończy.
+5. **Nowy komponent `years-proof` w About:** pasek 5 kafelków-placeholderów (`.snap`, gradient wg `DESIGN.md` §"Zdjęcia") z podpisem „FOTO 0X — [ROK] (do uzupełnienia)", przewijany poziomo przez natywny `scroll-snap` (zero JS/biblioteki na sam scroll) + osobny listener `wheel→scrollLeft` w `initHome()`, żeby zwykła mysz (bez trackpada) też mogła przewijać poziomo. Zastępuje pierwotny pomysł „metamorfoza w kg" — użytkownik nie ma takiej historii, tylko wieloletnią, utrzymaną formę bez efektu jo-jo; to nowy, uczciwy typ dowodu osobistego (korekta wcześniejszego założenia w `MARKETING.md` Część I §5A). Czeka na realne zdjęcia i daty/lokalizacje od użytkownika.
+6. **🚩 Camp-offer — kotwica wartości ODRZUCONA po weryfikacji:** `MARKETING.md` rekomendował przeniesienie „Limit: 5 miejsc" z `camp.js` na home jako „najtańszą wygraną" — **potwierdzone przez użytkownika, że to fikcja wpisana na sztywno**, nie realne ograniczenie. Nie wdrożone nigdzie. `camp.js` (BATCH #04, VIP ACCESS, Limit: 5 miejsc) wymaga osobnego przeglądu uczciwości treści przy najbliższej sesji poświęconej tej stronie. **Lekcja ogólna:** istniejące copy na stronie (nawet pochwalone we wcześniejszym audycie jako "dobry przykład transparentności") nie jest automatycznie faktem — zawsze weryfikować z użytkownikiem przed powieleniem.
+7. **Decyzja: sekcja Tychy jako osobna trasa, nie sekcja na home** — odwraca wcześniejszą decyzję z cz. 1 tej samej sesji. Powód: lokalne SEO napędza Google Business Profile + dedykowana strona, nie treść na home; mieszanie intencji („kalkulator makro" vs „trener personalny Tychy") rozmywa temat strony głównej dla obu fraz. Ustalone: nowa trasa `/treningi-tychy` (pełna treść, docelowo dane NAP/`LocalBusiness`), a na home tylko jedno zdanie z linkiem (nie sekcja) — bez ryzyka dla pozycjonowania keto. Treść samej podstrony zablokowana brakiem materiału (ta sama kategoria co zdjęcia w About). Zaktualizowano `PLAN.md` (mapa tras) i `STRATEGY.md` (§3/§4) o tę decyzję.
+
+---
+
 ### Plan Prac na Następną Sesję (Do Zrobienia):
 
-1. **Zaktualizować `PRODUCT.md`** — sekcja „Brand Commitments" wciąż opisuje stary „Dark Fighter", koliduje z `DESIGN.md`.
-2. **Rozstrzygnąć rozjazd rotacji taśmy w hero** (`-15°/+17°` w kodzie vs `-8°/+7°` w `DESIGN.md`) — zaktualizować dokument albo kod.
-3. **Migracja reszty CSS ze starych zmiennych:** `camp.css`, `card.css`, `filters.css`, `form.css`, `modal.css`, `banner.css`, `layout.css`.
-4. **Rozstrzygnąć rozjazd nawigacji** (wciąż otwarty od kilku sesji) — kropka `--red` Ø4px vs obecny kolor `--amber` w stanie aktywnym tabbara — i ewentualnie zaktualizować `DESIGN.md`.
-5. **Finalny wybór logo** — Karta Ważenia jest w topbarze; `.tabbar__logo` na desktopie wciąż ma tekst „KT" zamiast finalnego znaku.
-6. **`ROADMAP.md` Faza 0 — pozostałe punkty:** formularz leada (Web3Forms), naprawa deep-linków (`404.html`), meta/SEO/Open Graph, treść `/knowledge` i `/contact`. (Stopka social media — zrobiona dziś, zdjęta z tej listy.)
-7. **Dashboard — pętla posiłków:** `dashboard.js` nie importuje `mealService.js` — dopiąć `getTodayMeal()`, listę zjedzonych posiłków, `deleteMeal()`, Date Controller.
-8. **Podmienić placeholdery w footerze** — `href="#"` na Instagram/Facebook w `index.html` (linie w bloku `.site-footer__socials`) czeka na realne linki od użytkownika.
-9. **3 zahardkodowane `rgba(...)` w Hero/Philosophy** (`home.css`, linie ok. 76, 101, 277) zamiast tokenów — znalezione przy dzisiejszym audycie martwego kodu, nie tknięte (spoza dzisiejszego zakresu).
+1. **About — dokończyć, gdy przyjdą materiały:** realne zdjęcia z Tajlandii do galerii (3 sloty) i do paska `years-proof` (5 kafelków + realne lata/miejsca zamiast placeholderów).
+2. **`/treningi-tychy` — zbudować szkielet trasy** (routing w `routes.js`, strona analogiczna do `/camp`/`/recipes`) + jedno zdanie z linkiem na home. Treść (lokalizacja, forma zajęć, dla kogo, kontakt) czeka na materiał od użytkownika.
+3. **Finałowe CTA + przechwytywanie leada (Web3Forms)** — wciąż priorytet 🔴 z `MARKETING.md`, niewdrożone; strona nadal kończy się na FAQ bez żadnej akcji.
+4. **Drobne poprawki uczciwości pozostałe w `home.js`:** Karta 3 „Pełna Kontrola" (`2450 KCAL` / `-0.8 KG/TYDZ` → oznaczyć `[PRZYKŁAD]`, ten sam wzorzec co naprawiona Karta 2); zdanie „…maszyną do spalania tłuszczu" w Steps (spójność z nową osią „stabilna energia" z hero); literówka FAQ #2 „kilku letnie" → „kilkuletnie"; stempel „SEZON 01" bez znaczenia sekwencyjnego (`DESIGN.md` §9); `aria-expanded` na przyciskach akordeonu FAQ.
+5. **`camp.js` — pełny przegląd uczciwości treści:** `BATCH #04`, `VIP ACCESS`, `#KT-8842-PRO`, „Limit: 5 miejsc" (potwierdzone jako fikcja) — zdecydować, co jest realne, co usunąć, czym ewentualnie zastąpić.
+6. **Korekta `PRODUCT.md` §Positioning i `STRATEGY.md` §1** — oba dokumenty wciąż zawierają „15 lat... z tajskich campów" + „twarda wiedza z zakresu dietetyki klinicznej" jako ustalony fakt — to ta sama nieścisłość, którą naprawiliśmy dziś w `home.js`, tylko w dokumentach źródłowych nadal nieodświeżona.
+7. **Reorder sekcji na home (Wariant B z `MARKETING.md`)** — nadal odłożone, wymaga korekt CSS pod nowe sąsiedztwo sekcji.
+8. **Meta description + Open Graph w `index.html`.**
+9. **Migracja reszty CSS ze starych zmiennych:** `camp.css`, `card.css`, `filters.css`, `form.css`, `modal.css`, `banner.css`, `layout.css`.
+10. **Rozstrzygnąć rozjazd nawigacji** (wciąż otwarty od kilku sesji) — kropka `--red` Ø4px vs obecny kolor `--amber` w stanie aktywnym tabbara — i ewentualnie zaktualizować `DESIGN.md`.
+11. **Finalny wybór logo** — Karta Ważenia jest w topbarze; `.tabbar__logo` na desktopie wciąż ma tekst „KT" zamiast finalnego znaku.
+12. **`ROADMAP.md` Faza 0 — pozostałe punkty:** naprawa deep-linków (`404.html`), treść `/knowledge` i `/contact`.
+13. **Dashboard — pętla posiłków:** `dashboard.js` nie importuje `mealService.js` — dopiąć `getTodayMeal()`, listę zjedzonych posiłków, `deleteMeal()`, Date Controller.
+14. **Podmienić placeholdery w footerze** — `href="#"` na Instagram/Facebook w `index.html` czeka na realne linki od użytkownika.
+15. **`.streak-box` (`home.css:290`)** — hardkodowany `rgba(255,255,255,0.06)` wciąż nienaprawiony (Karta 2 dostała nowe copy, ale nie ten token) — prosta, izolowana zamiana na `color-mix`.

@@ -32,6 +32,8 @@ Dominacja Lokalna (Treningi na Śląsku):
 
 Wykorzystanie aplikacji jako luksusowej wizytówki do pozyskiwania klientów na treningi personalne na macie w Tychach i okolicach.
 
+**Implementacja (ustalone 2026-09-09):** osobna trasa `/treningi-tychy`, nie sekcja na Home Page (/). Home ma zostać skupione na jednej propozycji wartości (kalkulator + przepisy keto) — pełna sekcja o treningach personalnych konkurowałaby o tę samą uwagę i rozmywała temat strony głównej zarówno dla konwersji, jak i dla SEO (Google ocenia stronę pod kątem spójności tematycznej; osobny URL może niezależnie rankować na frazy lokalne typu „trener personalny Tychy", czego sekcja na home i tak by nie osiągnęła — realne lokalne SEO napędza przede wszystkim Google Business Profile i dane NAP, nie treść na stronie głównej). Home odsyła do `/treningi-tychy` jednym zdaniem z linkiem — to dodatkowy, mały lejek na lokalnego klienta z okolicy, nie zmiana głównego pozycjonowania produktu.
+
 Dochód Pasywny (Afiliacja):
 
 Polecanie sprawdzonych suplementów pod ketozę (elektrolity, MCT) w module "Wiedza" za pomocą linków partnerskich.

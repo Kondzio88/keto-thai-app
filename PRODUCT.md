@@ -7,37 +7,52 @@
 web
 
 ## Stack
-Vanilla JavaScript (ES6+ Modules), Vite, czysty CSS3 (zmienne CSS, Grid, Flexbox), Edamam API, Chart.js. Złożony routing oparty na History API (SPA).
+
+Vanilla JavaScript (ES6+ Modules), Vite, CSS3 (CSS Grid/Flexbox, Variables), Chart.js.
 
 ## Users
-Osoby aktywne fizycznie (sporty walki, sporty wytrzymałościowe, trening siłowy) posiadające mentalność wojownika. Osoby szukające dyscypliny, optymalizacji wydolności, przełamania stagnacji sylwetkowej oraz klinicznego podejścia do diety.
+
+Osoby aktywne fizycznie, podzielone na trzy główne segmenty (lejek TAM):
+1. **Sporty walki:** Szukający siły, dynamiki i metod zbijania wagi bez utraty energii.
+2. **Sporty wytrzymałościowe:** Eliminacja "odcięć prądu" na długich dystansach dzięki adaptacji do tłuszczu.
+3. **Trening siłowy / sylwetkowy:** Przełamywanie stagnacji, opornej tkanki, problemów metabolicznych.
+Wspólny mianownik: archetyp Wojownika – poszukiwanie rygoru, dyscypliny i wiedzy klinicznej, a nie generycznego "wellness".
 
 ## Product Purpose
-Darmowy, wysoce funkcjonalny Lead Magnet (SaaS / tracker makro). Rozwiązuje podstawowy problem użytkownika ("co jeść"), zyskując jego zaufanie, aby w odpowiednim momencie nienachalnie zaoferować zakup usługi premium – 12-tygodniowego "Fighter's Camp" (mentoring 1-on-1).
+
+Produkt działa w modelu Product-Led Growth jako zaawansowany darmowy "Lead Magnet". Aplikacja jest asystentem do codziennego śledzenia diety ketogenicznej (SaaS). Rozwiązuje problem "CO jeść" na co dzień, automatycznie budując zaufanie i edukując użytkownika. Celem jest ocieplenie leada i konwersja na produkt premium (High-Ticket): 12-tygodniowy "Fighter's Camp" (Mentoring 1-on-1 oparty na analityce i odpowiedzialności).
 
 ## Positioning
-Unikalne połączenie 15 lat twardego doświadczenia w sportach walki (mentalność z tajskich campów) z ekspercką wiedzą z zakresu dietetyki klinicznej (hormony, ketoza, oporność na insulinę). 
+
+Unikalne połączenie 15 lat twardego doświadczenia sportowego (mentalność z tajskich campów Muay Thai) z twardą wiedzą z zakresu dietetyki klinicznej (hormony, ketoza, insulinooporność). Aplikacja nie coachuje miękko, lecz "rejestruje" wyniki. Przenosi rygor sportowy (sędziowska karta punktacji, fizyczny dziennik) na dyscyplinę żywieniową.
 
 ## Operating Context
-Aplikacja ma pełnić rolę codziennego centrum dowodzenia dla użytkownika (tracking diety na telefonie/desktopie), bazy wiedzy (budowanie FOMO za pomocą zamkniętych artykułów) oraz wirtualnej, luksusowej wizytówki do pozyskiwania klientów na lokalnym rynku (Śląsk).
+
+Środowisko to wirtualna "mata treningowa". Aplikacja używana jest nawykowo, do szybkiego wprowadzania danych (np. między posiłkami czy treningami). Interfejs nie krzyczy powiadomieniami – cierpliwie rejestruje dane pomiarowe. Kontekstowy system rekomendacji inteligentnie sugeruje płatny mentoring w momentach wykrycia stagnacji użytkownika.
 
 ## Capabilities and Constraints
-Czysty CSR (Client-Side Rendering) renderowany w `index.html`. Stan przetrzymywany w `localStorage` (później Supabase). Maksymalna wydajność na telefonach (60 FPS, debounce, intersection observer). Docelowo aplikacja ma zostać w pełni przekształcona w PWA.
+
+- Czysty JavaScript (SPA) z autorskim routingiem (History API).
+- Zależność od `localStorage` (tymczasowo) oraz zewnętrznego API do wyszukiwania makroskładników (np. Edamam).
+- Rygor wydajnościowy: stałe 60 FPS (Debounce, Intersection Observer).
+- Brak frameworków JS, brak UI-toolkitów (np. Tailwind, Bootstrap).
+- Bezwzględny zakaz ad-hoc kolorów, cieni, bluru – dopuszczalne tylko 9 ścisłych tokenów kolorystycznych i zadeklarowane fonty.
 
 ## Brand Commitments
-Restrykcyjny system wizualny "Dark Fighter" zdefiniowany w `DESIGN.md`. 
-Tło: Głęboki grafit (`#121212`, `#1E1E1E`). 
-Akcenty: Tajskie Złoto (`#D4AF37`), Żywa Zieleń (`#2ECC71`), Agresywna Czerwień (`#ff4b4b`). 
-Fonty: `Oswald` (nagłówki) oraz `Inter` (UI). 
-Surowość: Ostre formy, `border-radius` max 4px, twarde neobrutalistyczne cienie, brak glassmorphismu i miękkich poświat. Ruch powiązany tylko z fizycznym działaniem (kliknięcie = wciśnięcie elementu).
+
+- **Wizualna szczerość:** Papier kraft, ciemna mata, ołówek trenera, kreda, atrament urzędowy. Detale fizyczne (perforacja, pieczątka, taśma) wygrywają z dekoracyjnym gradientem.
+- **Odrzucenie standardów:** Świadome odejście od pastelowych trendów health & wellness na rzecz surowości. Całkowite odcięcie od "AI-slopu" (brak podświetleń box-shadow).
+- **Ton komunikacji:** Zdecydowany, zwięzły, autorytatywny – mówiący do użytkownika jak trener na macie.
 
 ## Evidence on Hand
-Brak na ten moment gotowych zdjęć, jednak w `PLAN.md` uwzględniono siatki metamorfoz podopiecznych, zdjęcia z tajskiego campu (Hero Section) oraz artykuły powołujące się na badania naukowe. Przyszłe prace nie mogą zakładać użycia miękkich zdjęć ze stocka niepasujących do estetyki walki.
+
+- Spisana i spójna strategia konwersji / lejka (`STRATEGY.md`).
+- Dokładny zakodowany blueprint wizualny (`DESIGN.md`).
+- Baza wiedzy (artykuły) i zasoby graficzne (Lucide, Simple Icons) oparte o własne ikony SVG.
 
 ## Product Principles
-1. Dyscyplina UI: Odzwierciedlenie rygoru sportowego w ascezie i precyzji interfejsu.
-2. Edukacja jako sprzedaż: Użytkownik kupuje mentoring premium po tym, jak aplikacja sama udowodni mu swoją wartość (PLG - Product-Led Growth).
-3. Brak kompromisów technicznych: Płynność działania i natywne rozwiązania (Vanilla JS) nad przerośniętymi frameworkami.
 
-## Accessibility & Inclusion
-Dostępność z klawiatury jest nienaruszalna – każdy element interaktywny musi posiadać ostre podświetlenie w `focus-visible`. Zachowany musi być ekstremalny kontrast dla głównego tekstu na ciemnym tle.
+1. **Edukacja jako Kwalifikacja:** Darmowe narzędzie udowadnia kompetencje i izoluje klientów gotowych na płatną współpracę.
+2. **Kliniczny Rygor:** Pomiar, tracking i analityka to świętość – dane ważniejsze niż animacja czy ekran startowy.
+3. **Fizyczność i Materia:** Dziennik ma fizyczne właściwości (papier, taśma) oddając hołd autentycznemu doświadczeniu campów sportów walki.
+4. **Twarde limity (Constraints):** Ograniczona liczba tokenów, kategoryczne unikanie popularnych błędów estetycznych, absolutna kontrola nad jakością kodu.

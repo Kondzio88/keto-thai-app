@@ -13,14 +13,15 @@ export const renderHome = () => {
                             <span class="hero__title-sub">TWOJE CIAŁO</span>
                             <span class="hero__title-sub">TWOJA WALKA</span>
                         </h1>
-                        <p class="hero__tag tag">KETO THAI — SYSTEM METABOLICZNY</p>
+                        <p class="hero__tag tag">Kalkulator makro i przepisy keto — dla aktywnych i dla tych, którzy dopiero zaczynają</p>
                         <p class="hero__desc">
-                            Precyzyjne makro. Sprawdzone przepisy. Protokół spalania tłuszczu oparty na 15 latach
-                            doświadczeń z tajskich ringów.
+                            Stabilna energia, zero zjazdów mocy — metoda wykuta w 15 latach treningu Muay Thai
+                            i dopracowana w tajskich campach, przełożona na precyzyjny plan makro i sprawdzone
+                            przepisy. Bez rejestracji, wynik od razu.
                         </p>
                         <div class="hero__actions">
-                            <a href="/dashboard" class="btn btn--primary" data-link>Oblicz swoje makro</a>
-                            <a href="/camp" class="btn btn--secondary" data-link>Fighter's Camp</a>
+                            <a href="/dashboard" class="btn btn--primary" data-link>Oblicz swój plan</a>
+                            <a href="#steps" class="btn btn--secondary">Zobacz, jak to działa</a>
                         </div>
                     </div>
 
@@ -72,11 +73,11 @@ export const renderHome = () => {
                             </header>
                             <h3 class="philosophy__card-title">Umysł Wojownika</h3>
                             <p class="philosophy__card-desc">
-                                Dyscyplina z tajskich campów. Budujemy charakter, który nie poddaje się na macie ani w
-                                życiu.
+                                Dyscyplina, którą wykułem na tajskich matach. Ten sam reżim buduje w Tobie charakter,
+                                który nie odpuszcza — w treningu i przy każdym posiłku.
                             </p>
                             <div class="philosophy__mockup">
-                                <span class="mockup__label">OBECNA SERIA</span>
+                                <span class="mockup__label">SERIA [PRZYKŁAD]</span>
                                 <div class="streak-grid">
                                     <div class="streak-box is-active"></div>
                                     <div class="streak-box is-active"></div>
@@ -141,8 +142,8 @@ export const renderHome = () => {
                                 narzędzie. Bez wymówek, z konkretnymi wynikami.
                             </p>
                             <div class="about__author">
-                                <div class="about__author-name">Konrad</div>
-                                <div class="about__author-role">Keto Thai</div>
+                                <div class="about__author-name">Konrad Jacoszek</div>
+                                <div class="about__author-role">Instruktor Muay Thai (MEN) · dietetyka kliniczna (w trakcie)</div>
                             </div>
                         </div>
 
@@ -150,7 +151,7 @@ export const renderHome = () => {
                         <div class="about__gallery">
                             <div class="about__image-wrapper">
                                 <img
-                                    src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=600"
+                                    src="${getBase()}/src/assets/kopniak w tarcze.jpg"
                                     alt="Trening Muay Thai"
                                     class="about__image"
                                     loading="lazy"
@@ -177,12 +178,49 @@ export const renderHome = () => {
                             </div>
                         </div>
                     </div>
+
+                    <div class="years-proof reveal">
+                        <h3 class="years-proof__title">Bez efektu jo-jo od lat</h3>
+                        <span class="years-proof__kicker tag">Ta sama forma, różne lata</span>
+                        <div class="years-proof__strip">
+                            <div class="years-proof__item">
+                                <div class="years-proof__photo-card">
+                                    <div class="years-proof__snap"></div>
+                                </div>
+                                <span class="years-proof__caption mono">FOTO 05 — [ROK] (do uzupełnienia)</span>
+                            </div>
+                            <div class="years-proof__item">
+                                <div class="years-proof__photo-card">
+                                    <div class="years-proof__snap"></div>
+                                </div>
+                                <span class="years-proof__caption mono">FOTO 06 — [ROK] (do uzupełnienia)</span>
+                            </div>
+                            <div class="years-proof__item">
+                                <div class="years-proof__photo-card">
+                                    <div class="years-proof__snap"></div>
+                                </div>
+                                <span class="years-proof__caption mono">FOTO 07 — [ROK] (do uzupełnienia)</span>
+                            </div>
+                            <div class="years-proof__item">
+                                <div class="years-proof__photo-card">
+                                    <div class="years-proof__snap"></div>
+                                </div>
+                                <span class="years-proof__caption mono">FOTO 08 — [ROK] (do uzupełnienia)</span>
+                            </div>
+                            <div class="years-proof__item">
+                                <div class="years-proof__photo-card">
+                                    <div class="years-proof__snap"></div>
+                                </div>
+                                <span class="years-proof__caption mono">FOTO 09 — [ROK] (do uzupełnienia)</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             <!-- 4. STEPS -->
 
-            <section class="steps">
+            <section class="steps" id="steps">
                 <div class="steps__container container">
                     <h2 class="steps__title reveal">Twój plan działania</h2>
 
@@ -462,4 +500,18 @@ export const initHome = () => {
             btn.parentElement.classList.toggle("is-active");
         });
     });
+
+    const yearsStrip = document.querySelector(".years-proof__strip");
+
+    if (yearsStrip) {
+        yearsStrip.addEventListener(
+            "wheel",
+            (event) => {
+                if (event.deltaY === 0) return;
+                event.preventDefault();
+                yearsStrip.scrollLeft += event.deltaY;
+            },
+            { passive: false },
+        );
+    }
 };
