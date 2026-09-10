@@ -6,6 +6,17 @@ import { navigateTo } from "../router.js";
 let macroChartInstance = null;
 let weightChartInstance = null;
 
+// Odpowiednik tokenów z global.css — Chart.js potrzebuje literalnych wartości,
+// nie może czytać CSS custom properties.
+const CHART_COLORS = {
+    red: "#C23B2E",
+    amber: "#D98C2B",
+    blue: "#3E6E86",
+    bone: "#EFE9D8",
+    boneDim: "#A79E88",
+    gridLine: "rgba(239, 233, 216, 0.08)",
+};
+
 const checkWeightReminder = (user) => {
     const lastRecord = user.weightHistory[user.weightHistory.length - 1];
     const lastDate = new Date(lastRecord.date);
@@ -51,7 +62,7 @@ export const renderDashboard = () => {
 
                 <div class="bento-card bento-card--fats">
                     <i data-lucide="droplet" class="bento-card__icon"></i>
-                    <span class="bento-card__title">Fats</span>
+                    <span class="bento-card__title">Tłuszcz</span>
                     <span class="bento-card__value"><span id="fats-value">0</span></span>
                 </div>
 
@@ -65,13 +76,17 @@ export const renderDashboard = () => {
                     <span class="bento-card__title">Rozkład Makroskładników</span>
                     <div class="chart-wrapper">
                         <canvas id="macro-chart"></canvas>
-                        <i data-lucide="flame" class="chart-center-icon"></i>
                     </div>
                 </div>
 
                 <div class="bento-card bento-card--chart">
-                    <button class="btn btn--secondary" id="btn-add-weight">➕ Dodaj pomiar.</button>
-                    <span class="bento-card__title">Historia Wagi</span>
+                    <div class="bento-card__header">
+                        <span class="bento-card__title">Historia Wagi</span>
+                        <button class="btn-icon-text" id="btn-add-weight">
+                            <i data-lucide="plus"></i>
+                            <span>Pomiar</span>
+                        </button>
+                    </div>
                     <div class="line-chart-wrapper">
                         <canvas id="weight-chart"></canvas>
                     </div>
@@ -123,11 +138,11 @@ export const initDashboard = () => {
         type: "doughnut",
         data: {
             labels: ["Białko", "Tłuszcze", "Węglowodany"],
-            backgroundColor: ["#ff4b4b", "#f59e0b", "#34d399"],
             datasets: [
                 {
                     data: [dietPlan.proteins, dietPlan.fats, dietPlan.carbs],
-                    backgroundColor: ["#ff4b4b", "#f59e0b", "#34d399"],
+                    backgroundColor: [CHART_COLORS.red, CHART_COLORS.amber, CHART_COLORS.blue],
+                    borderWidth: 0,
                 },
             ],
         },
@@ -138,10 +153,10 @@ export const initDashboard = () => {
                 legend: {
                     position: "bottom",
                     labels: {
-                        color: "#f9fafb",
+                        color: CHART_COLORS.bone,
                         padding: 20,
                         usePointStyle: true,
-                        font: { size: 14, family: '"Inter", sans-serif' },
+                        font: { size: 14, family: '"Public Sans", sans-serif' },
                     },
                 },
             },
@@ -160,8 +175,8 @@ export const initDashboard = () => {
                 {
                     label: "Moja waga (kg)",
                     data: weights,
-                    borderColor: "#10b981",
-                    backgroundColor: "rgba(16,185,129,0.1)",
+                    borderColor: CHART_COLORS.amber,
+                    backgroundColor: "rgba(217, 140, 43, 0.12)",
                     borderWidth: 3,
                     tension: 0.3,
                     fill: true,
@@ -171,11 +186,11 @@ export const initDashboard = () => {
         options: {
             maintainAspectRatio: false,
             plugins: {
-                legend: { labels: { color: "#f9fafb", font: { family: '"Inter", sans-serif' } } },
+                legend: { labels: { color: CHART_COLORS.bone, font: { family: '"Public Sans", sans-serif' } } },
             },
             scales: {
-                y: { grid: { color: "rgba(255,255,255,0.1)" }, ticks: { color: "#9ca3af" } },
-                x: { grid: { color: "rgba(255,255,255,0.1)" }, ticks: { color: "#9ca3af" } },
+                y: { grid: { color: CHART_COLORS.gridLine }, ticks: { color: CHART_COLORS.boneDim } },
+                x: { grid: { color: CHART_COLORS.gridLine }, ticks: { color: CHART_COLORS.boneDim } },
             },
         },
     });

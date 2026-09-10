@@ -6,6 +6,7 @@
 @import "./components/tabbar.css";
 @import "./base/layout.css";
 @import "./components/card.css";
+@import "./pages/recipes.css";
 @import "./components/form.css";
 @import "./components/modal.css";
 @import "./components/filters.css";

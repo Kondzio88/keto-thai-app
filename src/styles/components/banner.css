@@ -2,42 +2,51 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(245, 158, 11, 0.1); /* Delikatny pomarańczowy */
-    border: 1px solid #f59e0b; /* Pomarańczowa ramka */
-    padding: var(--spacing-md, 16px);
-    border-radius: 12px;
-    margin-bottom: var(--spacing-lg, 24px);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    background-color: color-mix(in srgb, var(--amber) 12%, transparent);
+    border: 1px solid var(--amber);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
 }
 
 .reminder-banner__text {
     display: flex;
     align-items: center;
-    gap: 8px;
-    color: #f59e0b;
-    font-weight: 500;
+    gap: var(--spacing-xs);
+    color: var(--amber);
+    font-weight: 600;
+}
+
+.reminder-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
 .reminder-banner__actions {
     display: flex;
-    gap: 8px;
+    gap: var(--spacing-xs);
 }
 
 .banner-input {
     width: 70px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    color: var(--color-text-primary);
+    padding: 6px 8px;
+    color: var(--bone);
+    background-color: var(--ground2);
+    border: 1px solid var(--bone-faint);
+    border-radius: 2px;
     text-align: center;
+    transition: border-color 0.2s ease;
+}
+
+.banner-input:focus {
+    outline: none;
+    border-color: var(--amber);
 }
 
 .banner-input[type="number"]::-webkit-outer-spin-button,
 .banner-input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-}
-
-.is-hidden {
-    display: none;
 }

@@ -73,3 +73,33 @@
 .hero .btn--secondary:hover{
     opacity: 1;
 }
+
+.btn-icon-text {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 6px;
+    padding: 6px 10px;
+    background: transparent;
+    color: var(--bone-dim);
+    border: 1px solid var(--bone-faint);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    font-weight: 700;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-icon-text:hover {
+    color: var(--amber);
+    border-color: var(--amber);
+}
+
+.btn-icon-text i,
+.btn-icon-text svg {
+    width: 14px;
+    height: 14px;
+}

@@ -1,6 +1,9 @@
+/* ==========================================================================
+   1. HERO
+   ========================================================================== */
+
 .camp-hero {
     padding: var(--spacing-lg) 0;
-    /* Usunięto rozmyty radial-gradient (AI Slop) */
 }
 
 .camp-hero__layout {
@@ -9,46 +12,36 @@
     gap: var(--spacing-xl);
 }
 
-.camp-hero__kicker {
-    display: block;
-    color: var(--color-accent);
-    font-size: var(--font-size-kicker);
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: var(--spacing-xs);
-}
-
 .camp-hero__title {
     font-family: var(--font-heading);
+    font-weight: 900;
     font-size: var(--font-size-hero);
-    line-height: 1.1;
+    line-height: 1.05;
+    letter-spacing: var(--tracking-display);
     text-transform: uppercase;
-    margin-bottom: var(--spacing-md);
+    color: var(--bone);
+    margin-bottom: var(--spacing-sm);
 }
 
-.camp-hero__title::first-letter,
-.camp-phases__title::first-letter,
-.camp-features__title::first-letter,
-.camp-qual__title::first-letter,
-.camp-apply__title::first-letter {
-    font-size: clamp(3.5rem, 6vw, 6.5rem);
-    color: var(--color-accent);
+.camp-hero__tag {
+    display: block;
+    color: var(--amber);
+    margin-bottom: var(--spacing-md);
 }
 
 .camp-hero__desc {
     font-size: var(--font-size-lead);
     line-height: 1.65;
-    color: var(--color-text-secondary);
+    color: var(--bone-dim);
+    max-width: 58ch;
     margin-bottom: var(--spacing-lg);
-    max-width: 600px;
 }
 
 .camp-hero__badges {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
 }
 
 .camp-hero__badge {
@@ -56,648 +49,460 @@
     align-items: center;
     gap: var(--spacing-xs);
     padding: 0.4rem 0.85rem;
-    border-radius: 999px;
-    background-color: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    font-size: var(--font-size-kicker);
-    font-weight: 600;
+    background-color: color-mix(in srgb, var(--bone) 6%, transparent);
+    border: 1px solid var(--bone-faint);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--bone-dim);
 }
 
 .badge-icon {
-    width: 16px;
-    height: 16px;
-    color: var(--color-accent);
+    width: 15px;
+    height: 15px;
+    color: var(--amber);
+    flex-shrink: 0;
 }
 
 .camp-hero__actions {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-direction: column;
     gap: var(--spacing-md);
 }
 
+/* FIGHTER CARD — karta zawodnika zamiast fikcyjnego "VIP ACCESS" */
+
 .fighter-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 230px;
-    background-color: var(--color-surface);
-    border-radius: 4px;
+    position: relative;
     padding: var(--spacing-lg);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    /* Usunięto box-shadow (Wariant A - Monolit) */
-    transition: all 0.3s ease-in;
 }
 
-.fighter-card__header {
+.fighter-card__holes {
+    position: absolute;
+    top: 10px;
+    left: 16px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    gap: var(--spacing-xs);
 }
 
-.fighter-card__tag {
-    background: rgba(var(--color-accent-rgb), 0.12);
-    border: 1px solid rgba(var(--color-accent-rgb), 0.3);
-    color: var(--color-accent);
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 2px;
-    border-radius: 4px;
-    padding: 4px 8px;
-}
-
-.fighter-card__icon {
-    width: 20px;
-    height: 20px;
-    color: var(--color-accent);
-}
-
-.fighter-card__body {
-    margin: var(--spacing-md) 0;
+.fighter-card__stamp {
+    position: absolute;
+    top: 14px;
+    right: 16px;
 }
 
 .fighter-card__title {
     font-family: var(--font-heading);
-    font-size: var(--font-size-h2);
-    color: var(--color-text-primary);
-    letter-spacing: 1px;
-    margin-bottom: 4px;
+    font-size: var(--font-size-h3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ink);
+    margin: var(--spacing-xl) 0 var(--spacing-md) 0;
 }
 
-.fighter-card__edition {
-    font-size: 0.85rem;
-    color: var(--color-text-secondary);
-    letter-spacing: 1px;
-}
-
-.fighter-card__footer {
+.fighter-card__facts {
     display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    border-top: 1px dashed var(--ink-faint);
+    padding-top: var(--spacing-md);
+}
+
+.fighter-card__fact {
+    display: flex;
+    align-items: baseline;
     justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    padding-top: var(--spacing-sm);
-    font-size: 0.75rem;
-    color: var(--color-text-secondary);
-    letter-spacing: 1px;
+    gap: var(--spacing-sm);
 }
 
-.fighter-card__code {
-    font-family: monospace;
-    color: var(--color-accent);
-    font-weight: 700;
-}
-
-/* CAMP PHASES SECTION */
-
-.camp-phases {
-    padding: var(--spacing-lg) 0 var(--spacing-xl) 0;
-}
-
-.camp-phases__header {
-    text-align: center;
-    margin-bottom: var(--spacing-xl);
-}
-
-.camp-phases__kicker {
-    display: block;
-    color: var(--color-accent);
-    font-size: var(--font-size-kicker);
-    font-weight: 700;
-    letter-spacing: 2px;
+.fighter-card__fact dt {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
     text-transform: uppercase;
-    margin-bottom: var(--spacing-xs);
+    color: var(--ink-faint);
 }
 
-.camp-phases__title {
-    font-family: var(--font-heading);
-    font-size: var(--font-size-h2);
-    line-height: 1.1;
-    text-transform: uppercase;
-    margin-bottom: var(--spacing-md);
+.fighter-card__fact dd {
+    font-weight: 700;
+    color: var(--ink);
+    text-align: right;
 }
 
-.camp-phases__title .text-accent {
-    font-size: clamp(3.5rem, 6vw, 6.5rem);
-    color: var(--color-accent);
+/* ==========================================================================
+   2. CAMP COACH
+   ========================================================================== */
+
+.camp-coach {
+    padding: var(--spacing-lg) 0;
 }
 
-.camp-phases__desc {
-    max-width: 650px;
-    margin: 0 auto;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-lead);
-    line-height: 1.6;
-}
-
-.camp-phases__grid {
+.camp-coach__layout {
     display: grid;
     gap: var(--spacing-lg);
 }
 
-/* PHASE CARD */
-
-.phase-card {
+.camp-coach__photo {
     position: relative;
-    overflow: hidden;
-    background-color: var(--color-surface);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 4px;
-    padding: var(--spacing-lg);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: var(--spacing-md);
-    transition:
-        transform 0.3s ease,
-        border-color 0.3s ease,
-        box-shadow 0.3s ease;
+    background-color: var(--ground2);
+    padding: 8px 8px 12px 8px;
+    border: 1px solid var(--bone-faint);
+    max-width: 320px;
 }
 
-.phase-card:hover {
-    transform: translateY(-6px);
+.camp-coach__snap {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background: linear-gradient(180deg, #3a342a, #211d17, #15130f);
 }
 
-.phase-card__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-    z-index: 2;
+.camp-coach__caption {
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+    color: var(--bone-dim);
 }
 
-.phase-card__icon-box {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
+.camp-coach__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h2);
+    text-transform: uppercase;
+    color: var(--bone);
+    margin-bottom: var(--spacing-md);
 }
 
-.phase-card__icon {
-    width: 24px;
-    height: 24px;
-    transition: transform 0.3s ease;
+.camp-coach__desc {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--bone-dim);
+    margin-bottom: var(--spacing-lg);
 }
 
-.phase-card:hover .phase-card__icon {
-    transform: scale(1.12);
+.camp-coach__byline {
+    border-top: 1px solid var(--bone-faint);
+    padding-top: var(--spacing-md);
 }
 
-.phase-card__timeline {
-    font-size: 0.8rem;
+.camp-coach__name {
+    display: block;
     font-weight: 700;
+    color: var(--bone);
+    font-size: 1.1rem;
+}
+
+.camp-coach__role {
+    display: block;
+    color: var(--amber);
+    font-size: var(--font-size-tag);
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background-color: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: var(--color-text-secondary);
 }
 
-.phase-card__number {
-    position: absolute;
-    top: 15px;
-    right: 20px;
+/* ==========================================================================
+   3. OŚ CZASU — rozszerzenie globalnego .timeline (home.css) o listę tygodni
+   i marker fazy; sama siatka/alternowanie stron dziedziczone globalnie.
+   ========================================================================== */
+
+.camp-timeline {
+    padding: var(--spacing-lg) 0;
+}
+
+.camp-timeline__title {
+    font-family: var(--font-heading);
+    text-align: center;
+    font-size: var(--font-size-h2);
+    text-transform: uppercase;
+    color: var(--bone);
+    margin-bottom: var(--spacing-sm);
+}
+
+.camp-timeline__desc {
+    max-width: 60ch;
+    margin: 0 auto var(--spacing-xl) auto;
+    text-align: center;
+    color: var(--bone-dim);
+    font-size: var(--font-size-lead);
+    line-height: 1.6;
+}
+
+.timeline__weeks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-md);
+    border-top: 1px dashed var(--bone-faint);
+    padding-top: var(--spacing-md);
+}
+
+.timeline__weeks li {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--bone-dim);
+}
+
+.timeline__weeks strong {
+    color: var(--bone);
+    font-weight: 700;
+}
+
+.phase-marker {
+    position: relative;
+    width: 100%;
+    max-width: 220px;
+    margin: 0 auto;
+    padding: var(--spacing-md);
+    text-align: center;
+}
+
+.phase-marker__num {
+    display: block;
     font-family: var(--font-heading);
     font-size: 3.5rem;
     font-weight: 900;
     line-height: 1;
-    opacity: 0.08;
-    pointer-events: none;
-    transition: all 0.3s ease;
-    z-index: 1;
+    color: var(--red);
 }
 
-.phase-card:hover .phase-card__number {
-    opacity: 0.2;
-    transform: translateY(-3px);
+.phase-marker__unit {
+    display: block;
+    color: var(--ink-faint);
+    margin-top: 2px;
+    margin-bottom: var(--spacing-sm);
 }
 
-.phase-card__body {
-    position: relative;
-    z-index: 2;
-}
-
-.phase-card__title {
-    font-family: var(--font-heading);
-    font-size: 1.4rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: var(--spacing-xs);
-    color: var(--color-text-primary);
-}
-
-.phase-card__lead {
-    font-size: 1.05rem;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-}
-
-.phase-card__schedule {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    padding-top: var(--spacing-md);
-    position: relative;
-    z-index: 2;
-}
-
-.phase-card__steps {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-}
-
-.phase-card__steps li {
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    line-height: 1.45;
-    position: relative;
-    padding-left: 14px;
-}
-
-.phase-card__steps li::before {
-    content: "•";
-    position: absolute;
-    left: 0;
-    color: var(--color-accent);
-}
-
-.phase-card__steps li strong {
-    color: var(--color-text-primary);
-    font-weight: 600;
-}
-
-.phase-card__footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    padding-top: var(--spacing-md);
-    position: relative;
-    z-index: 2;
-}
-
-.phase-card__progress-bar {
+.phase-marker__bar {
     width: 100%;
-    height: 8px;
-    background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 999px;
-    overflow: hidden;
-    margin-bottom: var(--spacing-xs);
+    height: 6px;
+    background-color: color-mix(in srgb, var(--ink) 12%, transparent);
 }
 
-.phase-card__progress-fill {
+.phase-marker__fill {
     height: 100%;
-    border-radius: 999px;
-    transition: width 0.6s ease;
+    background-color: var(--red);
 }
 
-.phase-card__progress-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.85rem;
-    color: var(--color-text-secondary);
-}
+/* ==========================================================================
+   4. WSPARCIE — 4 filary, 4 różne typy kontenerów (DESIGN.md §9)
+   ========================================================================== */
 
-.phase-card__progress-value {
-    font-size: 0.95rem;
-    font-weight: 800;
-    font-family: monospace;
-}
-
-/* MODYFIKATORY FAZ (BEM) */
-
-/* Faza 1 (Pomarańcz Akcentu) */
-
-.phase-card--phase-1 .phase-card__icon,
-.phase-card--phase-1 .phase-card__number,
-.phase-card--phase-1 .phase-card__progress-value {
-    color: var(--color-accent);
-}
-.phase-card--phase-1 .phase-card__progress-fill {
-    background-color: var(--color-accent);
-}
-.phase-card--phase-1:hover {
-    border-color: var(--color-accent);
-}
-
-/* Faza 2 (Czerwień Proteiny) */
-
-.phase-card--phase-2 .phase-card__icon,
-.phase-card--phase-2 .phase-card__number,
-.phase-card--phase-2 .phase-card__progress-value {
-    color: var(--color-protein);
-}
-.phase-card--phase-2 .phase-card__progress-fill {
-    background-color: var(--color-protein);
-}
-.phase-card--phase-2 .phase-card__steps li::before {
-    color: var(--color-protein);
-}
-.phase-card--phase-2:hover {
-    border-color: var(--color-protein);
-}
-
-/* Faza 3 (Zieleń/Węglowodany Sukcesu) */
-
-.phase-card--phase-3 .phase-card__icon,
-.phase-card--phase-3 .phase-card__number,
-.phase-card--phase-3 .phase-card__progress-value {
-    color: var(--color-carbs);
-}
-.phase-card--phase-3 .phase-card__progress-fill {
-    background-color: var(--color-carbs);
-}
-.phase-card--phase-3 .phase-card__steps li::before {
-    color: var(--color-carbs);
-}
-.phase-card--phase-3:hover {
-    border-color: var(--color-carbs);
-}
-
-/* CAMP_FEATURES */
-
-.camp-features {
+.camp-support {
     padding: var(--spacing-lg) 0;
 }
 
-.camp-features__header {
-    text-align: center;
-    margin-bottom: var(--spacing-xl);
-}
-
-.camp-features__kicker {
-    font-size: var(--font-size-kicker);
-    color: var(--color-accent);
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: var(--spacing-xs);
-}
-
-.camp-features__title {
+.camp-support__title {
     font-family: var(--font-heading);
+    text-align: center;
     font-size: var(--font-size-h2);
-    line-height: 1.1;
     text-transform: uppercase;
-    margin-bottom: var(--spacing-md);
+    color: var(--bone);
+    margin-bottom: var(--spacing-sm);
 }
 
-.camp-features__desc {
-    max-width: 650px;
-    margin: 0 auto;
-    color: var(--color-text-secondary);
+.camp-support__desc {
+    max-width: 60ch;
+    margin: 0 auto var(--spacing-xl) auto;
+    text-align: center;
+    color: var(--bone-dim);
     font-size: var(--font-size-lead);
     line-height: 1.6;
 }
 
-.camp-features__grid {
+.camp-support__grid {
     display: grid;
     gap: var(--spacing-lg);
 }
 
-.camp-bento {
+.support-card {
     position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    background-color: var(--color-surface);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
     padding: var(--spacing-lg);
-    transition: all 0.3s ease;
 }
 
-.camp-bento:hover {
-    transform: translateY(-4px);
-    border-color: var(--color-accent);
-    /* box-shadow removed (Wariant A - Monolit) */
+.support-card__icon {
+    width: 26px;
+    height: 26px;
+    color: var(--amber);
+    stroke-width: 1.6;
+    margin-bottom: var(--spacing-md);
 }
 
-.camp-bento--highlight {
-    border-color: rgba(var(--color-accent-rgb), 0.3);
-    background-color: var(--color-surface); /* removed gradient */
-}
-
-.camp-bento__icon-box {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.camp-bento:hover .camp-bento__icon {
-    transform: scale(1.12);
-}
-
-.camp-bento__icon {
-    color: var(--color-accent);
-}
-
-.camp-bento__title {
+.support-card__title {
     font-family: var(--font-heading);
     font-size: 1.3rem;
-    color: var(--color-text-primary);
     text-transform: uppercase;
+    margin-bottom: var(--spacing-sm);
 }
 
-.camp-bento__desc {
-    text-transform: uppercase;
-    font-size: 1.05rem;
-    color: var(--color-text-secondary);
-    letter-spacing: 0.5px;
+.support-card__desc {
+    font-size: 0.95rem;
     line-height: 1.6;
-    margin-bottom: var(--spacing-xs);
 }
 
-.camp-bento__tags {
+/* 1 — Indywidualny protokół: kartka z dziurkami */
+.support-card--sheet {
+    padding-top: calc(var(--spacing-lg) + 14px);
+}
+
+.support-card--sheet .support-card__title {
+    color: var(--ink);
+}
+
+.support-card--sheet .support-card__desc {
+    color: var(--ink-dim);
+}
+
+.support-card__holes {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    gap: var(--spacing-xs);
-    margin-top: var(--spacing-md);
-    flex-wrap: wrap;
+    gap: var(--spacing-md);
 }
 
-.bento-tag {
-    font-size: var(--font-size-kicker);
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: var(--font-size-kicker);
-    background: rgba(var(--color-accent-rgb), 0.1);
-    border: 1px solid rgba(var(--color-accent-rgb), 0.25);
-    color: var(--color-accent);
+/* 2 — Wideo-analiza: panel na macie */
+.support-card--video {
+    background-color: var(--ground2);
+    border: 1px solid var(--bone-faint);
 }
 
-/* QUALIFICATION SECTION */
+.support-card--video .support-card__title {
+    color: var(--bone);
+}
+
+.support-card--video .support-card__desc {
+    color: var(--bone-dim);
+}
+
+/* 3 — Komunikator: notatka na marginesie, bez tła */
+.support-card--note {
+    transform: rotate(-1.3deg);
+    border-top: 1px dashed var(--bone-faint);
+}
+
+.support-card--note .support-card__title {
+    color: var(--bone);
+}
+
+.support-card--note .support-card__desc {
+    color: var(--bone-dim);
+}
+
+/* 4 — Protokół wyjścia: pieczątka */
+.support-card--stamp {
+    padding-top: calc(var(--spacing-lg) + 20px);
+}
+
+.support-card__badge {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+}
+
+.support-card--stamp .support-card__title {
+    color: var(--bone);
+}
+
+.support-card--stamp .support-card__desc {
+    color: var(--bone-dim);
+}
+
+/* ==========================================================================
+   5. KWALIFIKACJA — dwie listy obok siebie, bez twardej bramki
+   ========================================================================== */
 
 .camp-qual {
     padding: var(--spacing-lg) 0;
 }
 
-.camp-qual__header {
-    text-align: center;
-    margin-bottom: var(--spacing-xl);
-}
-
-.camp-qual__kicker {
-    color: var(--color-accent);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: var(--font-size-kicker);
-    font-weight: 700;
-}
-
 .camp-qual__title {
     font-family: var(--font-heading);
+    text-align: center;
     font-size: var(--font-size-h2);
-    line-height: 1.1;
     text-transform: uppercase;
-    margin-bottom: var(--spacing-md);
+    color: var(--bone);
+    margin-bottom: var(--spacing-sm);
 }
 
 .camp-qual__desc {
-    max-width: 650px;
-    margin: 0 auto;
-    color: var(--color-text-secondary);
+    max-width: 60ch;
+    margin: 0 auto var(--spacing-xl) auto;
+    text-align: center;
+    color: var(--bone-dim);
     font-size: var(--font-size-lead);
     line-height: 1.6;
 }
 
 .camp-qual__grid {
     display: grid;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-xl);
 }
 
-.qual-card {
-    background-color: var(--color-surface);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: var(--spacing-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    transition: all 0.3s ease;
-}
-
-.qual-card__header {
+.qual-list__title {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    color: var(--bone);
+    margin-bottom: var(--spacing-md);
     padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--bone-faint);
 }
 
-.qual-card__icon {
-    width: 28px;
-    height: 28px;
+.qual-list__icon {
+    width: 24px;
+    height: 24px;
     flex-shrink: 0;
 }
 
-.qual-card__title {
-    font-family: var(--font-heading);
-    font-size: 1.25rem;
-    text-transform: uppercase;
-    color: var(--color-text-primary);
-    letter-spacing: 1px;
+.qual-list__icon--yes {
+    color: var(--amber);
 }
 
-.qual-card__list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
+.qual-list__icon--no {
+    color: var(--red);
 }
 
-.qual-card__list li {
+.qual-list__items li {
     font-size: 0.95rem;
     line-height: 1.6;
-    color: var(--color-text-secondary);
-    position: relative;
-    padding-left: 1.25rem;
+    color: var(--bone-dim);
+    padding: var(--spacing-sm) 0;
 }
 
-.qual-card__list li::before {
-    content: ".";
-    position: absolute;
-    left: 0;
-    font-size: 1.2rem;
-    line-height: 1;
+.qual-list__items li:not(:first-child) {
+    border-top: 1px dashed var(--bone-faint);
 }
 
-.qual-card--positive {
-    background-color: var(--color-surface);
-    border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-.qual-card--positive .qual-card__icon {
-    color: var(--color-carbs);
-}
-
-.qual-card--positive li::before {
-    color: var(--color-carbs);
-}
-
-.qual-card--positive:hover {
-    border-color: var(--color-carbs);
-    /* box-shadow removed */
-}
-
-.qual-card--negative {
-    background-color: var(--color-surface);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    color: var(--color-protein);
-}
-
-.qual-card--negative .qual-card__icon {
-    color: var(--color-protein);
-}
-
-.qual-card--negative li::before {
-    color: var(--color-protein);
-}
-
-.qual-card--negative:hover {
-    border-color: var(--color-protein);
-    /* box-shadow removed */
-}
-
-/* CAMP APLLY SETION */
+/* ==========================================================================
+   6. FORMULARZ ZGŁOSZENIOWY (styl Wariantu 5 — marginesy przy polach)
+   ========================================================================== */
 
 .camp-apply {
     padding: var(--spacing-lg) 0;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--bone-faint);
 }
 
 .camp-apply__layout {
     display: grid;
-    gap: var(--spacing-md);
-}
-
-.camp-apply__kicker {
-    display: block;
-    font-size: var(--font-size-kicker);
-    font-weight: 700;
-    color: var(--color-accent);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: var(--spacing-xs);
+    gap: var(--spacing-lg);
 }
 
 .camp-apply__title {
     font-family: var(--font-heading);
     font-size: var(--font-size-h2);
     text-transform: uppercase;
-    line-height: 1.1;
+    color: var(--bone);
     margin-bottom: var(--spacing-md);
 }
 
 .camp-apply__desc {
-    color: var(--color-text-secondary);
+    color: var(--bone-dim);
     line-height: 1.6;
-    margin-bottom: var(--spacing-lg);
     font-size: var(--font-size-lead);
+    margin-bottom: var(--spacing-lg);
 }
 
 .camp-form {
@@ -713,32 +518,34 @@
 }
 
 .camp-form__label {
-    font-size: var(--font-size-kicker);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
     font-weight: 700;
+    letter-spacing: var(--tracking-mono);
     text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--color-text-secondary);
+    color: var(--bone-dim);
 }
 
 .camp-form__input {
     width: 100%;
-    padding: var(--spacing-xs);
-    color: var(--color-text-primary);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
+    padding: 0.7rem var(--spacing-sm);
+    color: var(--bone);
+    background-color: var(--ground2);
+    border: 1px solid var(--bone-faint);
     border-radius: 2px;
+    font-family: var(--font-main);
     font-size: 1rem;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.2s ease;
 }
 
 .camp-form__input::placeholder {
-    color: var(--color-text-secondary);
-    opacity: 0.25;
+    color: var(--bone-dim);
+    opacity: 0.5;
 }
 
 .camp-form__input:focus {
     outline: none;
-    border-color: var(--color-accent);
+    border-color: var(--amber);
 }
 
 .camp-form__row {
@@ -750,69 +557,80 @@
 .camp-form__select {
     appearance: none;
     cursor: pointer;
-    background-color: var(--color-surface);
 }
 
 .camp-form__select:invalid {
-    color: rgba(255, 255, 255, 0.15)
+    color: var(--bone-dim);
 }
 
 .camp-form__select option {
-    color: var(--color-text-primary);
+    color: var(--ink);
+    background-color: var(--paper);
 }
 
 .camp-form__textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 90px;
+}
+
+.camp-form__note {
+    font-size: 0.82rem;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--bone-dim);
 }
 
 .camp-form__submit {
     margin-top: var(--spacing-md);
+    width: 100%;
 }
+
+.success-box {
+    padding: var(--spacing-lg) 0;
+    text-align: center;
+}
+
+.success-box h3 {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h3);
+    text-transform: uppercase;
+    color: var(--bone);
+    margin-bottom: var(--spacing-xs);
+}
+
+.success-box p {
+    color: var(--bone-dim);
+}
+
+/* SIDEBAR — karta zaufania */
 
 .camp-trust-card {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
+    position: relative;
     padding: var(--spacing-lg);
-    margin-top: var(--spacing-md);
 }
 
-.camp-trust-card__header {
+.camp-trust-card__holes {
+    position: absolute;
+    top: 10px;
+    left: 16px;
     display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
+    gap: var(--spacing-xs);
 }
 
-.camp-trust-card__icon-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* Naked icon - no background, no border */
-}
-
-.camp-trust-card__icon {
-    width: 24px;
-    height: 24px;
-    color: var(--color-accent);
-}
-
-.camp-trust-card__badge {
-    font-size: var(--font-size-kicker);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--color-accent);
+.camp-trust-card__stamp {
+    position: absolute;
+    top: 14px;
+    right: 16px;
 }
 
 .camp-trust-card__title {
     font-family: var(--font-heading);
-    font-size: var(--font-size-h3, 1.25rem);
+    font-size: var(--font-size-h3);
     text-transform: uppercase;
-    margin-bottom: var(--spacing-lg);
+    color: var(--ink);
+    margin: var(--spacing-xl) 0 var(--spacing-lg) 0;
     padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px dashed var(--ink-faint);
 }
 
 .camp-trust-card__list {
@@ -827,12 +645,12 @@
     gap: var(--spacing-sm);
     font-size: 0.9rem;
     line-height: 1.5;
-    color: var(--color-text-secondary);
+    color: var(--ink-dim);
 }
 
 .camp-trust-card__item strong {
     display: block;
-    color: var(--color-text-primary);
+    color: var(--ink);
     font-weight: 700;
     margin-bottom: 2px;
 }
@@ -844,9 +662,9 @@
 .trust-icon {
     width: 20px;
     height: 20px;
-    color: var(--color-accent);
+    color: var(--red);
     flex-shrink: 0;
-    margin-top: 2px; /* Wyrównanie optyczne z pierwszą linią tekstu */
+    margin-top: 2px;
 }
 
 .camp-trust-card__note {
@@ -855,20 +673,24 @@
     gap: var(--spacing-sm);
     margin-top: var(--spacing-lg);
     padding-top: var(--spacing-md);
-    border-top: 1px solid var(--color-border);
+    border-top: 1px dashed var(--ink-faint);
     font-size: 0.85rem;
     line-height: 1.5;
-    color: var(--color-text-secondary);
+    color: var(--ink-dim);
     font-style: italic;
 }
 
 .note-icon {
     width: 18px;
     height: 18px;
-    color: var(--color-accent);
+    color: var(--red);
     flex-shrink: 0;
     margin-top: 2px;
 }
+
+/* ==========================================================================
+   RESPONSYWNOŚĆ — desktop ≥768px
+   ========================================================================== */
 
 @media (min-width: 768px) {
     .camp-hero__layout {
@@ -878,16 +700,17 @@
         gap: var(--spacing-xl);
     }
 
-    .camp-phases__grid {
-        grid-template-columns: repeat(3, 1fr);
+    .camp-hero__actions {
+        flex-direction: row;
     }
 
-    .camp-features__grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 równe kolumny */
+    .camp-coach__layout {
+        grid-template-columns: 0.7fr 1.3fr;
+        align-items: center;
     }
 
-    .camp-bento--wide {
-        grid-column: span 2;
+    .camp-support__grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .camp-qual__grid {

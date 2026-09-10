@@ -11,7 +11,7 @@ export const renderRecipes = () => {
 
         <div class="filters">
             <div class="filters__search">
-                <input type="number" class="filters__input" id="input-calories" placeholder="Przeszukaj po kaloriach" />
+                <input type="number" class="filters__input" id="input-calories" placeholder="Max kalorii" />
                 <button class="btn btn--primary" id="btn-search-calories">Szukaj</button>
             </div>
 
@@ -65,7 +65,7 @@ const genrateRecipeDetailHTML = (recipe) => {
     return html`
         <article class="recipe">
             <nav class="recipe__nav">
-                <button class="btn btn--outline" id="btn-back">← Wróć do przepisów</button>
+                <button class="btn btn--secondary" id="btn-back">← Wróć do przepisów</button>
             </nav>
 
             <div class="recipe__image-container">
@@ -94,14 +94,14 @@ const genrateRecipeDetailHTML = (recipe) => {
             </header>
 
             <section class="recipe__section">
-                <h3 class="recipe__section-title">// Składniki</h3>
+                <h3 class="recipe__section-title">Składniki</h3>
                 <ul class="recipe__list recipe__list--ingredients">
                     ${recipe.ingredients.map((item) => html`<li class="recipe__list-item">${item}</li>`).join("")}
                 </ul>
             </section>
 
             <section class="recipe__section">
-                <h3 class="recipe__section-title">// Sposób przygotowania</h3>
+                <h3 class="recipe__section-title">Sposób przygotowania</h3>
                 <ol class="recipe__list recipe__list--instructions">
                     ${recipe.instructions.map((step) => html`<li class="recipe__list-item">${step}</li>`).join("")}
                 </ol>

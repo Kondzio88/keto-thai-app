@@ -94,3 +94,67 @@ Kontynuacja tego samego dnia, po audycie z cz. 1 — realne przepisanie copy w `
 15. **Dashboard — pętla posiłków:** `dashboard.js` nie importuje `mealService.js` — dopiąć `getTodayMeal()`, listę zjedzonych posiłków, `deleteMeal()`, Date Controller.
 16. **Podmienić placeholdery w footerze** — `href="#"` na Instagram/Facebook w `index.html` czeka na realne linki od użytkownika.
 17. **`.streak-box` (`home.css`)** — hardkodowany `rgba(255,255,255,0.06)` wciąż nienaprawiony — prosta, izolowana zamiana na `color-mix` (powiązane z decyzją o Karcie 2, punkt 7a).
+
+---
+
+### Sesja 2026-09-10 — Wizualizacje 5 wariantów struktury `/camp`
+
+1. **Stworzone 5 makiet w pełnej wierności stylu `DESIGN.md`** (osobne artifacty, desktop 1440 px + mobile 390 px każda) na bazie istniejącego `CAMP_VARIANTS.md` — dokumentu z 5 propozycjami architektury `/camp`, do którego wcześniej istniały tylko generatywne szkice (`.impeccable/mocks/decision/opt1-5.png`).
+2. **Ważne rozróżnienie ustalone i zapisane w `CAMP_VARIANTS.md`:** szkice generatywne (`.png`, mimo rozszerzenia faktycznie JPEG) mają obcą treść (angielski, fikcyjne nazwiska typu „Mike Thompson", koszykówka/NBA zamiast Muay Thai/keto) i łamią §3/§4/§5/§9 `DESIGN.md` (box-shadow, glow, kicker nad nagłówkiem, identyczne karty w rzędzie, `--red` jako mały tekst). Czytać je wolno **wyłącznie jako układ blokowy**, nigdy jako referencję wizualną. Nowe makiety zbudowane na realnych tokenach z `src/styles/base/global.css` i realnym copy z `src/pages/camp.js`, skorygowanym wstępnie wg `MARKETING.md`.
+3. **Linki do wszystkich 5 makiet zapisane w `CAMP_VARIANTS.md`** obok odpowiadających im szkiców, wraz z tabelą rozróżniającą „mockup" od „makiety" i sekcją zbiorczą **10 poprawek wspólnych dla wszystkich wariantów** (usunięcie `BATCH #04`/`VIP ACCESS`/`#KT-8842-PRO`, zamiana na „Pierwsza grupa · 5 miejsc", likwidacja kickerów, zmiana osi obietnicy z „spalania tłuszczu" na mechanizm/wydolność, oznaczanie liczb przykładowych, reguła Muay Thai jako dowód nie wymóg, status „w trakcie" dla dietetyki klinicznej).
+4. **Skala wariantów:**
+   - **Wariant 1 (Oś Czasu Campu)** — cała strona jako ciągła oś czasu Tydzień 1→12, karta zawodnika zamiast fikcyjnego „VIP ACCESS".
+   - **Wariant 2 (Teczka Trenera)** — lewa kolumna z profilem (sticky na desktopie), prawa z dokumentami. Portret i nazwisko **jawnie oznaczone jako brakujące** — nie wymyślone. Makieta mobilna pokazuje realną wadę: lepkość znika, mechanizm wariantu przestaje działać.
+   - **Wariant 3 (Bramka Kwalifikacyjna)** — odwrócona kolejność: 4 warunki wstępne i lista „Odpadasz, jeśli" przed jakimkolwiek opisem korzyści.
+   - **Wariant 4 (Siatka Konkretów)** — bento-grid, ale z 5 **różnymi** typami pojemników (arkusz z dziurkami, panel wideo, notatka, teczka z zakładką, blok na macie) zamiast identycznych kart z cieniem ze szkicu.
+   - **Wariant 5 (Kopia Zgłoszeniowa)** — strona jako 4-etapowy formularz, sprzedaż przeniesiona na marginesy jako wyjaśnienia „po co pytam o to pole".
+5. **Nic nie wdrożone w `camp.js`/`camp.css`** — to etap decyzyjny, nie implementacja. Wybór wariantu i finalne copy wciąż czekają na decyzję użytkownika.
+
+---
+
+### Do zrobienia w kolejnej sesji (dopisane do listy z poprzedniej sesji):
+
+18. **Decyzja: który z 5 wariantów struktury `/camp` wdrażamy** — makiety gotowe, patrz `CAMP_VARIANTS.md`. Otwarte pytanie do rozstrzygnięcia z użytkownikiem: czy wybieramy wariant działający przy dzisiejszym stanie home (np. Wariant 1, 3 lub 4), czy wariant zależny od wdrożenia Wariantu B „Lejek" na home (Wariant 5 zakłada, że cała perswazja zdarzyła się już wcześniej na `/`).
+
+---
+
+### Sesja 2026-09-10 (cz. 2) — Przebudowa `/camp`, pełny audyt i naprawa CSS w całej aplikacji, `/recipes`, `/dashboard`, `/onboarding`
+
+1. **`/camp` przebudowany od zera — wybrany miks Wariantu 1 + Wariantu 5** (nie pojedynczy wariant z `CAMP_VARIANTS.md`, tylko świadome połączenie dwóch): oś czasu (12 tygodni, 3 fazy) jako główny nośnik perswazji na samej stronie, zamiast zakładać (jak czysty Wariant 5), że przekonanie zdarzyło się wcześniej na home. Finalna struktura: Hero → **Camp-coach** (nowa sekcja: Konrad Jacoszek, staż, `w trakcie` przy dietetyce, placeholder na zdjęcie) → Oś czasu 3 faz → 4 filary wsparcia (4 różne typy kontenerów: kartka z dziurkami / panel wideo / notatka na marginesie / pieczątka — zgodnie z zakazem identycznych kart z `DESIGN.md` §9) → Kwalifikacja (dla kogo / dla kogo NIE, bez twardej bramki) → Formularz w stylu Wariantu 5 (każde pole ma notatkę na marginesie "dlaczego pytamy"). Usunięte w całości: `BATCH #04`, `VIP ACCESS`, `#KT-8842-PRO`, `ELITE BODY & PERFORMANCE`, wszystkie kickery nad nagłówkami, metafora "piec do spalania tłuszczu". Zastąpione realnym `Pierwsza grupa · 5 miejsc`. **Formularz świadomie bez realnej wysyłki** — UI/walidacja/stan sukcesu działają, `fetch` zostaje na osobną sesję (priorytet biznesowy #1, patrz niżej).
+2. **Audyt copywritingu `/camp` wobec `MARKETING.md`/`STRATEGY.md`** — znalezisko: hero deklaruje 3 segmenty (walka/siłownia/wytrzymałość), ale oś czasu i "protokół wyjścia" (reverse dieting, "docięcie", "zero jojo") mówiły wyłącznie do segmentu redukcyjnego. Naprawione (wybrany **Wariant B — podniesienie na mechanizm**): "protokół wyjścia" → "protokół stabilizacji" wszędzie, neutralne sformułowania tygodni (np. "kalibracja tempa zmiany wagi pod Twój cel" zamiast "tempo redukcji"), placeholder formularza pokazuje teraz 3 kierunki celu. Dodatkowo: "Komunikator 24/7" → "Codzienny komunikator" (zgodnie z realnym opisem formatu w `STRATEGY.md` §3, nie z całodobową dostępnością, której nikt nie obiecywał).
+3. **🔍 Pełny audyt CSS całego projektu (16 plików) — znalezione i naprawione 56+ odwołań do nieistniejących zmiennych** w `card.css`, `filters.css`, `form.css`, `modal.css`, `banner.css`, `layout.css` (dokładnie ten sam mechanizm usterki co wcześniej na `/camp` — niewidoczne tła/obramowania na `/recipes`, `/dashboard`, `/onboarding`). **Stan na koniec sesji: 0 martwych tokenów, 0 `box-shadow`, 0 zduplikowanych selektorów w całym `src/styles`** (zweryfikowane mechanicznie skryptem porównującym zdefiniowane i używane zmienne).
+4. **`/recipes` przebudowany:** karty na `--ground2`, mapowanie kolorów makro (białko `--red` / tłuszcz `--amber` / węgle `--blue`) ujednolicone z `home.css`. **Nowy plik `recipes.css`** — widok szczegółowy pojedynczego przepisu (`.recipe`/`.recipe__*`) nie miał wcześniej **żadnego** CSS. Naprawiony realny bug: `.btn--outline` (przycisk powrotu) nigdzie nie istniał → zamieniony na `.btn--secondary`. Naprawiony placeholder pola "kalorie" ucięty na mobile (za długi tekst przy `max-width: 140px`) → skrócony do "Max kalorii".
+5. **`/dashboard` przebudowany:** bento-grid na tokenach, kolory wykresów Chart.js (JS, nie CSS — Chart.js nie czyta `var()`) scalone w stałą `CHART_COLORS` odpowiadającą tokenom (wykres wagi miał zielony spoza całej palety 9 tokenów). Naprawione: modal wpisywania wagi (był bez `.modal__title`/`.reminder-icon` w CSS w ogóle), reminder-banner, `.btn-delete` (dwukrotnie — raz martwe tokeny, raz brakujący `padding` po mojej własnej wcześniejszej "uproszczonej" poprawce). Karta "Historia Wagi": usunięty emoji `➕` (zakaz z `DESIGN.md` §9), przycisk przeniesiony do nagłówka karty (`.bento-card__header`), finalnie jako `.btn-icon-text` (ikona + widoczny tekst "Pomiar") — użytkownik odrzucił wersję z samą ikoną jako niejasną.
+6. **`/onboarding` przebudowany:** formularz na tych samych tokenach co reszta appki (mono-etykiety, pola na `--ground2`), dopisany `.page-header` (wcześniej gołe pola bez żadnego kontekstu — zgodne z ustaleniem #20 z `MARKETING.md`). **Nowe pole "Rodzaj sportu"** — te same 4 kategorie co formularz aplikacyjny na `/camp` (`combat`/`gym`/`endurance`/`recreation`), zapisywane do `userProfile`, **świadomie bez wpływu na `calculatorService.js`** (to osobna, większa decyzja — `PLAN.md` wspomina o "specyficznych mnożnikach pod sporty walki", które dziś nigdzie nie istnieją).
+7. **Nowy, realny fakt od użytkownika:** udokumentowane osiągnięcia trenerskie — **mistrz świata WBC wśród dzieci (2026)** oraz **dwaj brązowi medaliści**. Zapisane w pamięci projektu, świadomie **nie** dodane do `/camp` ani `/` — zarezerwowane dla przyszłej `/treningi-tychy` (Wariant B z wyboru użytkownika), żeby nie mieszać dwóch różnych ofert.
+8. **Drobne realne bugi naprawione po drodze:** martwy import `getBase` w `camp.js`, martwa klasa `.macro__label` (nigdy nieużywana), potrójna duplikacja `.is-hidden` (trzy pliki → jedna definicja), side-tab accent border na `.page-header` wykryty przez hook `impeccable` i usunięty (nie stłumiony), martwe zduplikowane `data.backgroundColor` w konfiguracji doughnut-a Chart.js (biblioteka czyta kolory z `datasets[0]`, nie z `data`).
+9. **⚠️ Nierozwiązane:** w trakcie sesji na dysku zniknęła ikona `flame` ze środka wykresu kołowego makro na `/dashboard` (`chart-center-icon`) — zmiana wykryta jako zewnętrzna (nie moja edycja), niewyjaśniona z użytkownikiem, zostawiona bez ruszania.
+10. **Cała sesja pracowała bez wizualnej weryfikacji w przeglądarce** (użytkownik odmówił instalacji Claude in Chrome) — każda zmiana potwierdzona wyłącznie przez `npm run build` i przegląd kodu. Żadna z dzisiejszych stron nie została jeszcze obejrzana na żywo.
+
+---
+
+### Do zrobienia w kolejnej sesji:
+
+#### Kolejność priorytetów (ustalona 2026-09-10, cz. 2 — zasada "jak na produkcji")
+
+Zasada: **najpierw to, co blokuje pieniądze, potem to, co jest widocznie zepsute dla użytkownika, dopiero na końcu polish i wzrost.** Reszta listy niżej (punkty od "About" w dół) to praca nad jakością i wzrostem produktu, który formalnie jeszcze nie działa biznesowo — dopóki punkt 1 nie jest zrobiony, wszystko inne optymalizuje coś, co i tak nie zarabia.
+
+1. 🔴 **Naprawa wysyłki formularza `/camp`.** Jedyna rzecz na stronie generująca przychód — dziś 100% zgłoszeń ginie bezpowrotnie (`FormData` budowany i porzucany, zero `fetch`). Bez tego reszta pracy nie ma znaczenia biznesowego, niezależnie jak spójna wizualnie jest strona. Wzorzec gotowy: nazwana funkcja `handleCampApplySubmit` + serwis w `src/services/`, do wyboru dostawca (Web3Forms vs własny backend).
+2. 🔴 **Wizualna weryfikacja w prawdziwej przeglądarce** wszystkiego, co powstało dziś (`/camp`, `/recipes`, `/dashboard`, `/onboarding`) — desktop + mobile. Cała dzisiejsza sesja była potwierdzana wyłącznie przez `npm run build` i czytanie kodu (brak Claude in Chrome) — build, który się kompiluje, nie gwarantuje braku wizualnych regresji w realnej przeglądarce. Zero-kosztowy krok, zaraz po punkcie 1, zanim dokłada się cokolwiek nowego.
+3. 🔴 **Meta description + Open Graph w `index.html`.** Bez tego każdy link wrzucony na social media (główne źródło ruchu wg `STRATEGY.md`) pokazuje pustą, szarą ramkę — zabija konwersję z kanału, zanim ktokolwiek trafi na stronę.
+
+#### Reszta — jakość i wzrost działającego produktu
+
+4. Wyjaśnić z użytkownikiem zniknięcie ikony `flame` z wykresu makro na `/dashboard` (patrz sesja 2026-09-10 cz. 2, punkt 9) — czy zamierzone.
+5. Przechwytywanie leada na home (Web3Forms) — priorytet 🔴4 z `MARKETING.md`, wciąż odłożone.
+6. Reorder sekcji na home (Wariant B „Lejek" z `MARKETING.md`) — wciąż nie wdrożony (mniej pilne niż wcześniej, bo miks 1+5 na Campie ominął zależność od tego kroku, ale nadal warty zrobienia dla samego home).
+7. About (home) — dokończyć gdy przyjdą realne zdjęcia z Tajlandii i lata/miejsca do `years-proof`.
+8. `/treningi-tychy` — zbudować szkielet trasy; teraz ma też czekać na nią najmocniejszy dostępny dowód autorytetu (osiągnięcia trenerskie — mistrz świata WBC dzieci 2026, dwaj brązowi medaliści).
+9. Dwie niedokończone decyzje copywriterskie z home: Karta 2 „SERIA [PRZYKŁAD]" (wariant formy nierozstrzygnięty), Krok 3 „maszyną do spalania tłuszczu" (czy zamienić na wariant obsługujący wszystkie 3 cele — ta sama klasa problemu, którą naprawiliśmy dziś na Campie, nie przeniesiona jeszcze na home).
+10. Rozjazd nawigacji — kropka `--red` Ø4px vs obecny `--amber` w stanie aktywnym tabbara.
+11. Finalny wybór logo — `.tabbar__logo` na desktopie nadal ma tekst „KT".
+12. `ROADMAP.md` Faza 0 — `404.html`, treść `/knowledge` i `/contact`.
+13. Dashboard — pętla posiłków: `dashboard.js` nadal nie importuje `mealService.js`.
+14. Placeholdery w footerze — `href="#"` na Instagram/Facebook czeka na realne linki.
+15. `.streak-box` (`home.css`) — hardkodowany `rgba(255,255,255,0.06)`, powiązane z niedokończoną decyzją o Karcie 2 (punkt 9).
+16. Stempel „SEZON 01" bez znaczenia sekwencyjnego, `aria-expanded` na akordeonie FAQ (`home.js`).

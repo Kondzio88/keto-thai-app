@@ -1,47 +1,52 @@
-
-
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: color-mix(in srgb, var(--ground) 80%, transparent);
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: var(--spacing-md);
     z-index: 100;
 }
 
-.modal-overlay.is-hidden {
-    display: none !important;
-}
-
 .modal__content {
-    background-color: var(--color-surface);
+    width: 100%;
+    max-width: 320px;
+    background-color: var(--ground2);
+    border: 1px solid var(--bone-faint);
     padding: var(--spacing-xl);
-    border-radius: 20px;
-    min-width: 300px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     gap: var(--spacing-lg);
 }
 
+.modal__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h3);
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--bone);
+}
+
 .modal__input {
+    width: 100%;
     padding: 0.8rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-    background-color: var(--color-background);
-    color: var(--text-color);
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--bone);
+    background-color: var(--ground);
+    border: 1px solid var(--bone-faint);
+    border-radius: 2px;
+    transition: border-color 0.2s ease;
 }
 
 .modal__input:focus {
     outline: none;
-    border-color: var(--color-primary);
-    transition: all 0.3s ease;
+    border-color: var(--amber);
 }
 
 .modal__input[type="number"]::-webkit-outer-spin-button,
@@ -59,4 +64,9 @@
     justify-content: center;
     align-items: center;
     gap: var(--spacing-md);
+    width: 100%;
+}
+
+.modal__actions .btn {
+    flex: 1;
 }

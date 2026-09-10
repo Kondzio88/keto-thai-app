@@ -1,19 +1,15 @@
 .card {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
+    background-color: var(--ground2);
+    border: 1px solid var(--bone-faint);
     overflow: hidden;
-    transition:
-        transform 0.3s ease,
-        border-color 0.3s ease;
+    transition: border-color 0.2s ease;
     display: flex;
     flex-direction: column;
     cursor: pointer;
 }
 
 .card:hover {
-    transform: translateY(-2px);
-    border-color: var(--color-primary);
+    border-color: var(--amber);
 }
 
 .card__image-container {
@@ -26,32 +22,35 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
 .card__badge {
     position: absolute;
     top: var(--spacing-sm);
     right: var(--spacing-sm);
-    background-color: var(--color-background);
-    color: var(--color-accent);
+    background-color: color-mix(in srgb, var(--ground) 78%, transparent);
+    color: var(--bone);
     padding: 4px 8px;
-    font-weight: 700;
-    font-size: 0.8rem;
-    border-radius: 4px;
-    border: 1px solid var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    border: 1px solid var(--bone-faint);
 }
 
 .card__time {
     position: absolute;
     top: var(--spacing-sm);
     left: var(--spacing-sm);
-    background-color: var(--color-background);
-    color: var(--color-accent);
+    background-color: color-mix(in srgb, var(--ground) 78%, transparent);
+    color: var(--bone);
     padding: 4px 8px;
-    font-weight: 700;
-    font-size: 0.8rem;
-    border-radius: 4px;
-    border: 1px solid var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    border: 1px solid var(--bone-faint);
 }
 
 .card__content {
@@ -62,9 +61,11 @@
 }
 
 .card__title {
-    font-size: 1.25rem;
-    margin-bottom: var(--spacing-md);
+    font-family: var(--font-main);
+    font-size: 1.05rem;
     font-weight: 600;
+    color: var(--bone);
+    margin-bottom: var(--spacing-md);
 }
 
 /* System wyświetlania Makroskładników */
@@ -79,32 +80,33 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: var(--color-input-bg);
+    background-color: color-mix(in srgb, var(--bone) 5%, transparent);
     padding: var(--spacing-sm) 0;
-    border-radius: 4px;
     border-bottom: 2px solid transparent; /* Miejsce na kolor */
 }
 
 .macro__label {
     font-size: 0.7rem;
-    color: var(--color-text-secondary);
+    color: var(--bone-dim);
     text-transform: uppercase;
 }
 
 .macro__value {
+    font-family: var(--font-mono);
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    color: var(--bone);
 }
 
-/* Wykorzystanie naszych globalnych zmiennych z bazy */
+/* Mapowanie kolorów makro — spójne z home.css (macro-bar) i DESIGN.md §3 */
 .macro--protein {
-    border-color: var(--color-protein);
+    border-color: var(--red);
 }
 .macro--fats {
-    border-color: var(--color-fats);
+    border-color: var(--amber);
 }
 .macro--carbs {
-    border-color: var(--color-carbs);
+    border-color: var(--blue);
 }
 
 .macro__icon {
@@ -114,92 +116,104 @@
 }
 
 .macro--protein .macro__icon {
-    color: var(--color-protein);
+    color: var(--red);
 }
 
 .macro--fats .macro__icon {
-    color: var(--color-fats);
+    color: var(--amber);
 }
 
 .macro--carbs .macro__icon {
-    color: var(--color-carbs);
+    color: var(--blue);
 }
 
-/* BENTO CARDS CSS FOR DASHBOARD.js */
+/* BENTO GRID — DASHBOARD */
 
 .bento-card {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 24px;
+    background-color: var(--ground2);
+    border: 1px solid var(--bone-faint);
     padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition:
-        transform 0.2s ease,
-        border-color 0.2s ease;
+    transition: border-color 0.2s ease;
 }
 
 .bento-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--color-accent);
+    border-color: var(--amber);
 }
 
 .bento-card--accent {
     grid-column: span 2;
-    background-color: var(--color-accent);
-    color: var(--color-text-primary);
+    background-color: var(--paper);
     border: none;
 }
 
 .bento-card--chart {
     grid-column: span 2;
     min-height: 250px;
+    align-items: stretch;
+    justify-content: flex-start;
 }
 
 .bento-card__title {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    font-weight: 700;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--bone-dim);
     margin-bottom: var(--spacing-md);
 }
 
-.bento-card--accent,
-.brnto-card__title {
-    color: var(--color-text-primary);
-    opacity: 0.9;
+.bento-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: var(--spacing-md);
+}
+
+.bento-card__header .bento-card__title {
+    margin-bottom: 0;
 }
 
 .bento-card--accent .bento-card__title {
-    color: var(--color-text-primary);
+    color: var(--ink-dim);
 }
 
 .bento-card__value {
+    font-family: var(--font-heading);
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--color-text-primary);
+    color: var(--bone);
+}
+
+.bento-card--accent .bento-card__value {
+    color: var(--red);
 }
 
 .bento-card__icon {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
+    stroke-width: 1.6;
     margin-bottom: var(--spacing-sm);
 }
 
 .bento-card--proteins .bento-card__icon,
 .bento-card--proteins .bento-card__value {
-    color: var(--color-protein);
+    color: var(--red);
 }
 
 .bento-card--fats .bento-card__icon,
 .bento-card--fats .bento-card__value {
-    color: var(--color-fats);
+    color: var(--amber);
 }
 
 .bento-card--carbs .bento-card__icon,
 .bento-card--carbs .bento-card__value {
-    color: var(--color-carbs);
+    color: var(--blue);
 }
 
 /* CHART STYLES */
@@ -220,8 +234,8 @@
     transform: translate(-50%, -40%);
     width: 48px;
     height: 48px;
-    color: #ff0404;
-    opacity: 0.5;
+    color: var(--bone-dim);
+    opacity: 0.4;
 }
 
 .line-chart-wrapper {

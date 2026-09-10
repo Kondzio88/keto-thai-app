@@ -1,0 +1,60 @@
+{
+  "title": "Koncepcje struktury dla /camp",
+  "question": "Zgodnie z ¿yczeniem - 5 wariantów struktury (styl wizualny dziennika pozostaje sta³y). Wybierz architekturê, która najlepiej zrealizuje Twój cel.",
+  "options": [
+    {
+      "id": "opt1",
+      "label": "The Timeline Flow (Podró¿)",
+      "thesis": "Strona to jedna ci¹g³a oœ czasu od Dnia 1 do Dnia 84.",
+      "palette": ["#15130F", "#E7DFC6", "#C23B2E", "#D98C2B"],
+      "materials": ["papier kraft", "ciemna mata"],
+      "viewport": "Potê¿na pionowa oœ po lewej stronie. Przewijanie odkrywa kolejne fazy programu (Week 1-12) i przypiête do nich wartoœci.",
+      "risk": "Wymaga d³ugiego scrollowania, ukrywa formularz na samym dole.",
+      "comp": ".impeccable/mocks/decision/opt1.png"
+    },
+    {
+      "id": "opt2",
+      "label": "The Coach's Dossier (Autorytet)",
+      "thesis": "Strona jako otwarta teczka trenera z informacjami o programie.",
+      "palette": ["#15130F", "#E7DFC6", "#C23B2E", "#D98C2B"],
+      "materials": ["papier kraft", "ciemna mata"],
+      "viewport": "Zablokowana lewa kolumna z profilem trenera (foto, kwalifikacje). Prawa kolumna przewija siê przez dokumenty programu.",
+      "risk": "Mocno dzieli uwagê na desktopie; trudniejsze do u³o¿enia na mobile.",
+      "comp": ".impeccable/mocks/decision/opt2.png"
+    },
+    {
+      "id": "opt3",
+      "label": "The Qualification Gate (Filtr)",
+      "thesis": "Zaczynamy od wymagañ. U¿ytkownik sam siê kwalifikuje.",
+      "palette": ["#15130F", "#E7DFC6", "#C23B2E", "#D98C2B"],
+      "materials": ["papier kraft", "ciemna mata"],
+      "viewport": "Hero pyta 'Czy jesteœ gotowy?'. Poni¿ej twarde zasady wspó³pracy, a dopiero potem oferta i formularz.",
+      "risk": "Mo¿e odrzuciæ zbyt wielu zimnych odwiedzaj¹cych na samym starcie.",
+      "comp": ".impeccable/mocks/decision/opt3.png"
+    },
+    {
+      "id": "opt4",
+      "label": "The Deliverables Grid (Produkt)",
+      "thesis": "Gêsty dashboard korzyœci skupiony na namacalnej wartoœci.",
+      "palette": ["#15130F", "#E7DFC6", "#C23B2E", "#D98C2B"],
+      "materials": ["papier kraft", "ciemna mata"],
+      "viewport": "Brak d³ugiego czytania. Hero to siatka bento z kartami: Wideo-Analiza, Kontakt 24/7, Protokó³. Wszystko widoczne od razu.",
+      "risk": "Krótsza narracja mo¿e nie zbudowaæ odpowiednich emocji przed zakupem.",
+      "comp": ".impeccable/mocks/decision/opt4.png"
+    },
+    {
+      "id": "opt5",
+      "label": "The Embedded Form (Akcja)",
+      "thesis": "Strona JEST formularzem aplikacyjnym.",
+      "palette": ["#15130F", "#E7DFC6", "#C23B2E", "#D98C2B"],
+      "materials": ["papier kraft", "ciemna mata"],
+      "viewport": "Formularz zajmuje centrum od samego pocz¹tku. Copy sprzeda¿owe ¿yje na marginesach, objaœniaj¹c kolejne pola.",
+      "risk": "Agresywne podejœcie sprzeda¿owe; zak³ada, ¿e klient jest ju¿ gotowy.",
+      "comp": ".impeccable/mocks/decision/opt5.png"
+    }
+  ],
+  "buildPath": {
+    "value": "comp",
+    "toggle": true
+  }
+}

@@ -1,28 +1,37 @@
 /* Pasek kontenera na przyciski */
-.filters{
+.filters {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
 }
 
-.filters__search{
+.filters__search {
     display: flex;
     justify-content: start;
     align-items: center;
-    gap: 0 var(--spacing-md)
+    gap: 0 var(--spacing-md);
 }
 
-.filters__input{
-    max-width: 100px;
-    padding: 0.75rem;
-    font-size: 1.1rem;
+.filters__input {
+    max-width: 140px;
+    padding: 0.7rem var(--spacing-sm);
+    font-family: var(--font-main);
+    font-size: 1rem;
     font-weight: 600;
-    border-radius: 5px;
+    color: var(--bone);
+    background-color: var(--ground2);
+    border: 1px solid var(--bone-faint);
+    border-radius: 2px;
     outline: none;
+    transition: border-color 0.2s ease;
 }
 
-.filters__input:focus{
-    border: 2px solid var(--color-accent);
+.filters__input::placeholder {
+    color: var(--bone-dim);
+}
+
+.filters__input:focus {
+    border-color: var(--amber);
 }
 
 .filters__input[type="number"]::-webkit-outer-spin-button,
@@ -46,26 +55,28 @@
 }
 
 .filter-btn {
-    background-color: var(--color-surface);
-    color: var(--color-text-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
+    background-color: transparent;
+    color: var(--bone-dim);
+    border: 1px solid var(--bone-faint);
+    border-radius: 2px;
     padding: 8px 20px;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    font-weight: 700;
     cursor: pointer;
     white-space: nowrap;
     transition: all 0.2s ease;
 }
 
 .filter-btn:hover {
-    border-color: var(--color-primary);
-    color: var(--color-text-primary);
+    border-color: var(--bone);
+    color: var(--bone);
 }
 
 .filter-btn.is-active {
-    background-color: var(--color-primary);
-    color: var(--color-background);
-    border-color: var(--color-primary);
-    font-weight: 700;
+    background-color: var(--amber);
+    color: var(--ink);
+    border-color: var(--amber);
 }

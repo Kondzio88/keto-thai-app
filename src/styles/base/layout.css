@@ -30,8 +30,19 @@
 
 .page-header {
     margin-bottom: var(--spacing-lg);
-    border-left: 4px solid var(--color-accent);
-    padding-left: var(--spacing-md);
+}
+
+.page-header__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h2);
+    text-transform: uppercase;
+    color: var(--bone);
+    margin-bottom: var(--spacing-xs);
+}
+
+.page-header__desc {
+    color: var(--bone-dim);
+    font-size: var(--font-size-lead);
 }
 
 
@@ -44,9 +55,9 @@
 .bento-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: var(--spacing-lg);
     max-width: 800px;
-    margin: 2rem auto;
+    margin: var(--spacing-lg) auto;
 }
 
 .page-actions {
@@ -56,20 +67,16 @@
     padding-bottom: var(--spacing-xl);
 }
 
-/* Jeśli jeszcze nie masz ostylowanego samego przycisku usuwania, możesz dodać to: */
 .btn-delete {
+    padding: 13px 24px;
     background-color: transparent;
-    color: var(--color-protein);
-    border: 1px solid var(--color-protein);
-    padding: var(--spacing-md) var(--spacing-lg);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    color: var(--red);
+    border: 1px solid var(--red);
 }
 
 .btn-delete:hover {
-    background-color: var(--color-protein);
-    color: #ffffff;
+    background-color: var(--red);
+    color: var(--bone);
 }
 
 .is-hidden {
