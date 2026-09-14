@@ -9,6 +9,8 @@ Aplikacja Keto Thai to Vanilla JS SPA. Jedyne i ostateczne źródło prawdy dla 
 - **Migracja tokenów CSS:** kierunek „usuń stare zmienne, wstaw prosto 9 tokenów z `DESIGN.md`" — bez aliasów-mostków. **Zrobione i potwierdzone mechanicznie (zero martwych `--color-*`, zero `box-shadow`, zero duplikatów selektorów):** `button.css`, `tabbar.css`, `topbar.css`, oraz **cały `home.css`** (Hero, Philosophy, About, Steps, Camp-offer, FAQ). **W kolejce:** `camp.css`, `card.css`, `filters.css`, `form.css`, `modal.css`, `banner.css`, `layout.css`.
 - **Footer:** istnieje od dziś, `src/styles/components/footer.css` — nowy plik, od razu na docelowych tokenach (nic do migracji).
 - **Narzędzie:** skill `impeccable` (`.claude/skills/impeccable/`) używany do audytów i jako checklista (`craft-floor.md`) przy każdej edycji UI. Hook detektora **włączony**.
+- **Audyt całościowy:** `RAPORT.md` (2026-09-14) — pierwszy pełny audyt architektury/layoutu/designu/UI-UX/a11y/wydajności/SEO/copywritingu całej aplikacji naraz (nie pojedynczej strony). 30 znalezisk z tabelą metryk stanu do porównań w kolejnych sesjach. Odtąd punkt odniesienia do priorytetyzacji pracy, obok `MARKETING.md`/`DESIGN.md`.
+- **Przechwytywanie leadów:** formularz `/camp` wysyła realnie przez **Web3Forms** (klucz w `camp.js`, `initCamp()`) — pierwsza zewnętrzna integracja sieciowa w projekcie (wcześniej appka rozmawiała wyłącznie z `localStorage`).
 
 ---
 
@@ -158,3 +160,61 @@ Zasada: **najpierw to, co blokuje pieniądze, potem to, co jest widocznie zepsut
 14. Placeholdery w footerze — `href="#"` na Instagram/Facebook czeka na realne linki.
 15. `.streak-box` (`home.css`) — hardkodowany `rgba(255,255,255,0.06)`, powiązane z niedokończoną decyzją o Karcie 2 (punkt 9).
 16. Stempel „SEZON 01" bez znaczenia sekwencyjnego, `aria-expanded` na akordeonie FAQ (`home.js`).
+
+---
+
+### Sesja 2026-09-14 — Pełny audyt (`RAPORT.md`) + naprawa buildu zdjęć + realna wysyłka formularza `/camp` (Web3Forms) + klauzula RODO
+
+1. **Stworzony `RAPORT.md`** — pierwszy pełny audyt architektury, layoutu, designu, UI/UX, dostępności, wydajności, SEO i copywritingu całej aplikacji naraz (dotychczasowe audyty obejmowały pojedyncze strony). 30 znalezisk, w tym 19 nowych względem tego, co było już śledzone w tym pliku i w `ROADMAP.md`. Zawiera tabelę metryk stanu (do porównań w przyszłości) i rekomendowaną kolejność napraw — pełna treść w pliku, nieprzepisywana tutaj.
+
+2. **🔴 Naprawiony realny bug: build produkcyjny gubił wszystkie lokalne zdjęcia.** Przyczyna: ścieżki w `home.js` były sklejane w runtime (`${getBase()}/src/assets/...`), a Vite kopiuje/hashuje wyłącznie zasoby wykrywalne statycznie (`import`, `url()` w CSS) — string budowany przez wywołanie funkcji jest dla bundlera niewidoczny (zero wykonywania kodu podczas builda). Naprawa: zdjęcia przeniesione do `public/` (kopiowane 1:1 do `dist/`, bez przetwarzania), ścieżki w `home.js` skrócone do `${getBase()}/nazwa.jpg`. **`getBase()` świadomie zostawiony** — odwołania nadal są budowane w JS w runtime, nie przez `import`, więc Vite nie doklei automatycznie prefiksu `/keto-thai-app` wymaganego na GitHub Pages; bez tego prefiksu zdjęcia działałyby lokalnie i psuły się dopiero na produkcji (ścieżka absolutna `/coś` zawsze liczy się od korzenia domeny, nie od aktualnego adresu). Zweryfikowane realnym `npm run build`, nie tylko czytaniem kodu — `dist/` zawiera teraz wszystkie zdjęcia, zero odwołań do `/src/assets` w zbudowanym JS.
+
+3. **🔴 Naprawiona wysyłka formularza `/camp` — pierwsza działająca ścieżka przychodu w całej aplikacji.** Wybrany dostawca: **Web3Forms**, spośród 3 rozważonych wariantów (usługa zewnętrzna / własna funkcja serverless / `mailto:`) — serverless odrzucony jako zbyt duży skok trudności na teraz (nowe środowisko wykonania, sekrety po stronie serwera, CORS, osobny pipeline wdrożenia), `mailto:` jako zbyt słabe UX. `initCamp()` w `camp.js`: `fetch()` POST do `api.web3forms.com/submit` z `access_key`, stan `disabled` + „Wysyłanie..." na przycisku w trakcie, `try/catch` z realnym komunikatem błędu zamiast zawsze-sukcesu (stary kod budował `FormData` i porzucał ją, pokazując fałszywe potwierdzenie niezależnie od wyniku). Zweryfikowane przez wyszukiwanie w dokumentacji Web3Forms, nie zgadywane: rejestracja wymaga tylko e-maila (bez URL-a strony — istotne, bo aplikacja nigdzie jeszcze nie jest hostowana), CORS otwarty domyślnie dla dowolnej domeny — działa identycznie na `localhost` i po wdrożeniu na GitHub Pages.
+
+4. **Poprawka po drodze:** użytkownik pierwotnie założył klucz Web3Forms na prywatnym Gmailu zamiast `KetoThai@o2.pl` — naprawione założeniem drugiego klucza z właściwym adresem (Web3Forms nie ma udokumentowanego samoobsługowego sposobu zmiany adresu e-mail na istniejącym kluczu).
+
+5. **Dodana klauzula RODO** pod formularzem — rozwijana notka (gwiazdka + link), reużywająca mechanizm akordeonu FAQ z `home.js` (`grid-template-rows` 0fr→1fr), ale **z `aria-expanded` ustawianym poprawnie od razu** (czego nie ma jeszcze akordeon FAQ — patrz `RAPORT.md` #22, punkt 16 niżej). Umieszczona jako element siostrzany `</form>`, nie wewnątrz — bo handler sukcesu podmienia `form.innerHTML` w całości, co skasowałoby notkę, gdyby żyła w środku. Treść: Konrad Jacoszek jako administrator, podstawa prawna art. 6 ust. 1 lit. b RODO (czynności przedumowne — **nie wymaga checkboxa zgody**, bo to nie jest przetwarzanie na podstawie zgody, wystarczy informacja), Web3Forms jako podmiot przetwarzający (Indie, transfer zabezpieczony SCC), okres przechowywania 12 miesięcy od zakończenia rekrutacji (moja propozycja, zaakceptowana przez użytkownika). **Zastrzeżenie zapisane wprost dla użytkownika:** treść klauzuli nie jest zweryfikowana przez prawnika — to dobrze uzasadniony szkic pod wymogi art. 13 RODO, nie ostateczna porada prawna; `web3forms.com/privacy` i `/dpa` były niedostępne (403) zarówno dla narzędzia do przeglądania stron, jak i dla samego użytkownika, więc szczegóły o transferze danych nie zostały zweryfikowane od źródła — do sprawdzenia, gdy ich strona znów będzie dostępna.
+
+6. **Po drodze wytłumaczone użytkownikowi** (ugruntowana wiedza, nie do tłumaczenia od zera w przyszłości): różnica build time vs runtime i analiza statyczna Vite (dlaczego `import` się kopiuje do `dist/`, a sklejany w runtime string nie); różnica między ścieżką absolutną (`/coś`, liczoną od korzenia domeny) a względną (liczoną od aktualnego adresu) i dlaczego GitHub Pages jako „project page" łamie założenie „działa lokalnie = zadziała wszędzie"; co dzieje się z listenerem zdarzeń przy `innerHTML` na elemencie, na którym on wisi (przeżywa, jeśli wisi na tym samym elemencie co podmieniany `innerHTML`; ginie, jeśli wisiał na jego dziecku) — z odniesieniem do wzorca delegacji zdarzeń już istniejącego w projekcie (`recipes.js`, `gridLayout.addEventListener` zamiast listenera na każdej karcie).
+
+7. **Build zweryfikowany czysto po każdej zmianie** (`npx vite build`) — zero błędów kompilacji przez całą sesję.
+
+8. **Zatrzymane w trakcie, do dokończenia na starcie kolejnej sesji:** punkt #3 z `RAPORT.md` (meta description + Open Graph + favicon). Dwie konkretne, nierozstrzygnięte rzeczy: (a) **brak finalnego URL-a** — strona nigdzie jeszcze nie jest hostowana, więc `og:url`/`canonical` czekają na decyzję (GitHub Pages czy własna domena); (b) **favicon** — odkryty nieużywany dotąd plik `ketoThaiLogoPatchBone.svg` (240×240, kwadratowa „naszywka" z literami KT, wcześniej martwy zasób niepodpięty nigdzie w kodzie) jako gotowy kandydat, ale ma przezroczyste tło i potrzebuje dopisania jednej warstwy tła w kolorze `--ground`, żeby był czytelny niezależnie od jasnej/ciemnej karty przeglądarki.
+
+---
+
+### Do zrobienia w kolejnej sesji (stan na 2026-09-14, po audycie)
+
+Pełny rejestr wszystkich 30 znalezisk z audytu, z lokalizacją w kodzie i rekomendowaną kolejnością wdrożenia — w `RAPORT.md` §7–8. Poniżej tylko esencja, żeby nie duplikować całego dokumentu.
+
+**Zaraz na starcie — dokańczamy przerwany punkt:**
+
+1. 🔴 **Meta description + Open Graph + favicon** (`RAPORT.md` #3) — zatrzymane dziś na dwóch pytaniach: (a) jaki będzie finalny URL strony — potrzebny do `og:url`/canonical; (b) dopisać tło `--ground` pod `ketoThaiLogoPatchBone.svg` przed użyciem jako favicon.
+
+**Priorytety wg zasady „najpierw to, co blokuje pieniądze" (kolejność z `RAPORT.md` §8):**
+
+2. 🔴 Deep-linki gubią ścieżkę — `404.html` przekierowuje zawsze na `/`, nie zachowuje celu (`RAPORT.md` #4).
+3. 🔴 Weryfikacja wizualna w prawdziwej przeglądarce, desktop + mobile — praca od kilku sesji potwierdzana wyłącznie przez `npm run build` i czytanie kodu, nigdy nieobejrzana na żywo.
+4. 🟠 `/knowledge` i `/contact` — nadal gołe `<h1>`, linkowane z każdej strony aplikacji (`RAPORT.md` #5, 3 warianty naprawy do wyboru).
+5. 🟠 Dostępność klawiatury: karty przepisów nieklikalne bez myszy (`RAPORT.md` #6), modal wagi na `/dashboard` bez roli/pułapki fokusu (#20), linki w zamkniętej szufladzie mobilnej wciąż fokusowalne (#21), akordeon FAQ bez `aria-expanded` (#22 — wzorzec poprawnej implementacji mamy już dziś w notce RODO na `/camp`, wystarczy przenieść).
+6. 🟠 Kontrast poniżej WCAG AA w 4 miejscach, w tym `.hero__tag` — zdanie sprzedające na home (`RAPORT.md` #8).
+7. 🟠 Bug: aktywny tab w nawigacji nie aktualizuje się po kliknięciu CTA spoza tabbara (`RAPORT.md` #10).
+
+**Nadal otwarte z poprzednich sesji, potwierdzone jako wciąż aktualne w audycie:**
+
+8. 3 kickery nad nagłówkami na `/camp` (fazy 1–3) — uznane wcześniej za naprawione, w kodzie jednak zostały (`RAPORT.md` #13).
+9. `/treningi-tychy` — szkielet trasy czeka na materiał (lokalizacja, forma zajęć) i na najmocniejszy dowód autorytetu (mistrz świata WBC dzieci 2026, dwaj brązowi medaliści).
+10. About (home) — realne zdjęcia z Tajlandii do galerii i `years-proof`, gdy przyjdą od użytkownika.
+11. Rozjazd nawigacji — kropka `--red` Ø4px z `DESIGN.md` vs obecny `--amber` w stanie aktywnym tabbara.
+12. Finalny wybór logo — `.tabbar__logo` desktop nadal tekst „KT" zamiast finalnego znaku (mamy już `ketoThaiLogoPatchBone.svg`, patrz punkt 1b).
+13. Dashboard — pętla posiłków: `mealService.js` nadal niezaimportowany w `dashboard.js`.
+14. Placeholdery social w stopce (`href="#"`) czekają na realne linki.
+15. `.streak-box` (`home.css`) — hardkodowany `rgba(255,255,255,0.06)`, powiązane z nierozstrzygniętą decyzją o Karcie 2 „SERIA".
+16. Stempel „SEZON 01" bez znaczenia sekwencyjnego.
+
+**Nowe z dzisiejszego audytu, jeszcze nieplanowane wcześniej:**
+
+17. Brak zastrzeżenia medycznego mimo twierdzeń zdrowotnych w treści (`RAPORT.md` #27).
+18. Brak walidacji zakresów w kalkulatorze — możliwe ujemne gramy tłuszczu przy skrajnych danych wejściowych (`RAPORT.md` #28).
+19. `/dashboard` bez jakiejkolwiek ścieżki do `/camp` — jedyny wyeksponowany przycisk to „Skasuj dane aplikacji" (`RAPORT.md` #30).
+20. Zero przechwytywania leada dla kogoś, kto nie jest gotowy aplikować do Campu od razu, i zero analityki na całej stronie (`RAPORT.md` #29).

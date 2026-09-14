@@ -15,9 +15,9 @@ export const renderCamp = () => {
 
                             <p class="camp-hero__desc">
                                 Indywidualna praca nad Twoją wydolnością i sylwetką. Metodykę, którą szlifowałem w
-                                tajskich campach Muay Thai, przekładam na Twój sport — siłownię, bieganie, sporty
-                                walki czy rekreację. Dostajesz precyzyjną strategię makro, cotygodniową kontrolę i
-                                stały kontakt 1 na 1.
+                                tajskich campach Muay Thai, przekładam na Twój sport — siłownię, bieganie, sporty walki
+                                czy rekreację. Dostajesz precyzyjną strategię makro, cotygodniową kontrolę i stały
+                                kontakt 1 na 1.
                             </p>
 
                             <div class="camp-hero__badges">
@@ -87,10 +87,9 @@ export const renderCamp = () => {
                         <div class="camp-coach__content">
                             <h2 class="camp-coach__title">Kto Cię poprowadzi</h2>
                             <p class="camp-coach__desc">
-                                15 lat treningu Muay Thai, dopracowanego w tajskich campach — m.in. w Lamai Muay
-                                Thai Camp na Koh Samui. Nie sprzedaję gotowca z internetu. Prowadzę Cię tak, jak
-                                sam trenuję: z dyscypliną, cotygodniową kontrolą i szczerym feedbackiem, nawet gdy
-                                jest niewygodny.
+                                15 lat treningu Muay Thai, dopracowanego w tajskich campach — m.in. w Lamai Muay Thai
+                                Camp na Koh Samui. Nie sprzedaję gotowca z internetu. Prowadzę Cię tak, jak sam trenuję:
+                                z dyscypliną, cotygodniową kontrolą i szczerym feedbackiem, nawet gdy jest niewygodny.
                             </p>
                             <div class="camp-coach__byline">
                                 <span class="camp-coach__name">Konrad Jacoszek</span>
@@ -108,8 +107,8 @@ export const renderCamp = () => {
                 <div class="camp-timeline__container container">
                     <h2 class="camp-timeline__title reveal">12 tygodni, trzy fazy</h2>
                     <p class="camp-timeline__desc reveal">
-                        Nie zgadujemy. Każda faza ma swój cel, swoją cotygodniową kontrolę i jasne kryterium
-                        przejścia do następnej.
+                        Nie zgadujemy. Każda faza ma swój cel, swoją cotygodniową kontrolę i jasne kryterium przejścia
+                        do następnej.
                     </p>
 
                     <div class="timeline">
@@ -119,8 +118,8 @@ export const renderCamp = () => {
                                 <span class="timeline__step-num">Faza 1 · Tygodnie 1–4</span>
                                 <h3 class="timeline__subtitle">Adaptacja metaboliczna</h3>
                                 <p class="timeline__desc">
-                                    Przestawienie organizmu na tłuszcz jako główne paliwo, przy zachowaniu pełnej
-                                    siły na treningach.
+                                    Przestawienie organizmu na tłuszcz jako główne paliwo, przy zachowaniu pełnej siły
+                                    na treningach.
                                 </p>
                                 <ul class="timeline__weeks">
                                     <li><strong>Tydzień 1:</strong> Pełna diagnostyka i start protokołu makro</li>
@@ -128,12 +127,9 @@ export const renderCamp = () => {
                                         <strong>Tydzień 2:</strong> Stabilizacja elektrolitów, eliminacja spadków
                                         energii
                                     </li>
+                                    <li><strong>Tydzień 3:</strong> Pierwsza weryfikacja pomiarów i dynamiki wagi</li>
                                     <li>
-                                        <strong>Tydzień 3:</strong> Pierwsza weryfikacja pomiarów i dynamiki wagi
-                                    </li>
-                                    <li>
-                                        <strong>Tydzień 4:</strong> Wejście w stabilną ketozę przy pełnej
-                                        wydolności
+                                        <strong>Tydzień 4:</strong> Wejście w stabilną ketozę przy pełnej wydolności
                                     </li>
                                 </ul>
                             </div>
@@ -154,23 +150,20 @@ export const renderCamp = () => {
                                 <span class="timeline__step-num">Faza 2 · Tygodnie 5–8</span>
                                 <h3 class="timeline__subtitle">Rekompozycja sylwetki</h3>
                                 <p class="timeline__desc">
-                                    Organizm efektywnie pracuje na tłuszczu — teraz korygujemy kaloryczność co
-                                    tydzień na podstawie realnych pomiarów, nie zgadywania.
+                                    Organizm efektywnie pracuje na tłuszczu — teraz korygujemy kaloryczność co tydzień
+                                    na podstawie realnych pomiarów, nie zgadywania.
                                 </p>
                                 <ul class="timeline__weeks">
                                     <li>
-                                        <strong>Tydzień 5:</strong> Pierwsza kalibracja tempa zmiany wagi pod Twój
-                                        cel, ochrona tkanki mięśniowej
+                                        <strong>Tydzień 5:</strong> Pierwsza kalibracja tempa zmiany wagi pod Twój cel,
+                                        ochrona tkanki mięśniowej
                                     </li>
                                     <li>
                                         <strong>Tydzień 6:</strong> Korekta kaloryczna na podstawie cotygodniowego
                                         raportu
                                     </li>
                                     <li><strong>Tydzień 7:</strong> Weryfikacja obwodów i postępów wizualnych</li>
-                                    <li>
-                                        <strong>Tydzień 8:</strong> Szczytowa wydolność i przyspieszona
-                                        regeneracja
-                                    </li>
+                                    <li><strong>Tydzień 8:</strong> Szczytowa wydolność i przyspieszona regeneracja</li>
                                 </ul>
                             </div>
                             <div class="timeline__visual reveal reveal--right">
@@ -190,23 +183,22 @@ export const renderCamp = () => {
                                 <span class="timeline__step-num">Faza 3 · Tygodnie 9–12</span>
                                 <h3 class="timeline__subtitle">Szczyt formy i stabilizacja</h3>
                                 <p class="timeline__desc">
-                                    Ostatni szlif i płynne przejście do fazy utrzymania — kalorie korygowane w
-                                    kierunku, który pasuje do Twojego celu, żeby efekt został na stałe, nie tylko
-                                    na czas programu.
+                                    Ostatni szlif i płynne przejście do fazy utrzymania — kalorie korygowane w kierunku,
+                                    który pasuje do Twojego celu, żeby efekt został na stałe, nie tylko na czas
+                                    programu.
                                 </p>
                                 <ul class="timeline__weeks">
                                     <li>
-                                        <strong>Tydzień 9:</strong> Finalna korekta pod Twój cel — ostatnie
-                                        poprawki tam, gdzie jeszcze są potrzebne
+                                        <strong>Tydzień 9:</strong> Finalna korekta pod Twój cel — ostatnie poprawki
+                                        tam, gdzie jeszcze są potrzebne
                                     </li>
                                     <li>
-                                        <strong>Tydzień 10:</strong> Strategia żywieniowa wokół najcięższych
-                                        jednostek
+                                        <strong>Tydzień 10:</strong> Strategia żywieniowa wokół najcięższych jednostek
                                     </li>
                                     <li><strong>Tydzień 11:</strong> Końcowa sesja pomiarowa i podsumowanie</li>
                                     <li>
-                                        <strong>Tydzień 12:</strong> Protokół stabilizacji — plan na czas po
-                                        Campie, żeby efekt nie odbił w drugą stronę
+                                        <strong>Tydzień 12:</strong> Protokół stabilizacji — plan na czas po Campie,
+                                        żeby efekt nie odbił w drugą stronę
                                     </li>
                                 </ul>
                             </div>
@@ -229,8 +221,8 @@ export const renderCamp = () => {
                 <div class="camp-support__container container">
                     <h2 class="camp-support__title reveal">Co dostajesz co tydzień</h2>
                     <p class="camp-support__desc reveal">
-                        Nie zostajesz sam między jedną sesją a drugą. Cztery filary, które trzymają Cię na kursie
-                        przez pełne 12 tygodni.
+                        Nie zostajesz sam między jedną sesją a drugą. Cztery filary, które trzymają Cię na kursie przez
+                        pełne 12 tygodni.
                     </p>
 
                     <div class="camp-support__grid">
@@ -243,8 +235,8 @@ export const renderCamp = () => {
                             <i data-lucide="sliders" class="support-card__icon"></i>
                             <h3 class="support-card__title">Indywidualny protokół</h3>
                             <p class="support-card__desc">
-                                Precyzyjny bilans kalorii i proporcji makro dopasowany do Twojej dyscypliny —
-                                siłowni, biegania, sportów walki czy rekreacji.
+                                Precyzyjny bilans kalorii i proporcji makro dopasowany do Twojej dyscypliny — siłowni,
+                                biegania, sportów walki czy rekreacji.
                             </p>
                         </article>
 
@@ -253,8 +245,8 @@ export const renderCamp = () => {
                             <i data-lucide="video" class="support-card__icon"></i>
                             <h3 class="support-card__title">Cotygodniowa wideo-analiza</h3>
                             <p class="support-card__desc">
-                                Co 7 dni przesyłasz raport pomiarów. W odpowiedzi nagrywam komentarz wideo z
-                                korektą kaloryczności i wskazówkami na kolejny tydzień.
+                                Co 7 dni przesyłasz raport pomiarów. W odpowiedzi nagrywam komentarz wideo z korektą
+                                kaloryczności i wskazówkami na kolejny tydzień.
                             </p>
                         </article>
 
@@ -275,8 +267,8 @@ export const renderCamp = () => {
                             <h3 class="support-card__title">Protokół stabilizacji</h3>
                             <p class="support-card__desc">
                                 W 12. tygodniu wdrażamy plan utrzymania — korektę kalorii w kierunku pasującym do
-                                Twojego celu, żebyś kończył Camp z wiedzą, jak utrzymać efekt samodzielnie, bez
-                                odbicia w drugą stronę.
+                                Twojego celu, żebyś kończył Camp z wiedzą, jak utrzymać efekt samodzielnie, bez odbicia
+                                w drugą stronę.
                             </p>
                         </article>
                     </div>
@@ -288,8 +280,8 @@ export const renderCamp = () => {
                 <div class="camp-qual__container container">
                     <h2 class="camp-qual__title reveal">Czy Fighter's Camp jest dla Ciebie?</h2>
                     <p class="camp-qual__desc reveal">
-                        Nie przyjmuję każdego zgłoszenia. To 12 tygodni intensywnej, wspólnej pracy opartej na
-                        twardych danych, nie kolejna dieta-cud.
+                        Nie przyjmuję każdego zgłoszenia. To 12 tygodni intensywnej, wspólnej pracy opartej na twardych
+                        danych, nie kolejna dieta-cud.
                     </p>
 
                     <div class="camp-qual__grid">
@@ -302,8 +294,7 @@ export const renderCamp = () => {
                                 <li>Trenujesz regularnie i chcesz wejść na wyższy poziom wydolności.</li>
                                 <li>Od miesięcy nie widzisz postępów albo tracisz energię w ciągu dnia.</li>
                                 <li>
-                                    Szukasz precyzyjnego protokołu i cotygodniowej weryfikacji, nie przypadkowych
-                                    porad.
+                                    Szukasz precyzyjnego protokołu i cotygodniowej weryfikacji, nie przypadkowych porad.
                                 </li>
                                 <li>Jesteś gotowy raportować pomiary co 7 dni i wdrażać plan w całości.</li>
                             </ul>
@@ -317,9 +308,7 @@ export const renderCamp = () => {
                             <ul class="qual-list__items">
                                 <li>Szukasz diety-cud bez trzymania założeń kalorycznych i treningu.</li>
                                 <li>Znikasz na dwa tygodnie i nie wysyłasz raportów.</li>
-                                <li>
-                                    Zależy Ci tylko na „kartce z dietą", nie na zrozumieniu własnego metabolizmu.
-                                </li>
+                                <li>Zależy Ci tylko na „kartce z dietą", nie na zrozumieniu własnego metabolizmu.</li>
                                 <li>Oczekujesz wyłącznie pochwał — feedback bywa szczery, nie zawsze wygodny.</li>
                             </ul>
                         </div>
@@ -334,8 +323,8 @@ export const renderCamp = () => {
                         <div class="camp-apply__content reveal">
                             <h2 class="camp-apply__title">Zgłoszenie do Fighter's Camp</h2>
                             <p class="camp-apply__desc">
-                                Wypełnij formularz. Po analizie Twojego profilu odzywam się w ciągu 24h z
-                                informacją, czy się kwalifikujesz.
+                                Wypełnij formularz. Po analizie Twojego profilu odzywam się w ciągu 24h z informacją,
+                                czy się kwalifikujesz.
                             </p>
 
                             <form class="camp-form" id="camp-apply-form">
@@ -405,9 +394,7 @@ export const renderCamp = () => {
                                 </div>
 
                                 <div class="camp-form__group">
-                                    <label for="apply-goal" class="camp-form__label"
-                                        >Aktualna waga i Twój cel</label
-                                    >
+                                    <label for="apply-goal" class="camp-form__label">Aktualna waga i Twój cel</label>
                                     <input
                                         type="text"
                                         id="apply-goal"
@@ -416,9 +403,7 @@ export const renderCamp = () => {
                                         placeholder="np. 86 kg → cel: redukcja, masa lub utrzymanie formy"
                                         required
                                     />
-                                    <p class="camp-form__note">
-                                        Punkt startowy do wyliczenia Twojego keto-splitu.
-                                    </p>
+                                    <p class="camp-form__note">Punkt startowy do wyliczenia Twojego keto-splitu.</p>
                                 </div>
 
                                 <div class="camp-form__group">
@@ -438,10 +423,40 @@ export const renderCamp = () => {
                                     </p>
                                 </div>
 
+                                <p class="camp-form__error is-hidden" id="camp-form-error" role="alert"></p>
+
                                 <button type="submit" class="btn btn--primary camp-form__submit">
                                     <span>Wyślij zgłoszenie do kwalifikacji</span>
                                 </button>
                             </form>
+
+                            <div class="privacy-note">
+                                <button
+                                    type="button"
+                                    class="privacy-note__toggle"
+                                    id="privacy-toggle"
+                                    aria-expanded="false"
+                                    aria-controls="privacy-content"
+                                >
+                                    * Jak przetwarzam Twoje dane — rozwiń
+                                </button>
+                                <div class="privacy-note__content" id="privacy-content">
+                                    <p class="privacy-note__text">
+                                        Administratorem Twoich danych jest Konrad Jacoszek (działalność
+                                        nierejestrowana). Dane z formularza (imię i nazwisko, e-mail, telefon, treść
+                                        zgłoszenia) przetwarzam wyłącznie w celu oceny Twojego zgłoszenia do Fighter's
+                                        Camp i kontaktu w tej sprawie (art. 6 ust. 1 lit. b RODO). Formularz obsługuje
+                                        zewnętrzny dostawca Web3Forms (Indie) — dane przechodzą przez jego
+                                        infrastrukturę wyłącznie w celu doręczenia mi wiadomości, na podstawie
+                                        Standardowych Klauzul Umownych zabezpieczających transfer poza UE. Dane
+                                        przechowuję do 12 miesięcy od zakończenia rekrutacji do danej grupy (Web3Forms
+                                        usuwa dane po swojej stronie najpóźniej po 3 latach). Masz prawo dostępu do
+                                        danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, sprzeciwu oraz
+                                        wniesienia skargi do Prezesa UODO. Podanie danych jest dobrowolne, ale niezbędne
+                                        do rozpatrzenia zgłoszenia. Kontakt: KetoThai@o2.pl.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                         <aside class="camp-apply__sidebar reveal">
@@ -487,8 +502,8 @@ export const renderCamp = () => {
                                 <div class="camp-trust-card__note">
                                     <i data-lucide="info" class="note-icon"></i>
                                     <span
-                                        >Jeśli uznam, że program nie jest dla Ciebie — powiem to wprost i wskażę
-                                        darmowe alternatywy.</span
+                                        >Jeśli uznam, że program nie jest dla Ciebie — powiem to wprost i wskażę darmowe
+                                        alternatywy.</span
                                     >
                                 </div>
                             </div>
@@ -518,20 +533,58 @@ export const initCamp = () => {
     revealElements.forEach((el) => scrollObserver.observe(el));
 
     const form = document.getElementById("camp-apply-form");
+    const submitBtn = form.querySelector(".camp-form__submit");
+    const submitLabel = submitBtn.querySelector("span");
+    const errorBox = document.getElementById("camp-form-error");
 
-    form.addEventListener("submit", (e) => {
+    // TODO: wklej tutaj swój Access Key z web3forms.com
+    const WEB3FORMS_ACCESS_KEY = "b2347caf-0ab6-49bd-843c-ab27e8bfe210";
+
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const formData = new FormData(e.target);
-        const dataObject = Object.fromEntries(formData);
+        errorBox.classList.add("is-hidden");
+        submitBtn.disabled = true;
+        submitLabel.textContent = "Wysyłanie...";
 
-        // Realna wysyłka (fetch do usługi/backendu) — poza zakresem tej sesji,
-        // patrz priorytet #2 w PROGRES.md.
-        form.innerHTML = `
-            <div class="success-box">
-                <h3>Zgłoszenie przyjęte</h3>
-                <p>Odezwę się w ciągu 24h z informacją, czy się kwalifikujesz.</p>
-            </div>
-        `;
+        const formData = new FormData(e.target);
+        formData.append("access_key", WEB3FORMS_ACCESS_KEY);
+
+        try {
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.message || "Formularz odrzucony przez serwer.");
+            }
+
+            form.innerHTML = `
+                <div class="success-box">
+                    <h3>Zgłoszenie przyjęte</h3>
+                    <p>Odezwę się w ciągu 24h z informacją, czy się kwalifikujesz.</p>
+                </div>
+            `;
+        } catch (error) {
+            errorBox.textContent =
+                "Nie udało się wysłać zgłoszenia — sprawdź połączenie z internetem i spróbuj ponownie, albo napisz bezpośrednio na KetoThai@o2.pl.";
+            errorBox.classList.remove("is-hidden");
+            submitBtn.disabled = false;
+            submitLabel.textContent = "Wyślij zgłoszenie do kwalifikacji";
+        }
+    });
+
+    // Notka RODO — rozwijana, ten sam mechanizm co akordeon FAQ (home.js),
+    // ale z aria-expanded od razu poprawnym (patrz RAPORT.md #22).
+    const privacyToggle = document.getElementById("privacy-toggle");
+    const privacyContent = document.getElementById("privacy-content");
+
+    privacyToggle.addEventListener("click", () => {
+        const isOpen = privacyToggle.getAttribute("aria-expanded") === "true";
+        privacyToggle.setAttribute("aria-expanded", String(!isOpen));
+        privacyContent.classList.toggle("is-open");
     });
 };

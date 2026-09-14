@@ -32,7 +32,7 @@ export const renderHome = () => {
                             <span class="tape tape--tl" aria-hidden="true"></span>
                             <span class="tape tape--br" aria-hidden="true"></span>
                             <img
-                                src="${getBase()}/src/assets/homePicture.jpg"
+                                src="${getBase()}/homePicture.jpg"
                                 alt="Trening Muay Thai"
                                 class="hero__photo"
                             />
@@ -154,7 +154,7 @@ export const renderHome = () => {
                         <div class="about__gallery">
                             <div class="about__image-wrapper">
                                 <img
-                                    src="${getBase()}/src/assets/kopniak w tarcze.jpg"
+                                    src="${getBase()}/kopniak.jpg"
                                     alt="Trening Muay Thai"
                                     class="about__image"
                                     loading="lazy"
@@ -244,7 +244,7 @@ export const renderHome = () => {
                                 <span class="tape tape--tl" aria-hidden="true"></span>
                                 <span class="tape tape--br" aria-hidden="true"></span>
                                 <img
-                                    src="${getBase()}/src/assets/iphonMobileOnboarding.png"
+                                    src="${getBase()}/iphonMobileOnboarding.png"
                                     alt="Widok kwestionariusza aplikacji"
                                     class="timeline__image"
                                 />
@@ -267,7 +267,7 @@ export const renderHome = () => {
                                 <span class="tape tape--tl" aria-hidden="true"></span>
                                 <span class="tape tape--br" aria-hidden="true"></span>
                                 <img
-                                    src="${getBase()}/src/assets/iphonMobileRecipes.png"
+                                    src="${getBase()}/iphonMobileRecipes.png"
                                     alt="Widok bazy przepisów w aplikacji"
                                     class="timeline__image"
                                 />
@@ -290,7 +290,7 @@ export const renderHome = () => {
                                 <span class="tape tape--tl" aria-hidden="true"></span>
                                 <span class="tape tape--br" aria-hidden="true"></span>
                                 <img
-                                    src="${getBase()}/src/assets/iphonMobileDashboard.png"
+                                    src="${getBase()}/iphonMobileDashboard.png"
                                     alt="Widok wykresów progresu"
                                     class="timeline__image"
                                 />
@@ -339,7 +339,7 @@ export const renderHome = () => {
 
                         <div class="camp-offer__image">
                             <img
-                                src="${getBase()}/src/assets/homePicture.jpg"
+                                src="${getBase()}/homePicture.jpg"
                                 alt="Muay Thai Fighter"
                                 class="camp-offer__img"
                             />

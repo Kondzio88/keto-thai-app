@@ -1,0 +1,11 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Keto Thai — logo naszywka">
+  <polygon points="120,24 198,68 198,156 120,200 42,156 42,68"
+           fill="none" stroke="#efe9d8" stroke-width="3"/>
+  <text x="120" y="140" text-anchor="middle"
+        font-family="'Big Shoulders Stencil', 'Arial Narrow', Impact, sans-serif"
+        font-weight="900" font-size="60" fill="#efe9d8">KT</text>
+  <circle cx="192" cy="70" r="7" fill="#d98c2b"/>
+  <text x="120" y="222" text-anchor="middle"
+        font-family="'Martian Mono', 'Courier New', monospace"
+        font-size="10" letter-spacing="2" fill="#a79e88">NASZYWKA OBOZOWA</text>
+</svg>

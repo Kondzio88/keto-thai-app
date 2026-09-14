@@ -585,6 +585,66 @@
     width: 100%;
 }
 
+.camp-form__error {
+    padding: 0.6rem var(--spacing-sm);
+    border: 1px solid var(--red);
+    color: var(--bone);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* NOTKA RODO — mechanizm identyczny z .accordion (home.css): grid-template-rows
+   0fr -> 1fr do animowanego rozwijania, min-height: 0 na dziecku żeby się w pełni
+   złożyło. Skala mniejsza niż FAQ — to ma wyglądać jak dopisek na marginesie,
+   nie jak kolejne pytanie. */
+.privacy-note {
+    margin-top: var(--spacing-md);
+}
+
+.privacy-note__toggle {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: var(--bone-dim);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: underline dashed;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+}
+
+.privacy-note__toggle:hover {
+    color: var(--amber);
+}
+
+.privacy-note__toggle:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: 4px;
+}
+
+.privacy-note__content {
+    display: grid;
+    grid-template-rows: 0fr;
+    overflow: hidden;
+    transition: grid-template-rows 0.3s ease;
+}
+
+.privacy-note__content.is-open {
+    grid-template-rows: 1fr;
+}
+
+.privacy-note__text {
+    min-height: 0;
+    overflow: hidden;
+    padding-top: var(--spacing-sm);
+    color: var(--bone-dim);
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
 .success-box {
     padding: var(--spacing-lg) 0;
     text-align: center;
