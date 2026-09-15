@@ -1,4 +1,5 @@
 import { html } from "../utils/template.js";
+import { showSubmitSuccessModal } from "../components/submitSuccessModal.js";
 
 export const renderCamp = () => {
     return html`
@@ -537,7 +538,6 @@ export const initCamp = () => {
     const submitLabel = submitBtn.querySelector("span");
     const errorBox = document.getElementById("camp-form-error");
 
-    // TODO: wklej tutaj swój Access Key z web3forms.com
     const WEB3FORMS_ACCESS_KEY = "b2347caf-0ab6-49bd-843c-ab27e8bfe210";
 
     form.addEventListener("submit", async (e) => {
@@ -562,12 +562,14 @@ export const initCamp = () => {
                 throw new Error(result.message || "Formularz odrzucony przez serwer.");
             }
 
-            form.innerHTML = `
-                <div class="success-box">
-                    <h3>Zgłoszenie przyjęte</h3>
-                    <p>Odezwę się w ciągu 24h z informacją, czy się kwalifikujesz.</p>
-                </div>
-            `;
+            form.reset();
+            submitBtn.disabled = false;
+            submitLabel.textContent = "Wyślij zgłoszenie do kwalifikacji";
+
+            showSubmitSuccessModal({
+                title: "Zgłoszenie przyjęte",
+                message: "Odezwę się w ciągu 24h z informacją, czy się kwalifikujesz.",
+            });
         } catch (error) {
             errorBox.textContent =
                 "Nie udało się wysłać zgłoszenia — sprawdź połączenie z internetem i spróbuj ponownie, albo napisz bezpośrednio na KetoThai@o2.pl.";

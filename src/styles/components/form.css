@@ -57,3 +57,18 @@
 .form__input[type="number"] {
     -moz-appearance: textfield;
 }
+
+.form__error {
+    padding: 0.6rem var(--spacing-sm);
+    border: 1px solid var(--red);
+    color: var(--bone);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.form__note {
+    font-size: 0.82rem;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--bone-dim);
+}

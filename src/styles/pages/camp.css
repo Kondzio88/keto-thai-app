@@ -645,23 +645,6 @@
     line-height: 1.6;
 }
 
-.success-box {
-    padding: var(--spacing-lg) 0;
-    text-align: center;
-}
-
-.success-box h3 {
-    font-family: var(--font-heading);
-    font-size: var(--font-size-h3);
-    text-transform: uppercase;
-    color: var(--bone);
-    margin-bottom: var(--spacing-xs);
-}
-
-.success-box p {
-    color: var(--bone-dim);
-}
-
 /* SIDEBAR — karta zaufania */
 
 .camp-trust-card {

@@ -96,7 +96,8 @@ body {
     color: var(--ink);
 }
 
-.stamp {
+.stamp,
+.stamp-off {
     display: inline-block;
     border: 3px solid var(--red);
     color: var(--red);
@@ -107,6 +108,18 @@ body {
     text-transform: uppercase;
     padding: 8px 14px;
     transform: rotate(-6deg);
+}
+
+/* Wariant wyciszony — stany "jeszcze nieaktywne/w opracowaniu" (DESIGN.md §5),
+   nigdy dla realnych, aktywnych stanów (te zostają na .stamp / --red). */
+.stamp-off {
+    border-color: var(--bone-dim);
+    color: var(--bone-dim);
+}
+
+.paper .stamp-off {
+    border-color: var(--ink-faint);
+    color: var(--ink-dim);
 }
 
 .hole {

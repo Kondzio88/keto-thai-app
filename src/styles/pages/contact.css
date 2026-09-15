@@ -1,0 +1,74 @@
+.contact-layout {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.contact-form__textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.contact-form__submit {
+    width: 100%;
+}
+
+.contact-trust {
+    position: relative;
+    padding: var(--spacing-lg);
+    align-self: start;
+}
+
+.contact-trust__holes {
+    position: absolute;
+    top: 10px;
+    left: 16px;
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.contact-trust__stamp {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+}
+
+.contact-trust__name {
+    margin-top: var(--spacing-xl);
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.contact-trust__role {
+    margin-top: 2px;
+    color: var(--ink-dim);
+    font-size: 0.82rem;
+}
+
+.contact-trust__text {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px dashed var(--ink-faint);
+    color: var(--ink-dim);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.contact-trust__email {
+    display: block;
+    margin-top: var(--spacing-md);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+@media (min-width: 768px) {
+    .contact-layout {
+        grid-template-columns: 1.4fr 1fr;
+        align-items: start;
+        gap: var(--spacing-xl);
+    }
+}
