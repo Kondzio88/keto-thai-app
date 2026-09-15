@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Przekierowanie...</title>
+        <script>
+            var targetPath = window.location.pathname + window.location.search + window.location.hash;
+            sessionStorage.setItem("redirectPath", targetPath);
+
+            var base = window.location.hostname.indexOf("github.io") !== -1 ? "/keto-thai-app" : "";
+            window.location.replace(base + "/");
+        </script>
+    </head>
+    <body>
+        <!-- Ten tekst mignie tylko przez ułamek sekundy -->
+        <p>Wracamy do aplikacji...</p>
+    </body>
+</html>

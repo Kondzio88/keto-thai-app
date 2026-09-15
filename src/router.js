@@ -59,6 +59,13 @@ export const navigateTo = (url) => {
 };
 
 export const initRouter = () => {
+    const redirectPath = sessionStorage.getItem("redirectPath");
+
+    if (redirectPath) {
+        sessionStorage.removeItem("redirectPath");
+        window.history.replaceState(null, null, redirectPath);
+    }
+
     document.body.addEventListener("click", (event) => {
         const linkElement = event.target.closest("[data-link]");
 
