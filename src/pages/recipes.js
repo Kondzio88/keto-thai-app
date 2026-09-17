@@ -2,6 +2,26 @@ import { html } from "../utils/template.js";
 import { RECIPES_DATA } from "../data/recipesData.js";
 import { addMeal } from "../services/mealService.js";
 
+const MACROS = [
+    { key: "protein", icon: "beef", label: "Białko" },
+    { key: "fats", icon: "droplet", label: "Tłuszcz" },
+    { key: "carbs", icon: "wheat", label: "Węgle" },
+];
+
+const generateMacrosHTML = (recipe) => html`
+    <div class="card__macros">
+        ${MACROS.map(
+            ({ key, icon, label }) => html`
+                <div class="macro macro--${key}">
+                    <i data-lucide="${icon}" class="macro__icon" aria-hidden="true"></i>
+                    <span class="macro__value">${recipe[key]}g</span>
+                    <span class="macro__label">${label}</span>
+                </div>
+            `,
+        ).join("")}
+    </div>
+`;
+
 export const renderRecipes = () => {
     return html` <main class="page-container">
         <header class="page-header">
@@ -33,28 +53,18 @@ const generateCardsHTML = (recepiesArray) => {
             (recipe) =>
                 html`<article class="card" data-id="${recipe.id}">
                     <div class="card__image-container">
-                        <img src="${recipe.imageUrl}" alt="${recipe.title}" class="card__image" loading="lazy" />
+                        <img src="${recipe.imageUrl}" alt="" class="card__image" loading="lazy" />
                         <span class="card__badge">${recipe.calories} kcal</span>
                         <span class="card__time">${recipe.time}</span>
                     </div>
 
                     <div class="card__content">
-                        <h3 class="card__title">${recipe.title}</h3>
+                        <h3 class="card__title">
+                            <!-- Prawdziwy przycisk = fokus, Enter i Spacja za darmo. ::after rozciąga go na całą kartę. -->
+                            <button type="button" class="card__open">${recipe.title}</button>
+                        </h3>
 
-                        <div class="card__macros">
-                            <div class="macro macro--protein" title="Protein">
-                                <i data-lucide="beef" class="macro__icon"></i>
-                                <span class="macro__value">${recipe.protein}g</span>
-                            </div>
-                            <div class="macro macro--fats" title="Fats">
-                                <i data-lucide="droplet" class="macro__icon"></i>
-                                <span class="macro__value">${recipe.fats}g</span>
-                            </div>
-                            <div class="macro macro--carbs" title="Carbs">
-                                <i data-lucide="wheat" class="macro__icon"></i>
-                                <span class="macro__value">${recipe.carbs}g</span>
-                            </div>
-                        </div>
+                        ${generateMacrosHTML(recipe)}
                     </div>
                 </article> `,
         )
@@ -77,20 +87,7 @@ const genrateRecipeDetailHTML = (recipe) => {
             <header class="recipe__header">
                 <h2 class="recipe__title">${recipe.title}</h2>
 
-                <div class="card__macros">
-                    <div class="macro macro--protein" title="Protein">
-                        <i data-lucide="beef" class="macro__icon"></i>
-                        <span class="macro__value">${recipe.protein}g</span>
-                    </div>
-                    <div class="macro macro--fats" title="Fats">
-                        <i data-lucide="droplet" class="macro__icon"></i>
-                        <span class="macro__value">${recipe.fats}g</span>
-                    </div>
-                    <div class="macro macro--carbs" title="Carbs">
-                        <i data-lucide="wheat" class="macro__icon"></i>
-                        <span class="macro__value">${recipe.carbs}g</span>
-                    </div>
-                </div>
+                ${generateMacrosHTML(recipe)}
             </header>
 
             <section class="recipe__section">
@@ -139,6 +136,9 @@ export const initRecipes = () => {
         recipeDetail.classList.remove("is-hidden");
 
         window.lucide?.createIcons();
+
+        // Karta zniknęła z ekranu — fokus musi trafić do nowego widoku, nie w próżnię.
+        document.getElementById("btn-back").focus();
     });
 
     recipeDetail.addEventListener("click", (e) => {
@@ -151,7 +151,10 @@ export const initRecipes = () => {
             recipeDetail.classList.add("is-hidden");
 
             recipeDetail.innerHTML = "";
-            currentRecipe = null
+
+            // Powrót fokusu na kartę, z której użytkownik przyszedł.
+            gridLayout.querySelector(`.card[data-id="${currentRecipe.id}"] .card__open`)?.focus();
+            currentRecipe = null;
         }
 
         if (btnAdd && currentRecipe) {

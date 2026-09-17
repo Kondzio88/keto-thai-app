@@ -1,15 +1,12 @@
 import { initRouter } from "./router.js";
+import { getCurrentPath } from "./utils/env.js";
 
 /**
  * Podświetla aktywną zakładkę w Bottom Tab Bar
  * na podstawie aktualnej ścieżki URL.
  */
 const updateActiveTab = () => {
-    let path = window.location.pathname;
-
-    if (path.includes("/keto-thai-app")) {
-        path = path.replace("/keto-thai-app", "") || "/";
-    }
+    const path = getCurrentPath();
 
     const links = document.querySelectorAll(".tabbar__link");
 

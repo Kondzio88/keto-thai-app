@@ -1,6 +1,6 @@
  import { routes } from "./routes.js";
 import { getUser } from "./services/userService.js";
-import { getBase } from "./utils/env.js";
+import { getBase, getCurrentPath } from "./utils/env.js";
 
 let currentRoute = null;
 const appContainer = document.getElementById("app");
@@ -10,11 +10,7 @@ const renderContent = () => {
 
     const user = getUser();
 
-    let path = window.location.pathname;
-
-    if (path.includes("/keto-thai-app")) {
-        path = path.replace("/keto-thai-app", "") || "/";
-    }
+    let path = getCurrentPath();
 
     if (
         !user &&

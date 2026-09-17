@@ -1,4 +1,5 @@
 .card {
+    position: relative; /* punkt odniesienia dla .card__open::after */
     background-color: var(--ground2);
     border: 1px solid var(--bone-faint);
     overflow: hidden;
@@ -68,6 +69,34 @@
     margin-bottom: var(--spacing-md);
 }
 
+/* Przycisk w tytule wygląda jak tekst, ale jego ::after pokrywa całą kartę —
+   klik w dowolne miejsce karty i Enter na fokusie robią to samo. */
+.card__open {
+    padding: 0;
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.card__open::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.card__open:focus {
+    outline: none;
+}
+
+/* Obrys na całej karcie, a nie tylko na tytule */
+.card:has(.card__open:focus-visible) {
+    outline: var(--focus-outline);
+    outline-offset: 4px;
+}
+
 /* System wyświetlania Makroskładników */
 .card__macros {
     display: flex;
@@ -86,9 +115,11 @@
 }
 
 .macro__label {
-    font-size: 0.7rem;
-    color: var(--bone-dim);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
     text-transform: uppercase;
+    color: var(--bone-dim);
 }
 
 .macro__value {
@@ -127,116 +158,7 @@
     color: var(--blue);
 }
 
-/* BENTO GRID — DASHBOARD */
-
-.bento-card {
-    background-color: var(--ground2);
-    border: 1px solid var(--bone-faint);
-    padding: var(--spacing-lg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.2s ease;
-}
-
-.bento-card:hover {
-    border-color: var(--amber);
-}
-
-.bento-card--accent {
-    grid-column: span 2;
-    background-color: var(--paper);
-    border: none;
-}
-
-.bento-card--chart {
-    grid-column: span 2;
-    min-height: 250px;
-    align-items: stretch;
-    justify-content: flex-start;
-}
-
-.bento-card__title {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-tag);
-    font-weight: 700;
-    letter-spacing: var(--tracking-mono);
-    text-transform: uppercase;
-    color: var(--bone-dim);
-    margin-bottom: var(--spacing-md);
-}
-
-.bento-card__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: var(--spacing-md);
-}
-
-.bento-card__header .bento-card__title {
-    margin-bottom: 0;
-}
-
-.bento-card--accent .bento-card__title {
-    color: var(--ink-dim);
-}
-
-.bento-card__value {
-    font-family: var(--font-heading);
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--bone);
-}
-
-.bento-card--accent .bento-card__value {
-    color: var(--red);
-}
-
-.bento-card__icon {
-    width: 28px;
-    height: 28px;
-    stroke-width: 1.6;
-    margin-bottom: var(--spacing-sm);
-}
-
-.bento-card--proteins .bento-card__icon,
-.bento-card--proteins .bento-card__value {
-    color: var(--red);
-}
-
-.bento-card--fats .bento-card__icon,
-.bento-card--fats .bento-card__value {
-    color: var(--amber);
-}
-
-.bento-card--carbs .bento-card__icon,
-.bento-card--carbs .bento-card__value {
-    color: var(--blue);
-}
-
-/* CHART STYLES */
-
-.chart-wrapper {
-    position: relative;
-    width: 100%;
-    height: 250px;
-    display: flex;
-    justify-content: center;
-    margin-top: var(--spacing-md);
-}
-
-.chart-center-icon {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -40%);
-    width: 48px;
-    height: 48px;
-    color: var(--bone-dim);
-    opacity: 0.4;
-}
+/* WYKRES LINIOWY — DASHBOARD */
 
 .line-chart-wrapper {
     position: relative;

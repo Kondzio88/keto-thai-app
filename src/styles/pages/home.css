@@ -737,11 +737,19 @@
     display: grid;
     grid-template-rows: 0fr;
     overflow: hidden;
-    transition: all 0.3s ease;
+    /* Zwinięta odpowiedź znika też dla czytnika ekranu, zgodnie z aria-expanded="false" */
+    visibility: hidden;
+    transition:
+        grid-template-rows 0.3s ease,
+        visibility 0s linear 0.3s;
 }
 
 .accordion__item.is-active .accordion__content {
     grid-template-rows: 1fr;
+    visibility: visible;
+    transition:
+        grid-template-rows 0.3s ease,
+        visibility 0s linear 0s;
 }
 
 .accordion__answer {

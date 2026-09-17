@@ -6,7 +6,9 @@ Aplikacja Keto Thai to Vanilla JS SPA. Jedyne i ostateczne źródło prawdy dla 
 - **Koncepcja wizualna:** fizyczny dziennik treningowy trenera na macie Muay Thai (papier kraft `--paper`, mata `--ground`/`--ground2`, ołówek trenera `--red`, kreda `--amber`, atrament `--blue`). Zero `box-shadow`, zero glow, zero AI-slopu — detale fizyczne (taśma, dziurki, pieczątka, linia perforacji) zamiast dekoracji.
 - **Typografia:** Big Shoulders Stencil (nagłówki), Martian Mono (dane/tagi/nawigacja), Public Sans (tekst ciągły).
 - **Nawigacja:** mobile = górny `topbar` (logo + hamburger z **6 realnymi linkami**, wcześniej tylko 2) + dolny `tabbar` z 4 pozycjami core; desktop ≥768px = `topbar` chowa się, `tabbar` rozszerza się w lewy sidebar.
-- **Migracja tokenów CSS:** kierunek „usuń stare zmienne, wstaw prosto 9 tokenów z `DESIGN.md`" — bez aliasów-mostków. **Zrobione i potwierdzone mechanicznie (zero martwych `--color-*`, zero `box-shadow`, zero duplikatów selektorów):** `button.css`, `tabbar.css`, `topbar.css`, oraz **cały `home.css`** (Hero, Philosophy, About, Steps, Camp-offer, FAQ). **W kolejce:** `camp.css`, `card.css`, `filters.css`, `form.css`, `modal.css`, `banner.css`, `layout.css`.
+- **Migracja tokenów CSS:** kierunek „usuń stare zmienne, wstaw prosto 9 tokenów z `DESIGN.md`" — bez aliasów-mostków. **Zakończona w całym `src/styles`** (sesja 2026-09-10 cz. 2): zero martwych zmiennych, zero `box-shadow`, zero zduplikowanych selektorów.
+- **Dashboard — architektura danych (od 2026-09-17):** „zostało" to **stan pochodny** — nigdy niezapisywany, zawsze liczony jako `generateDietPlan(user) − sumMacros(getTodayMeal())` w jednej funkcji `refreshDay()`. Posiłki w `localStorage["keto_meals"]` jako obiekt `{ "RRRR-MM-DD": [wpisy] }`, klucz dnia z `getDateKey()` (czas lokalny, nie UTC).
+- **Wspólne narzędzia (`src/utils/`):** `env.js` (`getBase()` z `import.meta.env.BASE_URL`, `getCurrentPath()`), `date.js` (`getDateKey()`), `focusTrap.js` (`trapFocus()` — używany przez oba modale).
 - **Footer:** istnieje od dziś, `src/styles/components/footer.css` — nowy plik, od razu na docelowych tokenach (nic do migracji).
 - **Narzędzie:** skill `impeccable` (`.claude/skills/impeccable/`) używany do audytów i jako checklista (`craft-floor.md`) przy każdej edycji UI. Hook detektora **włączony**.
 - **Audyt całościowy:** `RAPORT.md` (2026-09-14) — pierwszy pełny audyt architektury/layoutu/designu/UI-UX/a11y/wydajności/SEO/copywritingu całej aplikacji naraz (nie pojedynczej strony). 30 znalezisk z tabelą metryk stanu do porównań w kolejnych sesjach. Odtąd punkt odniesienia do priorytetyzacji pracy, obok `MARKETING.md`/`DESIGN.md`.
@@ -77,28 +79,6 @@ Kontynuacja tego samego dnia, po audycie z cz. 1 — realne przepisanie copy w `
 
 ---
 
-### Plan Prac na Następną Sesję (Do Zrobienia):
-
-1. 🔴 **`/camp` Etap 1 — uczciwość treści** (plan zatwierdzony, zero wdrożone): usunięcie `BATCH #04` / `#KT-8842-PRO` / `VIP ACCESS` / `ELITE BODY & PERFORMANCE`, przebudowa `fighter-card` na kartę deliverables, zdanie o cenie, czyszczenie copy (znaki `│` w liniach 224/242/259, cudzysłowy wokół 4 opisów bento, interpunkcja w 211 i 331, Title Case w H1).
-2. 🔴 **Naprawa wysyłki formularza `/camp`** — najwyższy priorytet biznesowy całego projektu. Wzorzec gotowy w kodzie: nazwana funkcja `handleCampApplySubmit` (jak `handleOnboardingSubmit` w `onboarding.js:48`) + nowy serwis w `src/services/`. Do wyboru wariant odbioru leada (usługa zewnętrzna vs. własny backend).
-3. **`/camp` Etapy 2–5** — kicker pod nagłówkiem w 5 sekcjach, nowa sekcja `camp-coach`, migracja 56 martwych zmiennych w `camp.css` na tokeny, przeniesienie `.reveal` z `home.css` do `global.css`, świat dziennika w `camp.css`.
-4. **About — dokończyć, gdy przyjdą materiały:** realne zdjęcia z Tajlandii do galerii (3 sloty) i do paska `years-proof` (5 kafelków + realne lata/miejsca zamiast placeholderów). Dochodzi zdjęcie do nowej sekcji `camp-coach`.
-5. **`/treningi-tychy` — zbudować szkielet trasy** (routing w `routes.js`, strona analogiczna do `/camp`/`/recipes`) + jedno zdanie z linkiem na home. Treść (lokalizacja, forma zajęć, dla kogo, kontakt) czeka na materiał od użytkownika.
-6. **Przechwytywanie leada na home (Web3Forms)** — priorytet 🔴4 z `MARKETING.md`, świadomie odłożone; finałowe CTA już jest, ale nadal nie ma trzeciej ścieżki dla kogoś, kto dziś nie zakłada konta i nie aplikuje.
-7. **Dwie niedokończone decyzje z tej sesji:** (a) Karta 2 „Umysł Wojownika" — co zrobić z `SERIA [PRZYKŁAD]` (3 warianty na stole); (b) Krok 3 — czy zostawić „maszyną do spalania tłuszczu", czy zamienić na wariant obsługujący wszystkie 3 cele.
-8. **Pozostałe drobiazgi w `home.js`:** stempel „SEZON 01" bez znaczenia sekwencyjnego (`DESIGN.md` §9); `aria-expanded` na przyciskach akordeonu FAQ.
-9. **Reorder sekcji na home (Wariant B z `MARKETING.md`)** — nadal odłożone, wymaga korekt CSS pod nowe sąsiedztwo sekcji.
-10. **Meta description + Open Graph w `index.html`.**
-11. **Migracja reszty CSS ze starych zmiennych:** `card.css`, `filters.css`, `form.css`, `modal.css`, `banner.css`, `layout.css` (`camp.css` objęty planem `/camp`, punkt 3). Uwaga: to ten sam problem martwych zmiennych, który na `/camp` okazał się realną usterką wizualną — te pliki też warto sprawdzić pod tym kątem, nie tylko „posprzątać".
-12. **Rozstrzygnąć rozjazd nawigacji** (wciąż otwarty od kilku sesji) — kropka `--red` Ø4px vs obecny kolor `--amber` w stanie aktywnym tabbara — i ewentualnie zaktualizować `DESIGN.md`.
-13. **Finalny wybór logo** — Karta Ważenia jest w topbarze; `.tabbar__logo` na desktopie wciąż ma tekst „KT" zamiast finalnego znaku.
-14. **`ROADMAP.md` Faza 0 — pozostałe punkty:** naprawa deep-linków (`404.html`), treść `/knowledge` i `/contact`.
-15. **Dashboard — pętla posiłków:** `dashboard.js` nie importuje `mealService.js` — dopiąć `getTodayMeal()`, listę zjedzonych posiłków, `deleteMeal()`, Date Controller.
-16. **Podmienić placeholdery w footerze** — `href="#"` na Instagram/Facebook w `index.html` czeka na realne linki od użytkownika.
-17. **`.streak-box` (`home.css`)** — hardkodowany `rgba(255,255,255,0.06)` wciąż nienaprawiony — prosta, izolowana zamiana na `color-mix` (powiązane z decyzją o Karcie 2, punkt 7a).
-
----
-
 ### Sesja 2026-09-10 — Wizualizacje 5 wariantów struktury `/camp`
 
 1. **Stworzone 5 makiet w pełnej wierności stylu `DESIGN.md`** (osobne artifacty, desktop 1440 px + mobile 390 px każda) na bazie istniejącego `CAMP_VARIANTS.md` — dokumentu z 5 propozycjami architektury `/camp`, do którego wcześniej istniały tylko generatywne szkice (`.impeccable/mocks/decision/opt1-5.png`).
@@ -114,12 +94,6 @@ Kontynuacja tego samego dnia, po audycie z cz. 1 — realne przepisanie copy w `
 
 ---
 
-### Do zrobienia w kolejnej sesji (dopisane do listy z poprzedniej sesji):
-
-18. **Decyzja: który z 5 wariantów struktury `/camp` wdrażamy** — makiety gotowe, patrz `CAMP_VARIANTS.md`. Otwarte pytanie do rozstrzygnięcia z użytkownikiem: czy wybieramy wariant działający przy dzisiejszym stanie home (np. Wariant 1, 3 lub 4), czy wariant zależny od wdrożenia Wariantu B „Lejek" na home (Wariant 5 zakłada, że cała perswazja zdarzyła się już wcześniej na `/`).
-
----
-
 ### Sesja 2026-09-10 (cz. 2) — Przebudowa `/camp`, pełny audyt i naprawa CSS w całej aplikacji, `/recipes`, `/dashboard`, `/onboarding`
 
 1. **`/camp` przebudowany od zera — wybrany miks Wariantu 1 + Wariantu 5** (nie pojedynczy wariant z `CAMP_VARIANTS.md`, tylko świadome połączenie dwóch): oś czasu (12 tygodni, 3 fazy) jako główny nośnik perswazji na samej stronie, zamiast zakładać (jak czysty Wariant 5), że przekonanie zdarzyło się wcześniej na home. Finalna struktura: Hero → **Camp-coach** (nowa sekcja: Konrad Jacoszek, staż, `w trakcie` przy dietetyce, placeholder na zdjęcie) → Oś czasu 3 faz → 4 filary wsparcia (4 różne typy kontenerów: kartka z dziurkami / panel wideo / notatka na marginesie / pieczątka — zgodnie z zakazem identycznych kart z `DESIGN.md` §9) → Kwalifikacja (dla kogo / dla kogo NIE, bez twardej bramki) → Formularz w stylu Wariantu 5 (każde pole ma notatkę na marginesie "dlaczego pytamy"). Usunięte w całości: `BATCH #04`, `VIP ACCESS`, `#KT-8842-PRO`, `ELITE BODY & PERFORMANCE`, wszystkie kickery nad nagłówkami, metafora "piec do spalania tłuszczu". Zastąpione realnym `Pierwsza grupa · 5 miejsc`. **Formularz świadomie bez realnej wysyłki** — UI/walidacja/stan sukcesu działają, `fetch` zostaje na osobną sesję (priorytet biznesowy #1, patrz niżej).
@@ -132,34 +106,6 @@ Kontynuacja tego samego dnia, po audycie z cz. 1 — realne przepisanie copy w `
 8. **Drobne realne bugi naprawione po drodze:** martwy import `getBase` w `camp.js`, martwa klasa `.macro__label` (nigdy nieużywana), potrójna duplikacja `.is-hidden` (trzy pliki → jedna definicja), side-tab accent border na `.page-header` wykryty przez hook `impeccable` i usunięty (nie stłumiony), martwe zduplikowane `data.backgroundColor` w konfiguracji doughnut-a Chart.js (biblioteka czyta kolory z `datasets[0]`, nie z `data`).
 9. **⚠️ Nierozwiązane:** w trakcie sesji na dysku zniknęła ikona `flame` ze środka wykresu kołowego makro na `/dashboard` (`chart-center-icon`) — zmiana wykryta jako zewnętrzna (nie moja edycja), niewyjaśniona z użytkownikiem, zostawiona bez ruszania.
 10. **Cała sesja pracowała bez wizualnej weryfikacji w przeglądarce** (użytkownik odmówił instalacji Claude in Chrome) — każda zmiana potwierdzona wyłącznie przez `npm run build` i przegląd kodu. Żadna z dzisiejszych stron nie została jeszcze obejrzana na żywo.
-
----
-
-### Do zrobienia w kolejnej sesji:
-
-#### Kolejność priorytetów (ustalona 2026-09-10, cz. 2 — zasada "jak na produkcji")
-
-Zasada: **najpierw to, co blokuje pieniądze, potem to, co jest widocznie zepsute dla użytkownika, dopiero na końcu polish i wzrost.** Reszta listy niżej (punkty od "About" w dół) to praca nad jakością i wzrostem produktu, który formalnie jeszcze nie działa biznesowo — dopóki punkt 1 nie jest zrobiony, wszystko inne optymalizuje coś, co i tak nie zarabia.
-
-1. 🔴 **Naprawa wysyłki formularza `/camp`.** Jedyna rzecz na stronie generująca przychód — dziś 100% zgłoszeń ginie bezpowrotnie (`FormData` budowany i porzucany, zero `fetch`). Bez tego reszta pracy nie ma znaczenia biznesowego, niezależnie jak spójna wizualnie jest strona. Wzorzec gotowy: nazwana funkcja `handleCampApplySubmit` + serwis w `src/services/`, do wyboru dostawca (Web3Forms vs własny backend).
-2. 🔴 **Wizualna weryfikacja w prawdziwej przeglądarce** wszystkiego, co powstało dziś (`/camp`, `/recipes`, `/dashboard`, `/onboarding`) — desktop + mobile. Cała dzisiejsza sesja była potwierdzana wyłącznie przez `npm run build` i czytanie kodu (brak Claude in Chrome) — build, który się kompiluje, nie gwarantuje braku wizualnych regresji w realnej przeglądarce. Zero-kosztowy krok, zaraz po punkcie 1, zanim dokłada się cokolwiek nowego.
-3. 🔴 **Meta description + Open Graph w `index.html`.** Bez tego każdy link wrzucony na social media (główne źródło ruchu wg `STRATEGY.md`) pokazuje pustą, szarą ramkę — zabija konwersję z kanału, zanim ktokolwiek trafi na stronę.
-
-#### Reszta — jakość i wzrost działającego produktu
-
-4. Wyjaśnić z użytkownikiem zniknięcie ikony `flame` z wykresu makro na `/dashboard` (patrz sesja 2026-09-10 cz. 2, punkt 9) — czy zamierzone.
-5. Przechwytywanie leada na home (Web3Forms) — priorytet 🔴4 z `MARKETING.md`, wciąż odłożone.
-6. Reorder sekcji na home (Wariant B „Lejek" z `MARKETING.md`) — wciąż nie wdrożony (mniej pilne niż wcześniej, bo miks 1+5 na Campie ominął zależność od tego kroku, ale nadal warty zrobienia dla samego home).
-7. About (home) — dokończyć gdy przyjdą realne zdjęcia z Tajlandii i lata/miejsca do `years-proof`.
-8. `/treningi-tychy` — zbudować szkielet trasy; teraz ma też czekać na nią najmocniejszy dostępny dowód autorytetu (osiągnięcia trenerskie — mistrz świata WBC dzieci 2026, dwaj brązowi medaliści).
-9. Dwie niedokończone decyzje copywriterskie z home: Karta 2 „SERIA [PRZYKŁAD]" (wariant formy nierozstrzygnięty), Krok 3 „maszyną do spalania tłuszczu" (czy zamienić na wariant obsługujący wszystkie 3 cele — ta sama klasa problemu, którą naprawiliśmy dziś na Campie, nie przeniesiona jeszcze na home).
-10. Rozjazd nawigacji — kropka `--red` Ø4px vs obecny `--amber` w stanie aktywnym tabbara.
-11. Finalny wybór logo — `.tabbar__logo` na desktopie nadal ma tekst „KT".
-12. `ROADMAP.md` Faza 0 — `404.html`, treść `/knowledge` i `/contact`.
-13. Dashboard — pętla posiłków: `dashboard.js` nadal nie importuje `mealService.js`.
-14. Placeholdery w footerze — `href="#"` na Instagram/Facebook czeka na realne linki.
-15. `.streak-box` (`home.css`) — hardkodowany `rgba(255,255,255,0.06)`, powiązane z niedokończoną decyzją o Karcie 2 (punkt 9).
-16. Stempel „SEZON 01" bez znaczenia sekwencyjnego, `aria-expanded` na akordeonie FAQ (`home.js`).
 
 ---
 
@@ -183,38 +129,89 @@ Zasada: **najpierw to, co blokuje pieniądze, potem to, co jest widocznie zepsut
 
 ---
 
-### Do zrobienia w kolejnej sesji (stan na 2026-09-14, po audycie)
+### Sesja 2026-09-15 — Meta/OG/favicon, naprawa deep-linków (404), `/knowledge` + `/contact`, wspólny dostępny modal potwierdzenia
 
-Pełny rejestr wszystkich 30 znalezisk z audytu, z lokalizacją w kodzie i rekomendowaną kolejnością wdrożenia — w `RAPORT.md` §7–8. Poniżej tylko esencja, żeby nie duplikować całego dokumentu.
+1. **🔴 Meta description + Open Graph + favicon domknięte** (dokańczało punkt zawieszony 14.09). `index.html`: dopisany `meta description`, komplet `og:*` (`og:image` wskazuje na pełny URL GitHub Pages — `https://kondzio88.github.io/keto-thai-app/homePicture.jpg`, świadomy wybór tymczasowy do czasu decyzji o własnej domenie — Wariant C: reszta zrobiona, `og:url`/canonical nadal czekają), `link rel="icon"`. `ketoThaiLogoPatchBone.svg` dostał warstwę tła `--ground` (`#15130f`) — usunięta przezroczystość, wcześniej nieczytelna w jasnym motywie karty przeglądarki.
 
-**Zaraz na starcie — dokańczamy przerwany punkt:**
+2. **🔴 Naprawione deep-linki na GitHub Pages.** Znaleziony realny podwójny bug: stary `404.html` leżał w korzeniu repo (nie w `public/`), więc **w ogóle nie trafiał do `dist/`** — na produkcji nie działał wcale, gorzej niż zakładał wcześniejszy wpis w tym pliku. Naprawa: nowy `public/404.html` (zapamiętuje pełną ścieżkę w `sessionStorage`, odbija na stronę główną), `router.js` (`initRouter`) na starcie odczytuje i czyści ten wpis, przywraca adres przez `history.replaceState` **przed** pierwszym `renderContent()`. Stary `404.html` z korzenia repo usunięty. Zweryfikowane realnym `npm run build` — plik faktycznie ląduje w `dist/`.
 
-1. 🔴 **Meta description + Open Graph + favicon** (`RAPORT.md` #3) — zatrzymane dziś na dwóch pytaniach: (a) jaki będzie finalny URL strony — potrzebny do `og:url`/canonical; (b) dopisać tło `--ground` pod `ketoThaiLogoPatchBone.svg` przed użyciem jako favicon.
+3. **🔴 Weryfikacja wizualna w przeglądarce — zrobiona.** Próba instalacji rozszerzenia Claude in Chrome (na prośbę użytkownika) przerwana po raz drugi (pierwszy raz: sesja 10.09) — zapisane w pamięci projektu, żeby nie proponować tego ponownie jako pierwszej opcji w przyszłych sesjach. Zamiast tego: `npm run dev` + użytkownik ręcznie przeszedł całą appkę (desktop + mobile). Wynik: bez zastrzeżeń.
 
-**Priorytety wg zasady „najpierw to, co blokuje pieniądze" (kolejność z `RAPORT.md` §8):**
+4. **🟠 `/knowledge` i `/contact` przestały być gołymi `<h1>`** (`RAPORT.md` #5) — wybrany Wariant C z trzech zaproponowanych.
+   - `/knowledge`: uczciwy stan "w opracowaniu" (Wariant B), świadomie **bez** owijania w kartę `.paper` (`.hole` nie miałoby się na czym "wycinać" bez papieru pod spodem). Nowy globalny komponent **`.stamp-off`** (`global.css`) — wyciszona wersja `.stamp`, z kontekstowym nadpisaniem kolorów na papierze (`--ink-dim`/`--ink-faint` zamiast `--bone-dim`), zarezerwowana dla stanów "jeszcze nieaktywne"; realne/aktywne stany zostają przy `.stamp` i `--red`. `DESIGN.md` §5 wymieniał ten komponent, ale nigdy nie istniał w kodzie do dziś.
+   - `/contact`: nowa strona (`src/pages/contact.js` + `src/styles/pages/contact.css`), tryb "Persuade-lite" — dopisany do realnej luki w tabeli trybów `DESIGN.md` §2, która nie miała tej trasy w ogóle. Formularz (imię, e-mail, wiadomość) na tym samym wzorcu Web3Forms co `/camp` (ten sam klucz, rozróżnienie w skrzynce przez ukryte pole `subject`), notatki tylko przy 2 z 3 pól (`.form__note` — nowa, generyczna klasa dopisana do `form.css`, świadomie pominięty e-mail jako pole niebudzące wątpliwości), karta zaufania `.contact-trust` (`.paper` + `.hole` + `.stamp-off` "Kontakt", bio: Konrad Jacoszek / Instruktor Muay Thai (MEN) / dietetyka kliniczna w trakcie, bezpośredni `mailto:`), notka RODO (wzorzec z Campu, treść dostosowana do innego celu przetwarzania).
 
-2. 🔴 Deep-linki gubią ścieżkę — `404.html` przekierowuje zawsze na `/`, nie zachowuje celu (`RAPORT.md` #4).
-3. 🔴 Weryfikacja wizualna w prawdziwej przeglądarce, desktop + mobile — praca od kilku sesji potwierdzana wyłącznie przez `npm run build` i czytanie kodu, nigdy nieobejrzana na żywo.
-4. 🟠 `/knowledge` i `/contact` — nadal gołe `<h1>`, linkowane z każdej strony aplikacji (`RAPORT.md` #5, 3 warianty naprawy do wyboru).
-5. 🟠 Dostępność klawiatury: karty przepisów nieklikalne bez myszy (`RAPORT.md` #6), modal wagi na `/dashboard` bez roli/pułapki fokusu (#20), linki w zamkniętej szufladzie mobilnej wciąż fokusowalne (#21), akordeon FAQ bez `aria-expanded` (#22 — wzorzec poprawnej implementacji mamy już dziś w notce RODO na `/camp`, wystarczy przenieść).
-6. 🟠 Kontrast poniżej WCAG AA w 4 miejscach, w tym `.hero__tag` — zdanie sprzedające na home (`RAPORT.md` #8).
-7. 🟠 Bug: aktywny tab w nawigacji nie aktualizuje się po kliknięciu CTA spoza tabbara (`RAPORT.md` #10).
+5. **✅ Wspólny, dostępny modal potwierdzenia wysyłki formularza — pierwszy reużywalny komponent JS w projekcie.** Nowy `src/components/submitSuccessModal.js` (folder istniał w strukturze z `PLAN.md`, ale był pusty do dziś), podpięty pod `/camp` i `/contact` — zastąpił dotychczasowe `form.innerHTML = "<div class='success-box'>...`, które bezpowrotnie kasowało formularz (teraz: `form.reset()` + modal, formularz zostaje w DOM). Skórka "kartka dziennika + pieczątka PRZYJĘTE" na istniejącej powłoce `.modal-overlay`. Przy okazji naprawiony realny dług dostępności, o którym `RAPORT.md` #20 już wspominał przy modalu wagi: `role="dialog"`, `aria-modal`, pułapka fokusu (Tab/Shift+Tab nie wychodzi poza dialog), zamykanie Esc, oddanie fokusu tam gdzie był przed otwarciem. Martwy CSS `.success-box` usunięty z `camp.css` (zero użyć po zmianie, zweryfikowane `grep`em). Po code-review złapany i naprawiony błąd współdzielonego stanu modułowego (`previouslyFocused`/`keydownHandler` były `let` na poziomie modułu zamiast lokalne dla wywołania — realny wyciek pamięci/zły listener przy teoretycznym podwójnym otwarciu modala; dziś niewykonalne przez UI bo overlay blokuje formularz pod spodem, ale naprawione na przyszłość, np. gdy modal wagi na `/dashboard` zacznie reużywać ten sam mechanizm).
 
-**Nadal otwarte z poprzednich sesji, potwierdzone jako wciąż aktualne w audycie:**
+6. **Drobne sprzątanie po drodze:** usunięty nieaktualny komentarz `// TODO: wklej tutaj swój Access Key z web3forms.com` w `camp.js` (klucz był już wklejony od sesji 14.09, TODO mylące).
 
-8. 3 kickery nad nagłówkami na `/camp` (fazy 1–3) — uznane wcześniej za naprawione, w kodzie jednak zostały (`RAPORT.md` #13).
-9. `/treningi-tychy` — szkielet trasy czeka na materiał (lokalizacja, forma zajęć) i na najmocniejszy dowód autorytetu (mistrz świata WBC dzieci 2026, dwaj brązowi medaliści).
-10. About (home) — realne zdjęcia z Tajlandii do galerii i `years-proof`, gdy przyjdą od użytkownika.
-11. Rozjazd nawigacji — kropka `--red` Ø4px z `DESIGN.md` vs obecny `--amber` w stanie aktywnym tabbara.
-12. Finalny wybór logo — `.tabbar__logo` desktop nadal tekst „KT" zamiast finalnego znaku (mamy już `ketoThaiLogoPatchBone.svg`, patrz punkt 1b).
-13. Dashboard — pętla posiłków: `mealService.js` nadal niezaimportowany w `dashboard.js`.
-14. Placeholdery social w stopce (`href="#"`) czekają na realne linki.
-15. `.streak-box` (`home.css`) — hardkodowany `rgba(255,255,255,0.06)`, powiązane z nierozstrzygniętą decyzją o Karcie 2 „SERIA".
-16. Stempel „SEZON 01" bez znaczenia sekwencyjnego.
+7. Build zweryfikowany czysto po każdej zmianie (`npx vite build`) — zero błędów przez całą sesję.
 
-**Nowe z dzisiejszego audytu, jeszcze nieplanowane wcześniej:**
+---
 
-17. Brak zastrzeżenia medycznego mimo twierdzeń zdrowotnych w treści (`RAPORT.md` #27).
-18. Brak walidacji zakresów w kalkulatorze — możliwe ujemne gramy tłuszczu przy skrajnych danych wejściowych (`RAPORT.md` #28).
-19. `/dashboard` bez jakiejkolwiek ścieżki do `/camp` — jedyny wyeksponowany przycisk to „Skasuj dane aplikacji" (`RAPORT.md` #30).
-20. Zero przechwytywania leada dla kogoś, kto nie jest gotowy aplikować do Campu od razu, i zero analityki na całej stronie (`RAPORT.md` #29).
+### Sesja 2026-09-17 — Dashboard: bilans dnia i dziennik posiłków, porządki architektury, klaster dostępności klawiatury
+
+1. **✅ Pętla posiłków domknięta:** posiłek dodany w `/recipes` pojawia się na `/dashboard`. `mealService.js` dostał `removeMeal()`, `sumMacros()` (czysta funkcja, przetestowana w Node) i `clearMeals()`; każdy wpis zapisuje też `category` przepisu.
+2. **✅ Dashboard przebudowany** — decyzje użytkownika po przeglądzie 3 wariantów układu i 3 wariantów wykresu:
+   - **Układ: miks Wariantu 2 („Strona dziennika") i 3 („Dziś / Trend"), bez zakładek** — kartka `.paper` „Bilans dnia" (bilans + wpisy posiłków) oraz panel „Trend wagi" na `--ground2`; mobile jedna kolumna, od 1024px dwie. Zakładki odrzucone, bo chowałyby przypomnienie o wadze.
+   - **Bilans: tabela punktacji (Cel / Zjedzone / Zostało) + miarka z podziałką co 10% pod każdym wierszem** — tabela daje dokładność i dostępność (prawdziwa `<table>`), miarka odczyt „na oko". Przekroczenie: skala miarki rośnie, pionowa kreska pokazuje limit, tekst „ponad" + podkreślenie (nie sam kolor, `DESIGN.md` §8); przekroczone węgle → pieczątka „Limit węgli przekroczony" (czerwona ramka, tekst `--ink` ze względu na kontrast, §3).
+   - **Wykres kołowy makro usunięty** — pokazywał plan (niezmienny w ciągu dnia), i to w gramach zamiast kalorii, co przeczyło proporcjom keto.
+   - **Dziennik posiłków: wiersze wpisów** (godzina, nazwa, kcal, `B · T · W`, przycisk „Usuń" z ikoną i tekstem), usuwanie przez delegację zdarzeń; pusty stan z linkiem do `/recipes`. **Ikona pory posiłku** (wschód słońca / słońce / księżyc) z `role="img"` + `aria-label` — wariant B z trzech (miniatura zdjęcia / ikona pory / ta sama ikona dekoracyjna).
+   - Wykres wagi: prosta linia bez wygładzania i wypełnienia, linia i punkty w `--amber`, opisy osi w Martian Mono, legenda usunięta.
+   - Nagłówek wg mockupu: „Dziś w dzienniku" / „Twój cel Keto — wpis dnia". Zapis wagi z banera i z modala scalony w jedną funkcję `recordWeight()`.
+3. **✅ `/recipes`:** podpisy BIAŁKO / TŁUSZCZ / WĘGLE pod ikonami makro (wcześniej same ikony + angielski `title`); zduplikowany blok makro wyciągnięty do `generateMacrosHTML()` + tablicy `MACROS`.
+4. **🐛 Naprawione: zdjęcia z `public/` nie wczytywały się lokalnie** (404 w `npm run dev`). Przyczyna: `getBase()` zgadywał środowisko po hoście `github.io`, a Vite serwuje `public/` zawsze pod `base` z `vite.config.js`. Teraz `getBase()` czyta `import.meta.env.BASE_URL` — jedno źródło prawdy dla dev, preview i GitHub Pages. Nowe `getCurrentPath()` zastąpiło wpisany na sztywno `"/keto-thai-app"` w `router.js` i `main.js` (wycina bazę tylko z początku adresu).
+5. **🐛 Naprawione: data dnia liczona w UTC** (`toISOString()`) — posiłek z 00:30 czasu polskiego trafiał do poprzedniego dnia. `getDateKey()` używany w `mealService.js`, `dashboard.js`, `onboarding.js`.
+6. **Porządki:** `proteins` → `protein` w `calculatorService.js` (spójne nazwy planu i wpisu posiłku); „Skasuj dane aplikacji" czyści teraz też posiłki (decyzja użytkownika); usunięte martwe style `bento-*`, `chart-wrapper`, `chart-center-icon`; nowy plik `src/styles/pages/dashboard.css`.
+7. **✅ Klaster dostępności klawiatury z `RAPORT.md` domknięty:**
+   - **#20 modal wagi:** `role="dialog"`, `aria-modal`, `aria-labelledby`, etykieta pola, pułapka fokusu, Esc, klik w tło, fokus na pole po otwarciu i powrót na „Pomiar"; `cleanupDashboard` zamyka otwarty modal (brak wiszącego listenera po zmianie trasy). Logika pułapki wyciągnięta z `submitSuccessModal.js` do `src/utils/focusTrap.js` i używana przez oba modale.
+   - **#6 karty przepisów:** tytuł karty to `<button class="card__open">` rozciągnięty przez `::after` na całą kartę (Enter/Spacja z przeglądarki, zamiast `tabindex` na `<article>`), obrys fokusu na karcie przez `:has()`, `alt=""` na zdjęciu karty (nazwę daje przycisk), fokus przenoszony do szczegółów i z powrotem na kartę.
+   - **#21 szuflada mobilna:** `visibility: hidden` z opóźnionym przejściem — linki zamkniętej szuflady wypadły z kolejności Tab.
+   - **#22 FAQ:** `aria-expanded` + `aria-controls` na 8 przyciskach, aktualizowane w JS; zwinięta odpowiedź ukryta też dla czytnika ekranu.
+8. **Weryfikacja:** `npx vite build` czysto po każdej zmianie, moduły sprawdzone na serwerze dev, logika `mealService` przetestowana w Node. **Zmiany z tej sesji NIE zostały jeszcze przeklikane w przeglądarce** (klawiatura, mobile, stany Dashboardu) — patrz punkt 2 listy niżej.
+
+---
+
+### Do zrobienia (stan na 2026-09-17)
+
+Lista skonsolidowana: usunięte wszystkie punkty zrobione w poprzednich sesjach i dziś, zostawione tylko otwarte (zweryfikowane w kodzie). Pełny rejestr znalezisk nadal w `RAPORT.md` §7–8.
+
+#### 🧠 W pierwszej kolejności — do przemyślenia, NIE do kodowania od razu
+
+1. **Architektura dodawania pojedynczych produktów (np. jajka, masło, awokado) i samodzielnego komponowania posiłków przez użytkownika.** Dziś da się dodać do dnia tylko gotowy przepis z `RECIPES_DATA`. Przed pierwszą linijką kodu rozstrzygnąć (metodą z `CLAUDE.md` §5 — min. 3 warianty z trade-offami, wybór po stronie użytkownika):
+   - **Model produktu:** jakie pola i na jaką jednostkę (makro na 100 g? kcal, białko, tłuszcz, węgle — ogółem czy netto, z błonnikiem?). Jak obsłużyć produkty liczone w sztukach (jajko) vs w gramach — przelicznik „1 szt. = X g" w danych produktu?
+   - **Źródło danych o produktach:** własna lokalna baza JSON / zewnętrzne API (`PLAN.md` opisuje wyszukiwarkę z debounce odpytującą API) / produkty dodawane ręcznie przez użytkownika („Add Custom") — albo połączenie. Kto odpowiada za poprawność wartości?
+   - **Model posiłku:** wpis jako lista `{ produkt, ilość }` z makro **liczonym** na bieżąco (stan pochodny, jak dziś bilans) vs **kopia makro zapisana w chwili dodania** (odporna na późniejszą zmianę danych produktu). Co się dzieje z historią, gdy produkt zostanie poprawiony albo usunięty?
+   - **Relacja z przepisami:** czy przepis staje się „posiłkiem złożonym z produktów" (dziś `ingredients` to zwykłe napisy), czy zostaje osobnym typem? Jeden kształt wpisu w `keto_meals` dla obu (np. pole `type: "recipe" | "custom"`) i zgodność wstecz z już zapisanymi wpisami.
+   - **Zapisane własne posiłki:** czy skomponowany posiłek da się zapisać jako szablon i dodawać ponownie jednym kliknięciem?
+   - **Przechowywanie:** `localStorage` (limit rozmiaru przy dużej bazie produktów) vs docelowy Supabase z `PLAN.md` — czy decyzja podjęta teraz utrudni migrację później?
+   - **UI i przepływ:** wyszukiwarka produktów (modal czy widok w stronie — `operate.md`: modal jako pierwszy odruch to zwykle lenistwo), wybór ilości z podglądem przeliczonego makro na żywo, walidacja (ujemne/zerowe ilości), dostępność klawiatury od pierwszej wersji.
+   - **Powiązane decyzje odłożone dziś przez użytkownika („zastanowimy się"):** przełącznik dni na Dashboardzie (`getDateKey(date)` przyjmuje już dowolną datę), wybór pory posiłku przy dodawaniu (dziś pora wynika z kategorii przepisu — własne posiłki kategorii mieć nie będą), ścieżka z Dashboardu do `/camp` (`RAPORT.md` #30).
+
+#### 🔴 Zaraz potem
+
+2. **Przeklikać zmiany z sesji 2026-09-17 w przeglądarce** (`npm run dev`, adres z `/keto-thai-app/`): `/recipes` samą klawiaturą (Tab → Enter → „Dodaj do mojego dnia" → „Wróć" — czy fokus wraca na kartę); modal wagi (Esc, Tab nie wychodzi z okna); szuflada mobilna ~390px (Tab nie wpada w ukryte linki); Dashboard w stanach: pusty dzień, 2–3 posiłki, przekroczone węgle; „Skasuj dane aplikacji" → pusta lista posiłków. Posiłki dodane przed tą sesją nie mają `category`, więc nie mają ikony — wyczyścić dane przed testem.
+3. **Commit** zmian z sesji 2026-09-17 (dużo plików, jeszcze niezacommitowane).
+
+#### 🟠 Widocznie zepsute / dostępność
+
+4. Kontrast poniżej WCAG AA w 4 miejscach, w tym `.hero__tag` (`--ink-faint` na papierze, ~3,56:1) (`RAPORT.md` #8).
+5. Bug: aktywny tab w nawigacji nie aktualizuje się po kliknięciu CTA spoza tabbara (`RAPORT.md` #10).
+6. Walidacja wagi na Dashboardzie nadal przez `alert()` — zastąpić komunikatem przy polu.
+7. `checkWeightReminder` parsuje datę przez `new Date("RRRR-MM-DD")` (UTC) — ta sama klasa problemu co naprawiona dziś data posiłków; pomijalna przy liczeniu 7 dni, ale do ujednolicenia.
+
+#### 🟡 Otwarte z wcześniejszych sesji (zweryfikowane w kodzie jako wciąż aktualne)
+
+8. 3 kickery nad nagłówkami na `/camp` — „Faza 1–3 · Tygodnie…" nad `<h3>` (`RAPORT.md` #13, `DESIGN.md` §4).
+9. Brak zastrzeżenia medycznego mimo twierdzeń zdrowotnych (`RAPORT.md` #27).
+10. Brak walidacji zakresów w kalkulatorze — możliwe ujemne gramy tłuszczu przy skrajnych danych (`RAPORT.md` #28).
+11. Zero przechwytywania leada dla niezdecydowanych + zero analityki (`RAPORT.md` #29).
+12. `og:url` / `canonical` w `index.html` — czekają na decyzję o finalnej domenie (GitHub Pages vs własna).
+13. `/treningi-tychy` — szkielet trasy czeka na materiał i dowód autorytetu (mistrz świata WBC dzieci 2026, dwaj brązowi medaliści).
+14. About (home) — realne zdjęcia z Tajlandii do galerii i `years-proof`.
+15. Reorder sekcji home wg Wariantu B „Lejek" z `MARKETING.md` (Hero → Steps → About → Philosophy → Camp-offer → FAQ → finałowe CTA) — dziś: Hero → Philosophy → About → Steps → Camp-offer → FAQ → finałowe CTA.
+16. Karta 2 „Umysł Wojownika" — mockup „SERIA" pokazuje funkcję streak, która nie istnieje w kodzie; decyzja: usunąć mockup / zostawić / zbudować funkcję. Powiązane: `.streak-box` (`home.css`) z hardkodowanym `rgba(255, 255, 255, 0.06)`.
+17. Szczegółowa runda audytu copywritingu zdanie po zdaniu w `home.js` i `camp.js` wg `MARKETING.md`.
+18. Stempel „SEZON 01" w hero bez znaczenia sekwencyjnego (`DESIGN.md` §9).
+19. Rozjazd nawigacji — kropka `--red` Ø4px z `DESIGN.md` vs obecny `--amber` w stanie aktywnym tabbara.
+20. Finalny wybór logo — `.tabbar__logo` na desktopie nadal tekst „KT" (kandydat: `ketoThaiLogoPatchBone.svg`, już użyty jako favicon).

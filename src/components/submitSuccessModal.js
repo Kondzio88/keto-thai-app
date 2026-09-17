@@ -1,9 +1,6 @@
-const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+import { trapFocus } from "../utils/focusTrap.js";
 
 export const showSubmitSuccessModal = ({ title, message }) => {
-    const previouslyFocused = document.activeElement;
-    let keydownHandler = null;
-
     const overlay = document.createElement("div");
     overlay.className = "modal-overlay";
 
@@ -25,39 +22,13 @@ export const showSubmitSuccessModal = ({ title, message }) => {
     const dialog = overlay.querySelector(".submit-success");
     const closeBtn = overlay.querySelector(".submit-success__close");
 
+    // Pułapkę zakładamy PRZED przeniesieniem fokusu, żeby zapamiętała element sprzed otwarcia.
+    const releaseFocus = trapFocus(dialog, { onEscape: () => closeModal() });
+
     const closeModal = () => {
-        document.removeEventListener("keydown", keydownHandler);
         overlay.remove();
-
-        if (previouslyFocused && typeof previouslyFocused.focus === "function" && !previouslyFocused.disabled) {
-            previouslyFocused.focus();
-        }
+        releaseFocus();
     };
-
-    keydownHandler = (event) => {
-        if (event.key === "Escape") {
-            closeModal();
-            return;
-        }
-
-        if (event.key !== "Tab") return;
-
-        const focusable = Array.from(dialog.querySelectorAll(FOCUSABLE_SELECTOR));
-        if (focusable.length === 0) return;
-
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-
-        if (event.shiftKey && document.activeElement === first) {
-            event.preventDefault();
-            last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault();
-            first.focus();
-        }
-    };
-
-    document.addEventListener("keydown", keydownHandler);
 
     overlay.addEventListener("click", (event) => {
         if (event.target === overlay) closeModal();

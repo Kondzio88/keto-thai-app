@@ -75,11 +75,20 @@
     overflow: hidden;
     z-index: 999;
     background-color: var(--ground2);
-    transition: max-height 0.25s ease;
+    /* visibility: hidden wyjmuje linki z kolejności Tab (max-height: 0 ukrywa tylko wizualnie).
+       Przy zamykaniu visibility zmienia się dopiero PO animacji (opóźnienie 0.25s). */
+    visibility: hidden;
+    transition:
+        max-height 0.25s ease,
+        visibility 0s linear 0.25s;
 }
 
 .topbar.is-open + .topbar__drawer {
     max-height: 60vh;
+    visibility: visible;
+    transition:
+        max-height 0.25s ease,
+        visibility 0s linear 0s;
 }
 
 .topbar__drawer-nav {

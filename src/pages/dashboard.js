@@ -1,21 +1,32 @@
 import { html } from "../utils/template.js";
 import { getUser, clearUser, saveUser } from "../services/userService.js";
 import { generateDietPlan } from "../services/calculatorService.js";
+import { getTodayMeal, removeMeal, sumMacros, clearMeals } from "../services/mealService.js";
+import { getDateKey } from "../utils/date.js";
 import { navigateTo } from "../router.js";
+import { trapFocus } from "../utils/focusTrap.js";
 
-let macroChartInstance = null;
 let weightChartInstance = null;
+let closeWeightModal = null; // pozwala cleanupowi zamknąć modal przy zmianie trasy
 
 // Odpowiednik tokenów z global.css — Chart.js potrzebuje literalnych wartości,
 // nie może czytać CSS custom properties.
 const CHART_COLORS = {
-    red: "#C23B2E",
     amber: "#D98C2B",
-    blue: "#3E6E86",
-    bone: "#EFE9D8",
     boneDim: "#A79E88",
     gridLine: "rgba(239, 233, 216, 0.08)",
 };
+
+const CHART_FONT = { family: '"Martian Mono", monospace', size: 11 };
+
+// Plan z kalkulatora i wpis posiłku używają tych samych nazw pól,
+// więc jeden `key` czyta cel, spożycie i nazwę modyfikatora CSS.
+const BALANCE_ROWS = [
+    { key: "calories", label: "Kalorie", unit: "kcal" },
+    { key: "protein", label: "Białko", unit: "g" },
+    { key: "fats", label: "Tłuszcz", unit: "g" },
+    { key: "carbs", label: "Węgle", unit: "g" },
+];
 
 const checkWeightReminder = (user) => {
     const lastRecord = user.weightHistory[user.weightHistory.length - 1];
@@ -27,70 +38,163 @@ const checkWeightReminder = (user) => {
     return diffDays >= 7;
 };
 
+// Ikona pory posiłku — informacja, nie dekoracja. Tekst dla czytnika w aria-label.
+const MEAL_CATEGORY_ICONS = {
+    śniadanie: { icon: "sunrise", label: "Śniadanie" },
+    obiad: { icon: "sun", label: "Obiad" },
+    kolacja: { icon: "moon", label: "Kolacja" },
+};
+
+const generateMealIconHTML = (category) => {
+    const meta = MEAL_CATEGORY_ICONS[category];
+    if (!meta) return "";
+
+    return html`
+        <span class="meal-log__icon" role="img" aria-label="${meta.label}" title="${meta.label}">
+            <i data-lucide="${meta.icon}" aria-hidden="true"></i>
+        </span>
+    `;
+};
+
+const formatDate = (date) => date.toLocaleDateString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric" });
+
+const generateBalanceRowsHTML = (plan, eaten) => {
+    return BALANCE_ROWS.map(({ key, label, unit }) => {
+        const target = plan[key];
+        const consumed = eaten[key];
+        const left = target - consumed;
+        const isOver = left < 0;
+
+        // Skala miarki rośnie przy przekroczeniu — kreska pokazuje, gdzie był limit.
+        const scaleMax = Math.max(target, consumed);
+        const fillPercent = scaleMax > 0 ? (consumed / scaleMax) * 100 : 0;
+        const limitPercent = scaleMax > 0 ? (target / scaleMax) * 100 : 100;
+
+        return html`
+            <tr class="balance__row ${isOver ? "is-over" : ""}">
+                <th scope="row">${label}<span class="balance__unit">${unit}</span></th>
+                <td>${target}</td>
+                <td>${consumed}</td>
+                <td class="balance__left">
+                    ${isOver ? `+${Math.abs(left)}` : left}
+                    ${isOver ? html`<span class="balance__over-tag">ponad</span>` : ""}
+                </td>
+            </tr>
+            <tr class="balance__meter-row" aria-hidden="true">
+                <td colspan="4">
+                    <div class="meter meter--${key}">
+                        <span class="meter__fill" style="width: ${fillPercent}%"></span>
+                        ${isOver ? html`<span class="meter__limit" style="left: ${limitPercent}%"></span>` : ""}
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join("");
+};
+
+const generateMealLogHTML = (meals) => {
+    if (meals.length === 0) {
+        return html`
+            <p class="meal-log__empty">
+                Nic dziś jeszcze nie wpisano. Wybierz danie w
+                <a href="/recipes" data-link>Przepisach</a> i dodaj je do dnia.
+            </p>
+        `;
+    }
+
+    return html`
+        <ol class="meal-log">
+            ${meals
+                .map(
+                    (meal) => html`
+                        <li class="meal-log__entry">
+                            ${generateMealIconHTML(meal.category)}
+                            <span class="meal-log__time">${meal.time}</span>
+                            <span class="meal-log__title">${meal.title}</span>
+                            <span class="meal-log__kcal">${meal.calories} kcal</span>
+                            <span class="meal-log__macros">B ${meal.protein} · T ${meal.fats} · W ${meal.carbs}</span>
+                            <button
+                                type="button"
+                                class="meal-log__remove"
+                                data-meal-id="${meal.id}"
+                                aria-label="Usuń: ${meal.title}"
+                            >
+                                <i data-lucide="x" aria-hidden="true"></i>
+                                <span>Usuń</span>
+                            </button>
+                        </li>
+                    `,
+                )
+                .join("")}
+        </ol>
+    `;
+};
+
 export const renderDashboard = () => {
     return html`
         <div class="page-container">
             <header class="page-header">
-                <h1 class="page-header__title">Dashboard</h1>
-                <p class="page-header__desc">Twój dzienny cel Keto</p>
+                <h1 class="page-header__title">Dziś w dzienniku</h1>
+                <p class="page-header__desc">Twój cel Keto — wpis dnia</p>
             </header>
 
-            <div class="reminder-banner is-hidden" id="weight-reminder">
-                <div class="reminder-banner__text">
-                    <i data-lucide="bell" class="reminder-icon"></i>
-                    <span>Minęło 7 dni! Podaj dzisiejszą wagę:</span>
-                </div>
-                <div class="reminder-banner__actions">
-                    <input type="number" class="banner-input" id="banner-input-weight" placeholder="kg" step="0.1" />
-                    <button class="btn btn--primary btn--small" id="btn-banner-save">Zapisz</button>
-                </div>
-            </div>
-
-            <div class="bento-grid">
-                <div class="bento-card bento-card--accent">
-                    <span class="bento-card__title">Dzienny limit kalorii</span>
-                    <span class="bento-card__value">
-                        <span id="calories-value">0</span>
-                    </span>
-                </div>
-
-                <div class="bento-card bento-card--proteins">
-                    <i data-lucide="beef" class="bento-card__icon"></i>
-                    <span class="bento-card__title">Białko</span>
-                    <span class="bento-card__value"><span id="proteins-value">0</span></span>
-                </div>
-
-                <div class="bento-card bento-card--fats">
-                    <i data-lucide="droplet" class="bento-card__icon"></i>
-                    <span class="bento-card__title">Tłuszcz</span>
-                    <span class="bento-card__value"><span id="fats-value">0</span></span>
-                </div>
-
-                <div class="bento-card bento-card--carbs">
-                    <i data-lucide="wheat" class="bento-card__icon"></i>
-                    <span class="bento-card__title">Węglowodany</span>
-                    <span class="bento-card__value"><span id="carbs-value">0</span></span>
-                </div>
-
-                <div class="bento-card bento-card--chart">
-                    <span class="bento-card__title">Rozkład Makroskładników</span>
-                    <div class="chart-wrapper">
-                        <canvas id="macro-chart"></canvas>
+            <div class="dashboard">
+                <section class="paper journal" aria-labelledby="journal-title">
+                    <div class="journal__holes" aria-hidden="true">
+                        <span class="hole"></span>
+                        <span class="hole"></span>
                     </div>
-                </div>
 
-                <div class="bento-card bento-card--chart">
-                    <div class="bento-card__header">
-                        <span class="bento-card__title">Historia Wagi</span>
-                        <button class="btn-icon-text" id="btn-add-weight">
-                            <i data-lucide="plus"></i>
-                            <span>Pomiar</span>
-                        </button>
+                    <div class="journal__header">
+                        <h2 class="journal__title" id="journal-title">Bilans dnia</h2>
+                        <span class="tag journal__date">${formatDate(new Date())}</span>
                     </div>
-                    <div class="line-chart-wrapper">
-                        <canvas id="weight-chart"></canvas>
+
+                    <table class="balance" aria-label="Cel, spożycie i pozostały limit na dziś">
+                        <thead>
+                            <tr>
+                                <th scope="col">Makro</th>
+                                <th scope="col">Cel</th>
+                                <th scope="col">Zjedzone</th>
+                                <th scope="col">Zostało</th>
+                            </tr>
+                        </thead>
+                        <tbody id="balance-body"></tbody>
+                    </table>
+
+                    <p class="stamp balance__alert is-hidden" id="carbs-alert" role="status">
+                        Limit węgli przekroczony
+                    </p>
+
+                    <h3 class="journal__section-title">Posiłki dziś</h3>
+                    <div id="meal-log"></div>
+                </section>
+
+                <aside class="trend" aria-label="Trend wagi">
+                    <div class="reminder-banner is-hidden" id="weight-reminder">
+                        <div class="reminder-banner__text">
+                            <i data-lucide="bell" class="reminder-icon"></i>
+                            <span>Minęło 7 dni! Podaj dzisiejszą wagę:</span>
+                        </div>
+                        <div class="reminder-banner__actions">
+                            <input type="number" class="banner-input" id="banner-input-weight" placeholder="kg" step="0.1" />
+                            <button class="btn btn--primary btn--small" id="btn-banner-save">Zapisz</button>
+                        </div>
                     </div>
-                </div>
+
+                    <section class="trend__panel">
+                        <div class="trend__header">
+                            <h2 class="trend__title">Trend wagi</h2>
+                            <button class="btn-icon-text" id="btn-add-weight">
+                                <i data-lucide="plus"></i>
+                                <span>Pomiar</span>
+                            </button>
+                        </div>
+                        <div class="line-chart-wrapper">
+                            <canvas id="weight-chart" aria-label="Wykres wagi w kolejnych pomiarach" role="img"></canvas>
+                        </div>
+                    </section>
+                </aside>
             </div>
 
             <div class="page-actions">
@@ -99,9 +203,16 @@ export const renderDashboard = () => {
         </div>
 
         <div class="modal-overlay is-hidden" id="modal-overlay">
-            <div class="modal__content">
-                <h3 class="modal__title">Podaj aktualną wage</h3>
-                <input type="number" class="modal__input" id="input-weight" />
+            <div class="modal__content" role="dialog" aria-modal="true" aria-labelledby="weight-modal-title">
+                <h3 class="modal__title" id="weight-modal-title">Podaj aktualną wagę</h3>
+                <input
+                    type="number"
+                    class="modal__input"
+                    id="input-weight"
+                    step="0.1"
+                    placeholder="kg"
+                    aria-label="Waga w kilogramach"
+                />
                 <div class="modal__actions">
                     <button class="btn btn--primary" id="btn-save-weight">Zapisz</button>
                     <button class="btn btn--secondary" id="btn-exit">Wyjdź</button>
@@ -116,180 +227,142 @@ export const initDashboard = () => {
 
     if (!userProfile) return;
 
-    const reminderBanner = document.getElementById("weight-reminder");
-    const bannerInput = document.getElementById("banner-input-weight");
-    const btnBannerSave = document.getElementById("btn-banner-save");
+    const balanceBody = document.getElementById("balance-body");
+    const carbsAlert = document.getElementById("carbs-alert");
+    const mealLog = document.getElementById("meal-log");
 
+    // JEDNO miejsce, które rysuje stan dnia. Każda zmiana danych (waga, posiłek)
+    // woła tylko tę funkcję — "zostało" nigdy nie jest zapisywane, zawsze liczone.
+    const refreshDay = () => {
+        const plan = generateDietPlan(userProfile);
+        const meals = getTodayMeal();
+        const eaten = sumMacros(meals);
+
+        balanceBody.innerHTML = generateBalanceRowsHTML(plan, eaten);
+        carbsAlert.classList.toggle("is-hidden", eaten.carbs <= plan.carbs);
+        mealLog.innerHTML = generateMealLogHTML(meals);
+
+        window.lucide?.createIcons();
+    };
+
+    refreshDay();
+
+    // Delegacja zdarzeń: lista jest przerysowywana, kontener zostaje ten sam.
+    mealLog.addEventListener("click", (event) => {
+        const removeButton = event.target.closest(".meal-log__remove");
+        if (!removeButton) return;
+
+        removeMeal(removeButton.dataset.mealId);
+        refreshDay();
+    });
+
+    const reminderBanner = document.getElementById("weight-reminder");
     if (checkWeightReminder(userProfile)) {
         reminderBanner.classList.remove("is-hidden");
     }
 
-    const dietPlan = generateDietPlan(userProfile);
-
-    const caloriesLimit = document.getElementById("calories-value");
-    const proteins = document.getElementById("proteins-value");
-    const fats = document.getElementById("fats-value");
-    const carbs = document.getElementById("carbs-value");
-    const btnDelete = document.getElementById("btn-delete");
-    const macroChartCanvas = document.getElementById("macro-chart");
-
-    // Przypisujemy wykres do zmiennej, aby móc go później aktualizować
-    macroChartInstance = new Chart(macroChartCanvas, {
-        type: "doughnut",
-        data: {
-            labels: ["Białko", "Tłuszcze", "Węglowodany"],
-            datasets: [
-                {
-                    data: [dietPlan.proteins, dietPlan.fats, dietPlan.carbs],
-                    backgroundColor: [CHART_COLORS.red, CHART_COLORS.amber, CHART_COLORS.blue],
-                    borderWidth: 0,
-                },
-            ],
-        },
-        options: {
-            maintainAspectRatio: false,
-            cutout: "60%",
-            plugins: {
-                legend: {
-                    position: "bottom",
-                    labels: {
-                        color: CHART_COLORS.bone,
-                        padding: 20,
-                        usePointStyle: true,
-                        font: { size: 14, family: '"Public Sans", sans-serif' },
-                    },
-                },
-            },
-        },
-    });
-
-    const weightChartsCanvas = document.getElementById("weight-chart");
-    const dates = userProfile.weightHistory.map((entry) => entry.date);
-    const weights = userProfile.weightHistory.map((entry) => entry.weight);
-
-    weightChartInstance = new Chart(weightChartsCanvas, {
+    weightChartInstance = new Chart(document.getElementById("weight-chart"), {
         type: "line",
         data: {
-            labels: dates,
+            labels: userProfile.weightHistory.map((entry) => entry.date),
             datasets: [
                 {
-                    label: "Moja waga (kg)",
-                    data: weights,
+                    label: "Waga (kg)",
+                    data: userProfile.weightHistory.map((entry) => entry.weight),
                     borderColor: CHART_COLORS.amber,
-                    backgroundColor: "rgba(217, 140, 43, 0.12)",
-                    borderWidth: 3,
-                    tension: 0.3,
-                    fill: true,
+                    borderWidth: 2,
+                    pointBackgroundColor: CHART_COLORS.amber,
+                    pointBorderWidth: 0,
+                    pointRadius: 4,
+                    tension: 0, // prosta kreska między pomiarami — jak ołówkiem w dzienniku
+                    fill: false,
                 },
             ],
         },
         options: {
             maintainAspectRatio: false,
             plugins: {
-                legend: { labels: { color: CHART_COLORS.bone, font: { family: '"Public Sans", sans-serif' } } },
+                legend: { display: false }, // tytuł panelu już mówi, co to za linia
             },
             scales: {
-                y: { grid: { color: CHART_COLORS.gridLine }, ticks: { color: CHART_COLORS.boneDim } },
-                x: { grid: { color: CHART_COLORS.gridLine }, ticks: { color: CHART_COLORS.boneDim } },
+                y: { grid: { color: CHART_COLORS.gridLine }, ticks: { color: CHART_COLORS.boneDim, font: CHART_FONT } },
+                x: { grid: { display: false }, ticks: { color: CHART_COLORS.boneDim, font: CHART_FONT } },
             },
         },
     });
 
-    // Ustawienie początkowych wartości
-    caloriesLimit.textContent = dietPlan.calories;
-    proteins.textContent = dietPlan.proteins;
-    fats.textContent = dietPlan.fats;
-    carbs.textContent = dietPlan.carbs;
+    // Jeden zapis wagi dla banera i modala (wcześniej ta logika była skopiowana dwa razy).
+    const recordWeight = (rawValue) => {
+        if (!rawValue) {
+            alert("Najpierw wpisz wagę!");
+            return false;
+        }
 
-    // MAGIA REAKTYWNOŚCI: Funkcja aktualizująca UI w locie
-    const updateMacrosUI = () => {
-        const newDietPlan = generateDietPlan(userProfile); // Przelicza makro na podstawie NOWEJ wagi
+        const newWeight = parseFloat(rawValue);
+        const today = getDateKey();
 
-        // 1. Aktualizacja tekstów
-        caloriesLimit.textContent = newDietPlan.calories;
-        proteins.textContent = newDietPlan.proteins;
-        fats.textContent = newDietPlan.fats;
-        carbs.textContent = newDietPlan.carbs;
+        userProfile.weightHistory.push({ date: today, weight: newWeight });
+        userProfile.weight = newWeight;
+        saveUser(userProfile);
 
-        // 2. Aktualizacja wykresu kołowego
-        macroChartInstance.data.datasets[0].data = [newDietPlan.proteins, newDietPlan.fats, newDietPlan.carbs];
-        macroChartInstance.update();
+        weightChartInstance.data.labels.push(today);
+        weightChartInstance.data.datasets[0].data.push(newWeight);
+        weightChartInstance.update();
+
+        refreshDay(); // nowa waga = nowy cel = nowy bilans
+        return true;
     };
 
-    btnBannerSave.addEventListener("click", () => {
-        if (!bannerInput.value) {
-            alert("Najpierw wpisz wagę!");
-            return;
-        }
-
-        const newWeight = parseFloat(bannerInput.value);
-        const today = new Date().toISOString().split("T")[0];
-        const newWeightData = { date: today, weight: newWeight };
-
-        userProfile.weightHistory.push(newWeightData);
-        userProfile.weight = newWeight;
-        saveUser(userProfile);
-
-        weightChartInstance.data.labels.push(today);
-        weightChartInstance.data.datasets[0].data.push(newWeight);
-        weightChartInstance.update();
-
-        // Odświeżamy kafelki!
-        updateMacrosUI();
+    const bannerInput = document.getElementById("banner-input-weight");
+    document.getElementById("btn-banner-save").addEventListener("click", () => {
+        if (!recordWeight(bannerInput.value)) return;
 
         bannerInput.value = "";
-        document.getElementById("weight-reminder").classList.add("is-hidden");
+        reminderBanner.classList.add("is-hidden");
     });
 
-    btnDelete.addEventListener("click", () => {
-        clearUser();
-        navigateTo("/onboarding");
-    });
-
-    // MODAL SAVE WEIGHT FUNCTION
     const modalOverlay = document.getElementById("modal-overlay");
-    const btnAddWeight = document.getElementById("btn-add-weight");
-    const btnExit = document.getElementById("btn-exit");
-    const btnSaveWeight = document.getElementById("btn-save-weight");
+    const modalDialog = modalOverlay.querySelector('[role="dialog"]');
+    const modalInput = document.getElementById("input-weight");
 
-    btnAddWeight.addEventListener("click", () => {
+    const openWeightModal = () => {
         modalOverlay.classList.remove("is-hidden");
+
+        // trapFocus zapamiętuje aktywny element (przycisk "Pomiar"), więc wołamy go przed focus().
+        const releaseFocus = trapFocus(modalDialog, { onEscape: () => closeWeightModal() });
+
+        closeWeightModal = () => {
+            modalOverlay.classList.add("is-hidden");
+            modalInput.value = "";
+            closeWeightModal = null;
+            releaseFocus();
+        };
+
+        modalInput.focus();
+    };
+
+    document.getElementById("btn-add-weight").addEventListener("click", openWeightModal);
+    document.getElementById("btn-exit").addEventListener("click", () => closeWeightModal?.());
+
+    // Klik w tło (poza kartą) zamyka modal
+    modalOverlay.addEventListener("click", (event) => {
+        if (event.target === modalOverlay) closeWeightModal?.();
     });
 
-    btnExit.addEventListener("click", () => {
-        modalOverlay.classList.add("is-hidden");
+    document.getElementById("btn-save-weight").addEventListener("click", () => {
+        if (!recordWeight(modalInput.value)) return;
+
+        closeWeightModal?.();
     });
 
-    btnSaveWeight.addEventListener("click", () => {
-        const inputElement = document.getElementById("input-weight");
-        const inputModalWeight = inputElement.value;
-
-        if (!inputModalWeight) {
-            alert("Proszę podać wagę przed zapisem!");
-            return;
-        }
-
-        const today = new Date().toISOString().split("T")[0];
-        const newWeight = parseFloat(inputModalWeight);
-        const dateWeight = { date: today, weight: newWeight };
-
-        userProfile.weightHistory.push(dateWeight);
-        userProfile.weight = newWeight;
-        saveUser(userProfile);
-
-        weightChartInstance.data.labels.push(today);
-        weightChartInstance.data.datasets[0].data.push(newWeight);
-        weightChartInstance.update();
-
-        // Odświeżamy kafelki!
-        updateMacrosUI();
-
-        inputElement.value = "";
-        modalOverlay.classList.add("is-hidden");
+    document.getElementById("btn-delete").addEventListener("click", () => {
+        clearUser();
+        clearMeals();
+        navigateTo("/onboarding");
     });
 };
 
 export const cleanupDashboard = () => {
-    macroChartInstance?.destroy();
+    closeWeightModal?.(); // zdejmuje listener klawiatury, jeśli modal był otwarty
     weightChartInstance?.destroy();
 };

@@ -1,0 +1,317 @@
+/* ==========================================================================
+   DASHBOARD (/dashboard) — tryb Operate (DESIGN.md §2)
+   Kartka "Dziś" (bilans + wpisy posiłków) | mata "Trend" (waga)
+   ========================================================================== */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--spacing-lg);
+    align-items: start;
+}
+
+@media (min-width: 1024px) {
+    .dashboard {
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   KARTKA DZIENNIKA — jedyna elewacja: tło --paper (DESIGN.md §5)
+   -------------------------------------------------------------------------- */
+
+.journal {
+    position: relative;
+    padding: var(--spacing-md);
+}
+
+.journal__holes {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    display: flex;
+    gap: 8px;
+}
+
+.journal__header {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs) var(--spacing-sm);
+    padding-right: 3rem; /* miejsce na dziurki */
+    margin-bottom: var(--spacing-md);
+}
+
+.journal__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h3);
+    font-weight: 700;
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.journal__date {
+    color: var(--ink-dim);
+}
+
+.journal__section-title {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    font-weight: 700;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--ink);
+    padding-top: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    border-top: 1px dashed var(--ink-faint); /* perforacja */
+}
+
+/* --------------------------------------------------------------------------
+   BILANS — tabela punktacji + miarka pod każdym wierszem
+   -------------------------------------------------------------------------- */
+
+.balance {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+}
+
+.balance th,
+.balance td {
+    padding: 6px 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.balance thead th {
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    font-weight: 400;
+    color: var(--ink-dim);
+}
+
+.balance th[scope="row"],
+.balance thead th:first-child {
+    text-align: left;
+}
+
+.balance th[scope="row"] {
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.balance__left {
+    font-weight: 700;
+}
+
+.balance__unit,
+.balance__over-tag {
+    display: block;
+    font-size: var(--font-size-tag);
+    font-weight: 400;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--ink-dim);
+}
+
+/* Przekroczenie: tekst + znak, nigdy sam kolor (DESIGN.md §8) */
+.balance__row.is-over .balance__left {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+
+.balance__meter-row td {
+    padding: 0 0 var(--spacing-sm);
+}
+
+.meter {
+    position: relative;
+    height: 10px;
+    background-color: color-mix(in srgb, var(--ink) 8%, transparent);
+    /* podziałka co 10% — to jest pomiar, więc liniatura jest uzasadniona (§5) */
+    background-image: repeating-linear-gradient(to right, var(--ink-faint) 0 1px, transparent 1px 10%);
+}
+
+.meter__fill {
+    display: block;
+    height: 100%;
+    background-color: var(--ink);
+}
+
+.meter__limit {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    background-color: var(--ink);
+}
+
+.meter--protein .meter__fill {
+    background-color: var(--red);
+}
+
+.meter--fats .meter__fill {
+    background-color: var(--amber);
+}
+
+.meter--carbs .meter__fill {
+    background-color: var(--blue);
+}
+
+/* Pieczątka ostrzeżenia — czerwień tylko w ramce, tekst w --ink (§3: kontrast) */
+.balance__alert {
+    margin-top: var(--spacing-sm);
+    color: var(--ink);
+    transform: rotate(-3deg);
+}
+
+/* --------------------------------------------------------------------------
+   WPISY POSIŁKÓW
+   -------------------------------------------------------------------------- */
+
+.meal-log {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.meal-log__entry {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+        "icon title  kcal"
+        "time macros remove";
+    gap: 2px var(--spacing-sm);
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    color: var(--ink);
+}
+
+.meal-log__entry + .meal-log__entry {
+    border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+}
+
+.meal-log__icon {
+    grid-area: icon;
+    display: inline-flex;
+    color: var(--ink);
+}
+
+.meal-log__icon svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.6;
+}
+
+.meal-log__time {
+    grid-area: time;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    color: var(--ink-dim);
+}
+
+.meal-log__title {
+    grid-area: title;
+    font-weight: 600;
+}
+
+.meal-log__kcal {
+    grid-area: kcal;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.meal-log__macros {
+    grid-area: macros;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    color: var(--ink-dim);
+}
+
+.meal-log__remove {
+    grid-area: remove;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 44px; /* tap target §8 */
+    padding: 0 var(--spacing-xs);
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    font-weight: 700;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.meal-log__remove:hover {
+    text-decoration: underline;
+}
+
+.meal-log__remove:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+}
+
+.meal-log__remove svg {
+    width: 14px;
+    height: 14px;
+}
+
+.meal-log__empty {
+    color: var(--ink-dim);
+    padding: var(--spacing-sm) 0;
+}
+
+.meal-log__empty a {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   TREND — panel na macie (jedyna elewacja: --ground2)
+   -------------------------------------------------------------------------- */
+
+.trend {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.trend .reminder-banner {
+    margin-bottom: 0;
+}
+
+.trend__panel {
+    background-color: var(--ground2);
+    padding: var(--spacing-md);
+}
+
+.trend__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+}
+
+.trend__title {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    font-weight: 700;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--bone-dim);
+}

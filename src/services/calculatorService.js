@@ -37,14 +37,14 @@ const calculateTargetCalories = (tdee, goal) => {
 
 const calculateKetoMacros = (calories, weight) => {
     const carbs = 25;
-    const proteins = Math.round(weight * 2);
+    const protein = Math.round(weight * 2);
 
-    const usedCalories = carbs * 4 + proteins * 4;
+    const usedCalories = carbs * 4 + protein * 4;
     const fats = Math.round((calories - usedCalories) / 9);
 
     return {
         carbs,
-        proteins,
+        protein,
         fats,
     };
 };
@@ -68,13 +68,4 @@ export const generateDietPlan = (userProfile) => {
     
 }
 
-
-const mockUserProfile = {
-    gender: "male",
-    age: 38,
-    height: 180,
-    weight: 73,
-    activity: "high",
-    goal: "reduction",
-};
 

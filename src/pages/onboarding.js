@@ -2,6 +2,7 @@ import { html } from "../utils/template.js";
 import { saveUser } from "../services/userService.js";
 import { generateDietPlan } from "../services/calculatorService.js";
 import { navigateTo } from "../router.js";
+import { getDateKey } from "../utils/date.js";
 
 export const renderOnboarding = () => {
     return html` <div class="page-container">
@@ -69,7 +70,7 @@ export const handleOnboardingSubmit = (event) => {
 
     const formData = new FormData(formElement);
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = getDateKey();
 
     const userProfile = {
         weightHistory: [{ date: today, weight: Number(formData.get("weight")) }],

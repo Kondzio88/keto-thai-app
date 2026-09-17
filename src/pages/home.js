@@ -356,12 +356,12 @@ export const renderHome = () => {
 
                     <div class="accordion">
                         <div class="accordion__item">
-                            <button class="accordion__header">
+                            <button class="accordion__header" aria-expanded="false" aria-controls="faq-answer-1">
                                 <span class="accordion__question">Czym właściwie jest dieta ketogeniczna?</span>
-                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                                <i data-lucide="chevron-down" class="accordion__icon" aria-hidden="true"></i>
                             </button>
 
-                            <div class="accordion__content">
+                            <div class="accordion__content" id="faq-answer-1">
                                 <p class="accordion__answer">
                                     To sposób odżywiania, który przestawia organizm z czerpania energii z węglowodanów
                                     na spalanie tłuszczu (stan ketozy) — bardzo niska podaż węglowodanów, wysoka
@@ -371,12 +371,12 @@ export const renderHome = () => {
                         </div>
 
                         <div class="accordion__item">
-                            <button class="accordion__header">
+                            <button class="accordion__header" aria-expanded="false" aria-controls="faq-answer-2">
                                 <span class="accordion__question">Czy dieta keto jest bezpieczna?</span>
-                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                                <i data-lucide="chevron-down" class="accordion__icon" aria-hidden="true"></i>
                             </button>
 
-                            <div class="accordion__content">
+                            <div class="accordion__content" id="faq-answer-2">
                                 <p class="accordion__answer">
                                     Tak , o ile jest prowadzona z głową. Mam w tym kilkuletnie doświadczenie.
                                 </p>
@@ -384,14 +384,14 @@ export const renderHome = () => {
                         </div>
 
                         <div class="accordion__item">
-                            <button class="accordion__header">
+                            <button class="accordion__header" aria-expanded="false" aria-controls="faq-answer-3">
                                 <span class="accordion__question"
                                     >Czy na keto nie spadnie mi moc i szybkość na sparingach / treningach?</span
                                 >
-                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                                <i data-lucide="chevron-down" class="accordion__icon" aria-hidden="true"></i>
                             </button>
 
-                            <div class="accordion__content">
+                            <div class="accordion__content" id="faq-answer-3">
                                 <p class="accordion__answer">
                                     Wręcz przeciwnie – po okresie adaptacji organizm czerpie stabilną energię z tłuszczu
                                     bez nagłych "zjazdów energetycznych" i wahań glukozy.
@@ -400,12 +400,12 @@ export const renderHome = () => {
                         </div>
 
                         <div class="accordion__item">
-                            <button class="accordion__header">
+                            <button class="accordion__header" aria-expanded="false" aria-controls="faq-answer-4">
                                 <span class="accordion__question">Dla kogo jest aplikacja</span>
-                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                                <i data-lucide="chevron-down" class="accordion__icon" aria-hidden="true"></i>
                             </button>
 
-                            <div class="accordion__content">
+                            <div class="accordion__content" id="faq-answer-4">
                                 <p class="accordion__answer">
                                     Dla każdego kto chce zadbać o swoje zdrowie , zgubić tkanke tłuszczową oraz poprawić
                                     swoje wyniki sportowe.
@@ -414,14 +414,14 @@ export const renderHome = () => {
                         </div>
 
                         <div class="accordion__item">
-                            <button class="accordion__header">
+                            <button class="accordion__header" aria-expanded="false" aria-controls="faq-answer-5">
                                 <span class="accordion__question"
                                     >Słyszałem o tzw. "Keto Flu" (grypie ketogenicznej). Jak tego uniknąć?</span
                                 >
-                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                                <i data-lucide="chevron-down" class="accordion__icon" aria-hidden="true"></i>
                             </button>
 
-                            <div class="accordion__content">
+                            <div class="accordion__content" id="faq-answer-5">
                                 <p class="accordion__answer">
                                     Kluczem jest odpowiednia podaż sodu, potasu i magnezu, co nasz system i przepisy
                                     uwzględniają od pierwszego dnia.
@@ -430,14 +430,14 @@ export const renderHome = () => {
                         </div>
 
                         <div class="accordion__item">
-                            <button class="accordion__header">
+                            <button class="accordion__header" aria-expanded="false" aria-controls="faq-answer-6">
                                 <span class="accordion__question"
                                     >Czy na diecie keto można skutecznie budować beztłuszczową masę mięśniową?</span
                                 >
-                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                                <i data-lucide="chevron-down" class="accordion__icon" aria-hidden="true"></i>
                             </button>
 
-                            <div class="accordion__content">
+                            <div class="accordion__content" id="faq-answer-6">
                                 <p class="accordion__answer">
                                     Tak, odpowiednia podaż białka (ok. 2g/kg m.c.) w połączeniu z nadwyżką kaloryczną
                                     zapewnia optymalne środowisko anaboliczne.
@@ -446,14 +446,14 @@ export const renderHome = () => {
                         </div>
 
                         <div class="accordion__item">
-                            <button class="accordion__header">
+                            <button class="accordion__header" aria-expanded="false" aria-controls="faq-answer-7">
                                 <span class="accordion__question"
                                     >Dlaczego warto korzystać z Keto Thai zamiast zwykłego licznika kalorii?</span
                                 >
-                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                                <i data-lucide="chevron-down" class="accordion__icon" aria-hidden="true"></i>
                             </button>
 
-                            <div class="accordion__content">
+                            <div class="accordion__content" id="faq-answer-7">
                                 <p class="accordion__answer">
                                     Nasz kalkulator opiera się na specyfice sportów o wysokiej intensywności,
                                     automatycznie wylicza sztywny keto-split i daje gotowe, przetestowane receptury.
@@ -462,12 +462,12 @@ export const renderHome = () => {
                         </div>
 
                         <div class="accordion__item">
-                            <button class="accordion__header">
+                            <button class="accordion__header" aria-expanded="false" aria-controls="faq-answer-8">
                                 <span class="accordion__question">Czy aplikacja jest płatna?</span>
-                                <i data-lucide="chevron-down" class="accordion__icon"></i>
+                                <i data-lucide="chevron-down" class="accordion__icon" aria-hidden="true"></i>
                             </button>
 
-                            <div class="accordion__content">
+                            <div class="accordion__content" id="faq-answer-8">
                                 <p class="accordion__answer">
                                     Kalkulator, przepisy i tracker są całkowicie darmowe. Jeśli chcesz przyspieszyć
                                     efekty pod moim okiem, oferuję dodatkowo płatny 12-tygodniowy Fighter's Camp z
@@ -520,7 +520,8 @@ export const initHome = () => {
 
     accordionBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
-            btn.parentElement.classList.toggle("is-active");
+            const isOpen = btn.parentElement.classList.toggle("is-active");
+            btn.setAttribute("aria-expanded", String(isOpen));
         });
     });
 
