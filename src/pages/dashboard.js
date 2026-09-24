@@ -5,6 +5,7 @@ import { getTodayMeal, removeMeal, sumMacros, clearMeals } from "../services/mea
 import { getDateKey } from "../utils/date.js";
 import { navigateTo } from "../router.js";
 import { trapFocus } from "../utils/focusTrap.js";
+import { showConfirmModal } from "../components/confirmModal.js";
 
 let weightChartInstance = null;
 let closeWeightModal = null; // pozwala cleanupowi zamknąć modal przy zmianie trasy
@@ -177,7 +178,13 @@ export const renderDashboard = () => {
                             <span>Minęło 7 dni! Podaj dzisiejszą wagę:</span>
                         </div>
                         <div class="reminder-banner__actions">
-                            <input type="number" class="banner-input" id="banner-input-weight" placeholder="kg" step="0.1" />
+                            <input
+                                type="number"
+                                class="banner-input"
+                                id="banner-input-weight"
+                                placeholder="kg"
+                                step="0.1"
+                            />
                             <button class="btn btn--primary btn--small" id="btn-banner-save">Zapisz</button>
                         </div>
                     </div>
@@ -191,7 +198,11 @@ export const renderDashboard = () => {
                             </button>
                         </div>
                         <div class="line-chart-wrapper">
-                            <canvas id="weight-chart" aria-label="Wykres wagi w kolejnych pomiarach" role="img"></canvas>
+                            <canvas
+                                id="weight-chart"
+                                aria-label="Wykres wagi w kolejnych pomiarach"
+                                role="img"
+                            ></canvas>
                         </div>
                     </section>
                 </aside>
@@ -356,9 +367,17 @@ export const initDashboard = () => {
     });
 
     document.getElementById("btn-delete").addEventListener("click", () => {
-        clearUser();
-        clearMeals();
-        navigateTo("/onboarding");
+        showConfirmModal({
+            title: "Skasować dane aplikacji?",
+            message: "Usuniemy Twój profil i wszystkie zapisane posiłki. Tej operacji nie można cofnąć.",
+            confirmLabel: "Skasuj",
+            cancelLabel: "Anuluj",
+            onConfirm: () => {
+                clearUser();
+                clearMeals();
+                navigateTo("/");
+            },
+        });
     });
 };
 

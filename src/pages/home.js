@@ -1,9 +1,21 @@
 import { html } from "../utils/template.js";
 import { getBase } from "../utils/env.js";
+import { onPromptAvailable, clearDeferredPrompt } from "../utils/installPrompt.js";
 
 export const renderHome = () => {
     return html`
         <main>
+            <div class="install-banner is-hidden page-container" id="install-banner">
+                <div class="install-banner__text">
+                    <i data-lucide="download" aria-hidden="true"></i>
+                    <span>Zainstaluj Keto Thai na ekranie głównym — szybszy dostęp, działa offline.</span>
+                </div>
+                <div class="install-banner__actions">
+                    <button type="button" class="btn btn--secondary" id="install-banner-dismiss">Nie teraz</button>
+                    <button type="button" class="btn btn--primary" id="install-banner-install">Zainstaluj</button>
+                </div>
+            </div>
+
             <!-- 1. HERO SECTION -->
             <section class="hero paper">
                 <span class="hero__stamp stamp">SEZON 01</span>
@@ -537,5 +549,29 @@ export const initHome = () => {
             },
             { passive: false },
         );
+    }
+
+    const installBanner = document.getElementById("install-banner");
+    const installBtn = document.getElementById("install-banner-install");
+    const dismissBtn = document.getElementById("install-banner-dismiss");
+
+    if (installBanner && !sessionStorage.getItem("installBannerDismissed")) {
+        onPromptAvailable((deferredPrompt) => {
+            setTimeout(() => {
+                installBanner.classList.remove("is-hidden");
+            }, 3000);
+
+            installBtn.addEventListener("click", async () => {
+                installBanner.classList.add("is-hidden");
+                deferredPrompt.prompt();
+                await deferredPrompt.userChoice;
+                clearDeferredPrompt();
+            });
+
+            dismissBtn.addEventListener("click", () => {
+                installBanner.classList.add("is-hidden");
+                sessionStorage.setItem("installBannerDismissed", "1");
+            });
+        });
     }
 };

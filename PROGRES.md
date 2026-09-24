@@ -13,6 +13,7 @@ Aplikacja Keto Thai to Vanilla JS SPA. Jedyne i ostateczne źródło prawdy dla 
 - **Narzędzie:** skill `impeccable` (`.claude/skills/impeccable/`) używany do audytów i jako checklista (`craft-floor.md`) przy każdej edycji UI. Hook detektora **włączony**.
 - **Audyt całościowy:** `RAPORT.md` (2026-09-14) — pierwszy pełny audyt architektury/layoutu/designu/UI-UX/a11y/wydajności/SEO/copywritingu całej aplikacji naraz (nie pojedynczej strony). 30 znalezisk z tabelą metryk stanu do porównań w kolejnych sesjach. Odtąd punkt odniesienia do priorytetyzacji pracy, obok `MARKETING.md`/`DESIGN.md`.
 - **Przechwytywanie leadów:** formularz `/camp` wysyła realnie przez **Web3Forms** (klucz w `camp.js`, `initCamp()`) — pierwsza zewnętrzna integracja sieciowa w projekcie (wcześniej appka rozmawiała wyłącznie z `localStorage`).
+- **Model żywieniowy — decyzje z 2026-09-18 (jeszcze nie w kodzie):** węgle liczone **netto**, cel **50 g** jako **sufit**. Makro liczone metodą **kotwic fizjologicznych**, nie procentów: białko **2,0 g/kg masy ciała**, węgle jako sufit w gramach, tłuszcz jako reszta; cel kaloryczny jako **procent TDEE**, nie sztywne ±500 kcal. Produkty z **lokalnej bazy** zbudowanej raz z USDA FoodData Central — **żadnego zewnętrznego API w runtime** (wyszukiwarka Open Food Facts zmierzona na ~33% błędów). Pełne uzasadnienie i dowody liczbowe w sekcji sesji 2026-09-18.
 
 ---
 
@@ -168,50 +169,107 @@ Kontynuacja tego samego dnia, po audycie z cz. 1 — realne przepisanie copy w `
    - **#6 karty przepisów:** tytuł karty to `<button class="card__open">` rozciągnięty przez `::after` na całą kartę (Enter/Spacja z przeglądarki, zamiast `tabindex` na `<article>`), obrys fokusu na karcie przez `:has()`, `alt=""` na zdjęciu karty (nazwę daje przycisk), fokus przenoszony do szczegółów i z powrotem na kartę.
    - **#21 szuflada mobilna:** `visibility: hidden` z opóźnionym przejściem — linki zamkniętej szuflady wypadły z kolejności Tab.
    - **#22 FAQ:** `aria-expanded` + `aria-controls` na 8 przyciskach, aktualizowane w JS; zwinięta odpowiedź ukryta też dla czytnika ekranu.
-8. **Weryfikacja:** `npx vite build` czysto po każdej zmianie, moduły sprawdzone na serwerze dev, logika `mealService` przetestowana w Node. **Zmiany z tej sesji NIE zostały jeszcze przeklikane w przeglądarce** (klawiatura, mobile, stany Dashboardu) — patrz punkt 2 listy niżej.
+8. **Weryfikacja:** `npx vite build` czysto po każdej zmianie, moduły sprawdzone na serwerze dev, logika `mealService` przetestowana w Node. **Zmiany z tej sesji NIE zostały jeszcze przeklikane w przeglądarce** (klawiatura, mobile, stany Dashboardu) — patrz punkt 14 listy niżej.
 
 ---
 
-### Do zrobienia (stan na 2026-09-17)
+### Sesja 2026-09-18 — Faza decyzyjna: model produktów, węgle netto, przebudowa kalkulatora
 
-Lista skonsolidowana: usunięte wszystkie punkty zrobione w poprzednich sesjach i dziś, zostawione tylko otwarte (zweryfikowane w kodzie). Pełny rejestr znalezisk nadal w `RAPORT.md` §7–8.
+**Sesja w całości decyzyjna — w kodzie projektu nie zmieniono ani jednej linii.** Domyka punkt 1 („do przemyślenia, NIE do kodowania od razu") z listy z 17.09. Wszystkie obliczenia robione na kopiach plików w katalogu tymczasowym, nie na projekcie.
 
-#### 🧠 W pierwszej kolejności — do przemyślenia, NIE do kodowania od razu
+#### Decyzje podjęte
 
-1. **Architektura dodawania pojedynczych produktów (np. jajka, masło, awokado) i samodzielnego komponowania posiłków przez użytkownika.** Dziś da się dodać do dnia tylko gotowy przepis z `RECIPES_DATA`. Przed pierwszą linijką kodu rozstrzygnąć (metodą z `CLAUDE.md` §5 — min. 3 warianty z trade-offami, wybór po stronie użytkownika):
-   - **Model produktu:** jakie pola i na jaką jednostkę (makro na 100 g? kcal, białko, tłuszcz, węgle — ogółem czy netto, z błonnikiem?). Jak obsłużyć produkty liczone w sztukach (jajko) vs w gramach — przelicznik „1 szt. = X g" w danych produktu?
-   - **Źródło danych o produktach:** własna lokalna baza JSON / zewnętrzne API (`PLAN.md` opisuje wyszukiwarkę z debounce odpytującą API) / produkty dodawane ręcznie przez użytkownika („Add Custom") — albo połączenie. Kto odpowiada za poprawność wartości?
-   - **Model posiłku:** wpis jako lista `{ produkt, ilość }` z makro **liczonym** na bieżąco (stan pochodny, jak dziś bilans) vs **kopia makro zapisana w chwili dodania** (odporna na późniejszą zmianę danych produktu). Co się dzieje z historią, gdy produkt zostanie poprawiony albo usunięty?
-   - **Relacja z przepisami:** czy przepis staje się „posiłkiem złożonym z produktów" (dziś `ingredients` to zwykłe napisy), czy zostaje osobnym typem? Jeden kształt wpisu w `keto_meals` dla obu (np. pole `type: "recipe" | "custom"`) i zgodność wstecz z już zapisanymi wpisami.
-   - **Zapisane własne posiłki:** czy skomponowany posiłek da się zapisać jako szablon i dodawać ponownie jednym kliknięciem?
-   - **Przechowywanie:** `localStorage` (limit rozmiaru przy dużej bazie produktów) vs docelowy Supabase z `PLAN.md` — czy decyzja podjęta teraz utrudni migrację później?
-   - **UI i przepływ:** wyszukiwarka produktów (modal czy widok w stronie — `operate.md`: modal jako pierwszy odruch to zwykle lenistwo), wybór ilości z podglądem przeliczonego makro na żywo, walidacja (ujemne/zerowe ilości), dostępność klawiatury od pierwszej wersji.
-   - **Powiązane decyzje odłożone dziś przez użytkownika („zastanowimy się"):** przełącznik dni na Dashboardzie (`getDateKey(date)` przyjmuje już dowolną datę), wybór pory posiłku przy dodawaniu (dziś pora wynika z kategorii przepisu — własne posiłki kategorii mieć nie będą), ścieżka z Dashboardu do `/camp` (`RAPORT.md` #30).
+| Węzeł | Decyzja |
+|---|---|
+| Źródło danych o produktach | lokalna baza z **USDA FoodData Central „Foundation Foods"** |
+| Zewnętrzne API w runtime | **odrzucone** (pomiar niżej) |
+| Węgle | **netto**, cel **25 g → 50 g**, traktowane jako **sufit**, nie alokacja |
+| `carbs` w 30 przepisach | traktować jako **całkowite** — dopisać `fiber`, netto = różnica |
+| Model makro (kalkulator) | **W2 — kotwice fizjologiczne:** białko w g/kg, węgle jako sufit w gramach, tłuszcz jako reszta |
+| Białko | **sztywne 2,0 g/kg** niezależnie od celu |
+| Cel kaloryczny | **V1 — deficyt/nadwyżka jako % TDEE** zamiast sztywnych ±500 kcal |
+| Kształt wpisu posiłku | snapshot makro + zapisane `grams` i wartości na 100 g *(rekomendacja, bez jawnego potwierdzenia)* |
+| Model posiłku | 1 wpis = 1 produkt, grupowanie po porze dnia dopiero w widoku *(rekomendacja, bez jawnego potwierdzenia)* |
+
+#### Weryfikacje u źródła (nie z artykułów)
+
+- **Open Food Facts odrzucone na podstawie pomiaru:** 12 zapytań pod rząd do wyszukiwarki → **8 × `200`, 4 × `503`** (~33% błędów). Endpoint produktu po kodzie kreskowym: 6/6 poprawnych. Zawodziła dokładnie ta ścieżka, której potrzebowaliśmy. Dodatkowo OFF to baza produktów **paczkowanych**, nie surowców — złe dopasowanie do „jajko, masło, awokado".
+- **CORS w OFF jest otwarty** (`Access-Control-Allow-Origin: *`), wbrew części artykułów twierdzących inaczej. Zapisane, żeby nie trafić na ten mit ponownie.
+- **Edamam odpada niezależnie:** wymaga `app_id` + `app_key`, a w czystym froncie każdy klucz jest jawny.
+- **USDA Foundation Foods:** zip **3,4 MB** (zweryfikowane nagłówkiem `Content-Length`), 32 MB CSV po rozpakowaniu, wydanie kwiecień 2026. Surowce **z błonnikiem** — czyli to, czego wymaga decyzja o węglach netto. ⚠️ **Strona pobierania nie podaje licencji wprost** — do potwierdzenia u źródła przed publikacją (ta sama ostrożność co przy klauzuli RODO z 14.09).
+- **Scraper — rozstrzygnięcie.** Produkty: zbędny, istnieje gotowy dump. Przepisy: **odrzucony** z dwóch niezależnych powodów — (1) opis przygotowania i zdjęcia to utwory chronione prawem autorskim; (2) ważniejszy, produktowy: pozycjonowanie z `PRODUCT.md` stoi na autorskiej wiedzy, a zeskrobane generyczne przepisy to dokładnie ten „AI slop", przed którym `CLAUDE.md` §8 każe się bronić.
+- **Wytyczne keto:** nie istnieje jeden oficjalny rozkład procentowy — cyt. „There is no universally accepted classification of KDs that would precisely indicate the percentage share of each macronutrient" (PMC11511599). Protokoły: klasyczna KD 80–90% tł. / 6–15% biał. / 5–10% węgl.; VLCKD 20–50 g węgli + 60–75% tł.; StatPearls 55–60 / 30–35 / 5–10; popularna 70–75 / 20–25 / 5–10. Stanowisko **ISSN (Leaf i wsp. 2024, JISSN 21(1))** definiuje keto jako **<50 g węgli/dobę**, ketozę odżywczą jako >0,5 mM; białko u sportowców podawane w **g/kg** (1,4–2,2; min. 1,6 dla przyrostu beztłuszczowej masy).
+- **⚠️ Do sprawdzenia w copy:** to samo stanowisko ISSN podaje, że keto ma *„largely neutral or detrimental effects on athletic performance"* wobec diety wyższowęglowodanowej. Nie unieważnia produktu (redukcja masy przed walką ≠ maksymalna wydolność), ale wymaga przeglądu obietnic na `/` i `/camp` wobec `MARKETING.md`.
+
+#### Dowody liczbowe (uruchomione na realnym `calculatorService.js`)
+
+- **Podniesienie węgli 25 → 50 g nie odsłania starego buga, tylko go tworzy.** Profil „kobieta 70 l., 45 kg, 150 cm, niska akt., redukcja": tłuszcz **10 g** przy 25 g węgli, **−1 g** przy 50 g.
+- **Białko nie było przyczyną** (hipoteza użytkownika, obalona liczbami): to samo ciało (45 kg, 150 cm) przy wysokiej aktywności daje tłuszcz **93 g**. Białko w obu przypadkach identyczne (90 g) → przyczyną jest `calculateTargetCalories()`, nie makro.
+- **Sztywne −500 kcal to liczba bezwzględna zastosowana do sytuacji względnej:** deficyt **18%** przy TDEE 2720, ale **48%** przy TDEE 1052. **Ten sam bug lustrzanie w gałęzi `mass`** (`tdee + 500` = nadwyżka 48% dla małej osoby, czyli gwarantowany przyrost tkanki tłuszczowej).
+- **Procenty jako model makro odrzucone dowodem:** ten sam człowiek 70 kg przy białku = 20% energii dostaje **118 g na redukcji i 168 g na masie** — różnica 42% przy niezmienionej masie ciała. Kotwica `weight * 2` trzyma 2,00 g/kg zawsze.
+- **Przemiatanie 6 776 784 kombinacji** (wiek 16–99, wzrost 130–210 cm, waga 35–200 kg, płeć, aktywność) przy węglach 50 g: deficyt **15% → 0** przypadków tłuszczu ≤ 0, **20% → 0**, **25% → 262** (0,004%; najgorszy: kobieta 99 l., 35 kg, 130 cm). **Przy 20% problem ujemnego tłuszczu nie istnieje w całej przestrzeni — żaden specjalny przypadek „podłoga na tłuszczu" nie jest potrzebny.**
+- Przy −20% typowy użytkownik prawie nic nie traci: mężczyzna 80 kg 2220 → 2176 kcal (44 kcal różnicy), 70 kg 2361 → 2289 kcal (72 kcal).
+
+#### Korekty własne w trakcie sesji (zapisane, żeby nie wracać)
+
+1. **Wycofane twierdzenie o ISSN.** Padło zdanie, że stanowisko ISSN „wprost ostrzega przed wyrażaniem białka w procentach" — to **nie było zweryfikowane**, powstało z pytania sugerującego zadanego narzędziu czytającemu PDF (przy pytaniu neutralnym dokument tego nie zawierał). Argument za g/kg jest wnioskiem inżynierskim popartym liczbami, nie cytatem z wytycznych.
+2. **Wycofana obawa o copy.** Zgłoszone ryzyko, że W2 unieważni deklarowane w treści procenty, okazało się nieistniejące — w copy nie ma żadnej liczby procentowej, a `home.js:367-368` mówi jakościowo („bardzo niska podaż węglowodanów, wysoka tłuszczów, umiarkowana białka") i jest zgodne z W2.
+3. **Obalona hipoteza o `User-Agent`** przy błędach OFF — kolejne próby pokazały, że `503` są nieregularne i niezależne od nagłówka. Wniosek praktyczny: potrzebne byłoby ponawianie zapytań, nie poprawka nagłówka.
+
+#### Nowe znaleziska
+
+- **`home.js:63-65` — pasek „ROZKŁAD MAKRO" zahardkodowany na 70% / 20% / 10%.** W2 policzy dla realnych profili białko na 28,8% / 23,7% / 16,7% / 27,0% — żaden nie trafia w 20%. Dodatkowo pasek nie jest oznaczony jako dana przykładowa (`DESIGN.md` §7).
+- **Błąd składni w `calculatorService.js`** — samotne `t` na końcu pliku wywalało build; znaleziony i zgłoszony, naprawiony przez użytkownika.
+
+---
+
+### Do zrobienia (stan na 2026-09-18)
+
+Lista skonsolidowana: usunięte punkty zrobione (m.in. commit zmian z 17.09 — `5fd0352`, drzewo czyste). Punkt „brak walidacji zakresów w kalkulatorze" nie zniknął, tylko zmienił charakter — patrz sekcja kalkulatora. Pełny rejestr znalezisk nadal w `RAPORT.md` §7–8.
+
+#### 🔴 Kalkulator — decyzje podjęte, czekają na kod
+
+1. **Trzy liczby do podania przed implementacją:** (a) deficyt — 20% czy 15%? (b) nadwyżka na masę — jaki procent? (typowy lean bulk 10–20% TDEE); (c) zakresy walidacji wejścia — propozycja oparta na przemiataniu: wiek 16–99, wzrost 130–210 cm, waga 35–200 kg.
+2. `calculateTargetCalories()` — ±500 kcal → procent TDEE, **w obu gałęziach** (`reduction` i `mass`), `still` bez zmian. To domyka dawny punkt 10 („brak walidacji zakresów w kalkulatorze", `RAPORT.md` #28): po tej zmianie walidacja przestaje być zabezpieczeniem przed ujemnym tłuszczem i staje się zwykłym sanity checkiem na literówki.
+3. `calculateKetoMacros()` — `carbs` 25 → 50, znaczenie **netto**, rola **sufitu** (nie alokacji do wypełnienia).
+4. **Nazewnictwo pól.** `plan.carbs` (netto, sufit) i `meal.carbs` (całkowite z etykiety) to od teraz dwie różne wielkości o identycznej nazwie — spotykają się w porównaniu na `dashboard.js:242`. Zakodować jednostkę w nazwie, żeby cichy błąd stał się widoczny przy czytaniu.
+5. **Etykieta w UI** — `dashboard.js:28` ma `label: "Węgle"`; musi mówić, że to netto, inaczej użytkownik porówna to z etykietą na opakowaniu.
+
+#### 🔴 Produkty i posiłki — decyzje podjęte, czekają na kod
+
+6. **Potwierdzić dwie rekomendacje** bez jawnej decyzji: kształt wpisu (snapshot) i model posiłku (1 wpis = 1 produkt). Uwaga: argument „przy zawodnym API dziennik byłby pusty" przestał obowiązywać po rezygnacji z API — rekomendacja stoi już tylko na niezmienności historii.
+7. **Skrypt jednorazowy, poza bundlem aplikacji:** pobierz zip USDA → odfiltruj ~150–250 pozycji keto → zapisz `src/data/productsData.js`. Nazwy do przetłumaczenia z angielskiego. Uruchamiany ręcznie, wynik commitowany.
+8. **Model produktu:** wartości na 100 g, `fiber` obowiązkowo (bez niego netto nie istnieje), przelicznik „1 szt. = X g" dla produktów liczonych sztukami, polska nazwa, oznaczenie pochodzenia rekordu.
+9. `recipesData.js` — dopisać `fiber` do 30 rekordów (praca ręczna; baza USDA jako punkt odniesienia).
+10. `mealService.addMeal()` — obsłużyć drugi typ źródła (produkt + gramatura). Wpis **musi zachować płasko** `calories/protein/fats/carbs`, bo `sumMacros()` (`:61-71`) po nich redukuje i karmi cały bilans. Dochodzą: `grams`, wartości na 100 g, `fiber`, typ wpisu. `category` wypełniane także dla produktów — inaczej brak ikony pory (`dashboard.js:111-120`).
+11. **Zgodność wstecz:** `store.js` nie wersjonuje danych, a stare wpisy nie mają nowych pól. Wybrać: wartości domyślne przy odczycie / pole `version` we wpisie / jednorazowe czyszczenie. Precedens: posiłki sprzed 17.09 nie mają `category` i przez to nie mają ikony.
+12. **UI dodawania produktu** — osobna runda decyzji projektowych. `/dashboard` jest w trybie Operate (`DESIGN.md` §2); `operate.md` ostrzega, że modal jako pierwszy odruch to zwykle lenistwo. Dostępność klawiatury od pierwszej wersji, nie jako dług.
+13. **Nadal otwarte z 17.09:** przełącznik dni na Dashboardzie (`getDateKey(date)` przyjmuje już dowolną datę), wybór pory posiłku przy dodawaniu (dziś wynika z kategorii przepisu), zapisywanie własnych posiłków jako szablonów, ścieżka z Dashboardu do `/camp` (`RAPORT.md` #30), `localStorage` vs docelowy Supabase.
 
 #### 🔴 Zaraz potem
 
-2. **Przeklikać zmiany z sesji 2026-09-17 w przeglądarce** (`npm run dev`, adres z `/keto-thai-app/`): `/recipes` samą klawiaturą (Tab → Enter → „Dodaj do mojego dnia" → „Wróć" — czy fokus wraca na kartę); modal wagi (Esc, Tab nie wychodzi z okna); szuflada mobilna ~390px (Tab nie wpada w ukryte linki); Dashboard w stanach: pusty dzień, 2–3 posiłki, przekroczone węgle; „Skasuj dane aplikacji" → pusta lista posiłków. Posiłki dodane przed tą sesją nie mają `category`, więc nie mają ikony — wyczyścić dane przed testem.
-3. **Commit** zmian z sesji 2026-09-17 (dużo plików, jeszcze niezacommitowane).
+14. **Przeklikać zmiany z sesji 2026-09-17 w przeglądarce** (`npm run dev`, adres z `/keto-thai-app/`): `/recipes` samą klawiaturą (Tab → Enter → „Dodaj do mojego dnia" → „Wróć" — czy fokus wraca na kartę); modal wagi (Esc, Tab nie wychodzi z okna); szuflada mobilna ~390 px (Tab nie wpada w ukryte linki); Dashboard w stanach: pusty dzień, 2–3 posiłki, przekroczone węgle; „Skasuj dane aplikacji" → pusta lista posiłków. Posiłki dodane przed tamtą sesją nie mają `category`, więc nie mają ikony — wyczyścić dane przed testem.
 
 #### 🟠 Widocznie zepsute / dostępność
 
-4. Kontrast poniżej WCAG AA w 4 miejscach, w tym `.hero__tag` (`--ink-faint` na papierze, ~3,56:1) (`RAPORT.md` #8).
-5. Bug: aktywny tab w nawigacji nie aktualizuje się po kliknięciu CTA spoza tabbara (`RAPORT.md` #10).
-6. Walidacja wagi na Dashboardzie nadal przez `alert()` — zastąpić komunikatem przy polu.
-7. `checkWeightReminder` parsuje datę przez `new Date("RRRR-MM-DD")` (UTC) — ta sama klasa problemu co naprawiona dziś data posiłków; pomijalna przy liczeniu 7 dni, ale do ujednolicenia.
+15. Kontrast poniżej WCAG AA w 4 miejscach, w tym `.hero__tag` (`--ink-faint` na papierze, ~3,56:1) (`RAPORT.md` #8).
+16. Bug: aktywny tab w nawigacji nie aktualizuje się po kliknięciu CTA spoza tabbara (`RAPORT.md` #10).
+17. Walidacja wagi na Dashboardzie nadal przez `alert()` — zastąpić komunikatem przy polu.
+18. `checkWeightReminder` parsuje datę przez `new Date("RRRR-MM-DD")` (UTC) — ta sama klasa problemu co naprawiona data posiłków; pomijalna przy liczeniu 7 dni, ale do ujednolicenia.
 
-#### 🟡 Otwarte z wcześniejszych sesji (zweryfikowane w kodzie jako wciąż aktualne)
+#### 🟡 Otwarte z wcześniejszych sesji
 
-8. 3 kickery nad nagłówkami na `/camp` — „Faza 1–3 · Tygodnie…" nad `<h3>` (`RAPORT.md` #13, `DESIGN.md` §4).
-9. Brak zastrzeżenia medycznego mimo twierdzeń zdrowotnych (`RAPORT.md` #27).
-10. Brak walidacji zakresów w kalkulatorze — możliwe ujemne gramy tłuszczu przy skrajnych danych (`RAPORT.md` #28).
-11. Zero przechwytywania leada dla niezdecydowanych + zero analityki (`RAPORT.md` #29).
-12. `og:url` / `canonical` w `index.html` — czekają na decyzję o finalnej domenie (GitHub Pages vs własna).
-13. `/treningi-tychy` — szkielet trasy czeka na materiał i dowód autorytetu (mistrz świata WBC dzieci 2026, dwaj brązowi medaliści).
-14. About (home) — realne zdjęcia z Tajlandii do galerii i `years-proof`.
-15. Reorder sekcji home wg Wariantu B „Lejek" z `MARKETING.md` (Hero → Steps → About → Philosophy → Camp-offer → FAQ → finałowe CTA) — dziś: Hero → Philosophy → About → Steps → Camp-offer → FAQ → finałowe CTA.
-16. Karta 2 „Umysł Wojownika" — mockup „SERIA" pokazuje funkcję streak, która nie istnieje w kodzie; decyzja: usunąć mockup / zostawić / zbudować funkcję. Powiązane: `.streak-box` (`home.css`) z hardkodowanym `rgba(255, 255, 255, 0.06)`.
-17. Szczegółowa runda audytu copywritingu zdanie po zdaniu w `home.js` i `camp.js` wg `MARKETING.md`.
-18. Stempel „SEZON 01" w hero bez znaczenia sekwencyjnego (`DESIGN.md` §9).
-19. Rozjazd nawigacji — kropka `--red` Ø4px z `DESIGN.md` vs obecny `--amber` w stanie aktywnym tabbara.
-20. Finalny wybór logo — `.tabbar__logo` na desktopie nadal tekst „KT" (kandydat: `ketoThaiLogoPatchBone.svg`, już użyty jako favicon).
+19. **Brak zastrzeżenia medycznego mimo twierdzeń zdrowotnych** (`RAPORT.md` #27). **Pilniejsze od 18.09** — dopóki kalkulator zwracał jedną zahardkodowaną liczbę, była to zaległość; gdy zaczyna odwzorowywać protokoły kliniczne i różnicować je pod cel, robi się poważniejsze.
+20. **Pasek „ROZKŁAD MAKRO" w `home.js:63-65`** — zahardkodowane 70/20/10 sprzeczne z tym, co policzy W2; brak oznaczenia jako dana przykładowa (`DESIGN.md` §7). Powiązane z punktem 24 (ta sama klasa problemu co `SERIA`).
+21. **Przegląd obietnic wydolnościowych** na `/` i `/camp` wobec ustalenia ISSN o „neutral or detrimental effects on athletic performance" (`MARKETING.md` jako źródło prawdy).
+22. 3 kickery nad nagłówkami na `/camp` — „Faza 1–3 · Tygodnie…" nad `<h3>` (`camp.js:118/150/183`, `RAPORT.md` #13, `DESIGN.md` §4).
+23. Zero przechwytywania leada dla niezdecydowanych + zero analityki (`RAPORT.md` #29).
+24. Karta 2 „Umysł Wojownika" — mockup „SERIA" pokazuje funkcję streak, która nie istnieje w kodzie; decyzja: usunąć mockup / zostawić / zbudować funkcję. Powiązane: `.streak-box` (`home.css`) z hardkodowanym `rgba(255, 255, 255, 0.06)`.
+25. `og:url` / `canonical` w `index.html` — czekają na decyzję o finalnej domenie (GitHub Pages vs własna).
+26. `/treningi-tychy` — szkielet trasy czeka na materiał i dowód autorytetu (mistrz świata WBC dzieci 2026, dwaj brązowi medaliści).
+27. About (home) — realne zdjęcia z Tajlandii do galerii i `years-proof`.
+28. Reorder sekcji home wg Wariantu B „Lejek" z `MARKETING.md` (Hero → Steps → About → Philosophy → Camp-offer → FAQ → finałowe CTA) — dziś: Hero → Philosophy → About → Steps → Camp-offer → FAQ → finałowe CTA.
+29. Szczegółowa runda audytu copywritingu zdanie po zdaniu w `home.js` i `camp.js` wg `MARKETING.md`.
+30. Stempel „SEZON 01" w hero bez znaczenia sekwencyjnego (`DESIGN.md` §9).
+31. Rozjazd nawigacji — kropka `--red` Ø4px z `DESIGN.md` vs obecny `--amber` w stanie aktywnym tabbara.
+32. Finalny wybór logo — `.tabbar__logo` na desktopie nadal tekst „KT" (kandydat: `ketoThaiLogoPatchBone.svg`, już użyty jako favicon).

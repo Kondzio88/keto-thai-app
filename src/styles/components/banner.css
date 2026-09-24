@@ -50,3 +50,31 @@
     -webkit-appearance: none;
     margin: 0;
 }
+
+/* Baner instalacji PWA (home.js) — ten sam wzorzec co .reminder-banner
+   (rządek tekst+akcje na obramowaniu --amber), osobna nazwa, bo to
+   zaproszenie, nie przypomnienie o zaległej czynności. */
+.install-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    background-color: color-mix(in srgb, var(--amber) 12%, transparent);
+    border: 1px solid var(--amber);
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.install-banner__text {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--bone);
+    font-weight: 600;
+}
+
+.install-banner__actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}

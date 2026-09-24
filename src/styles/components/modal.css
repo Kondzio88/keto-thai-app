@@ -32,6 +32,12 @@
     color: var(--bone);
 }
 
+.modal__text {
+    color: var(--bone-dim);
+    text-align: center;
+    line-height: 1.6;
+}
+
 .modal__input {
     width: 100%;
     padding: 0.8rem;

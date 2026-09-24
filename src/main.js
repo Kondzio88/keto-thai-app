@@ -1,5 +1,10 @@
 import { initRouter } from "./router.js";
-import { getCurrentPath } from "./utils/env.js";
+import { getCurrentPath , getBase} from "./utils/env.js";
+import { initInstallPromptCapture } from "./utils/installPrompt.js";
+
+// Rejestrujemy listener na `beforeinstallprompt` jak najwcześniej — event może
+// odpalić się zanim appka w ogóle zdąży wyrenderować pierwszą stronę.
+initInstallPromptCapture();
 
 /**
  * Podświetla aktywną zakładkę w Bottom Tab Bar
@@ -63,3 +68,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+if ("serviceWorker" in navigator && import.meta.env.PROD) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker
+            .register(`${getBase()}/service-worker.js`)
+            .then((registration) => {
+                console.log("Service Worker zarejestrowany, scope:", registration.scope);
+            })
+            .catch((error) => {
+                console.error("Rejestracja Service Workera nie powiodła się:", error);
+            });
+    });
+}
