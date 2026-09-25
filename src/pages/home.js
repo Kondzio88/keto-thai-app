@@ -5,7 +5,7 @@ import { onPromptAvailable, clearDeferredPrompt } from "../utils/installPrompt.j
 export const renderHome = () => {
     return html`
         <main>
-            <div class="install-banner is-hidden page-container" id="install-banner">
+            <div class="install-banner is-hidden" id="install-banner">
                 <div class="install-banner__text">
                     <i data-lucide="download" aria-hidden="true"></i>
                     <span>Zainstaluj Keto Thai na ekranie głównym — szybszy dostęp, działa offline.</span>
@@ -559,6 +559,12 @@ export const initHome = () => {
         onPromptAvailable((deferredPrompt) => {
             setTimeout(() => {
                 installBanner.classList.remove("is-hidden");
+                // Baner jest fixed — mierzymy go po pokazaniu, żeby stopka
+                // (banner.css, reguła :has) zrobiła mu dokładnie tyle miejsca.
+                document.documentElement.style.setProperty(
+                    "--install-banner-h",
+                    `${installBanner.offsetHeight}px`,
+                );
             }, 3000);
 
             installBtn.addEventListener("click", async () => {

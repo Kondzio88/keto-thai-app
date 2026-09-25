@@ -1,3 +1,37 @@
+// Poziomy aktywności — JEDNO źródło liczb: mnożnik PAL (FAO/WHO/UNU) i białko
+// w g/kg masy referencyjnej. Białko rośnie z aktywnością: dolny koniec to górna
+// granica VLCKD (1,5 g/kg masy idealnej), górny to zakres ISSN dla aktywnych
+// (1,4–2,2 g/kg). Teksty dla użytkownika żyją w onboarding.js — tu tylko liczby.
+// Klucze celowo INNE niż stare "low/medium/high" — patrz userService.js.
+export const ACTIVITY_LEVELS = {
+    sedentary: { pal: 1.2, proteinPerKg: 1.4 },
+    light: { pal: 1.375, proteinPerKg: 1.6 },
+    moderate: { pal: 1.55, proteinPerKg: 1.8 },
+    active: { pal: 1.725, proteinPerKg: 2.0 },
+    very_active: { pal: 1.9, proteinPerKg: 2.0 },
+};
+
+// Zmiana względem TDEE jako procent, nie sztywne ±500 kcal — ta sama kwota
+// to 18% deficytu dla dużej osoby i 48% dla małej (PROGRES.md, sesja 18.09).
+const GOAL_MULTIPLIERS = {
+    reduction: 0.85,
+    still: 1,
+    mass: 1.1,
+};
+
+// Dolne granice redukcji wg AHA/ACC/TOS 2013 (1200–1500 K / 1500–1800 M).
+const CALORIE_FLOOR = {
+    male: 1500,
+    female: 1200,
+};
+
+// Węgle NETTO, traktowane jako sufit dzienny (ISSN: keto = < 50 g/dobę).
+const NET_CARBS_LIMIT = 50;
+
+const REFERENCE_BMI = 25;
+
+const KCAL_PER_GRAM = { protein: 4, carbs: 4, fats: 9 };
+
 const calculateBMR = (weight, height, age, gender) => {
     if (gender === "male") {
         return 10 * weight + 6.25 * height - 5 * age + 5;
@@ -6,41 +40,50 @@ const calculateBMR = (weight, height, age, gender) => {
     if (gender === "female") {
         return 10 * weight + 6.25 * height - 5 * age - 161;
     }
-    throw new Error("Niezdefiniowana płeć")
+    throw new Error("Niezdefiniowana płeć");
 };
 
-const calculateTDEE = (bmr, activity) => {
-    if (activity === "low") {
-        return bmr * 1.2;
+const getActivityLevel = (activity) => {
+    const level = ACTIVITY_LEVELS[activity];
+    if (!level) {
+        throw new Error(`Niezdefiniowana aktywność: ${activity}`);
     }
-    if (activity === "medium") {
-        return bmr * 1.55;
-    }
-    if (activity === "high") {
-        return bmr * 1.725;
-    }
-    throw new Error("Niezdefiniowana aktywność")
+    return level;
 };
 
-const calculateTargetCalories = (tdee, goal) => {
-    if (goal === "reduction") {
-        return tdee - 500;
-    }
-    if (goal === "mass") {
-        return tdee + 500;
-    }
-    if (goal === "still") {
-        return tdee;
-    }
-    throw new Error("Niezdefiniowany cel")
+// Białko liczone od masy przy BMI 25, jeśli ktoś waży więcej — przy otyłości
+// g/kg masy całkowitej wypycha tłuszcz poniżej progu keto (150 kg → 300 g białka).
+// Przy prawidłowej masie nic się nie zmienia, bo wygrywa realna waga.
+const calculateReferenceWeight = (weight, height) => {
+    const heightInMeters = height / 100;
+    const weightAtReferenceBMI = REFERENCE_BMI * heightInMeters ** 2;
+    return Math.min(weight, weightAtReferenceBMI);
 };
 
-const calculateKetoMacros = (calories, weight) => {
-    const carbs = 25;
-    const protein = Math.round(weight * 2);
+const calculateTargetCalories = (tdee, goal, gender) => {
+    const multiplier = GOAL_MULTIPLIERS[goal];
+    if (multiplier === undefined) {
+        throw new Error("Niezdefiniowany cel");
+    }
 
-    const usedCalories = carbs * 4 + protein * 4;
-    const fats = Math.round((calories - usedCalories) / 9);
+    const target = tdee * multiplier;
+
+    if (goal !== "reduction") {
+        return target;
+    }
+
+    // Podłoga nie może przebić TDEE — inaczej małej osobie "redukcja"
+    // dałaby nadwyżkę. Wtedy dostaje po prostu utrzymanie.
+    const floor = Math.min(CALORIE_FLOOR[gender], tdee);
+    return Math.max(target, floor);
+};
+
+const calculateKetoMacros = (calories, referenceWeight, proteinPerKg) => {
+    const carbs = NET_CARBS_LIMIT;
+    const protein = Math.round(referenceWeight * proteinPerKg);
+
+    const usedCalories = carbs * KCAL_PER_GRAM.carbs + protein * KCAL_PER_GRAM.protein;
+    const fats = Math.round((calories - usedCalories) / KCAL_PER_GRAM.fats);
 
     return {
         carbs,
@@ -50,23 +93,18 @@ const calculateKetoMacros = (calories, weight) => {
 };
 
 export const generateDietPlan = (userProfile) => {
-    const { age,gender,height,weight,activity,goal} = userProfile
-   
-    const bmrResult = calculateBMR(weight,height,age,gender)
-    
-    const tdeeResult = calculateTDEE(bmrResult,activity)
+    const { age, gender, height, weight, activity, goal } = userProfile;
+    const { pal, proteinPerKg } = getActivityLevel(activity);
 
-    const goalResult = Math.round(calculateTargetCalories(tdeeResult,goal))
+    const bmr = calculateBMR(weight, height, age, gender);
+    const tdee = bmr * pal;
+    const calories = Math.round(calculateTargetCalories(tdee, goal, gender));
 
-    const macrosResult = calculateKetoMacros(goalResult,weight)
+    const referenceWeight = calculateReferenceWeight(weight, height);
+    const macros = calculateKetoMacros(calories, referenceWeight, proteinPerKg);
 
     return {
-        calories:goalResult,
-        ...macrosResult
-    }
-
-    
-}
-
-
-
+        calories,
+        ...macros,
+    };
+};

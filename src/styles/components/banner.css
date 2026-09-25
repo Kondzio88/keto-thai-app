@@ -55,15 +55,39 @@
    (rządek tekst+akcje na obramowaniu --amber), osobna nazwa, bo to
    zaproszenie, nie przypomnienie o zaległej czynności. */
 .install-banner {
+    position: fixed;
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    bottom: calc(4.5rem + var(--safe-area-bottom) + var(--spacing-xs));
+    z-index: 90;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: var(--spacing-sm);
-    background-color: color-mix(in srgb, var(--amber) 12%, transparent);
+    /* Nieprzezroczyste tło — pod banerem przewija się treść */
+    background-color: color-mix(in srgb, var(--amber) 12%, var(--ground2));
     border: 1px solid var(--amber);
     padding: var(--spacing-md);
-    margin-top: var(--spacing-lg);
+}
+
+/* Baner jest fixed, więc stopka musi zrobić mu miejsce, inaczej zasłoni
+   jej koniec. :has() sam się wyłącza, gdy baner jest ukryty albo zniknął
+   z DOM po zmianie trasy — bez cleanupu w JS. */
+body:has(.install-banner:not(.is-hidden)) .site-footer {
+    padding-bottom: calc(4.5rem + var(--safe-area-bottom) + var(--install-banner-h, 0px) + var(--spacing-sm));
+}
+
+@media (min-width: 768px) {
+    .install-banner {
+        left: calc(5rem + var(--spacing-md));
+        right: var(--spacing-md);
+        bottom: var(--spacing-md);
+    }
+
+    body:has(.install-banner:not(.is-hidden)) .site-footer {
+        padding-bottom: calc(var(--spacing-xl) + var(--install-banner-h, 0px) + var(--spacing-md));
+    }
 }
 
 .install-banner__text {

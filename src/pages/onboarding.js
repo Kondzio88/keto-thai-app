@@ -4,6 +4,40 @@ import { generateDietPlan } from "../services/calculatorService.js";
 import { navigateTo } from "../router.js";
 import { getDateKey } from "../utils/date.js";
 
+// Teksty poziomów aktywności — liczby (PAL, białko) są w calculatorService.js,
+// tu tylko to, co widzi użytkownik. Przedziały rozłączne: kto trenuje 3×,
+// ma dokładnie jedną pasującą odpowiedź.
+const ACTIVITY_OPTIONS = [
+    {
+        value: "sedentary",
+        label: "Siedzący",
+        description: "Praca przy biurku, treningi rzadziej niż raz w tygodniu.",
+    },
+    {
+        value: "light",
+        label: "Lekki",
+        description: "1–2 treningi w tygodniu albo dużo chodzenia na co dzień.",
+    },
+    {
+        value: "moderate",
+        label: "Umiarkowany",
+        description: "3–4 treningi w tygodniu, około 60 minut każdy.",
+    },
+    {
+        value: "active",
+        label: "Wysoki",
+        description: "5–6 treningów w tygodniu albo praca fizyczna i 3 treningi.",
+    },
+    {
+        value: "very_active",
+        label: "Bardzo wysoki",
+        description:
+            "Trening codziennie lub dwa razy dziennie (obóz, przygotowanie do walki) albo ciężka praca fizyczna i treningi.",
+    },
+];
+
+const ACTIVITY_HINT = "Liczy się to, co robisz w typowym tygodniu, nie w najlepszym.";
+
 export const renderOnboarding = () => {
     return html` <div class="page-container">
         <header class="page-header">
@@ -21,24 +55,26 @@ export const renderOnboarding = () => {
             </div>
             <div class="form__group">
                 <label for="age" class="form__label ">Wiek</label>
-                <input type="number" name="age" id="age" class="form__input" required />
+                <input type="number" name="age" id="age" class="form__input" min="16" max="99" required />
             </div>
             <div class="form__group">
-                <label for="height" class="form__label ">Wzrost</label>
-                <input type="number" name="height" id="height" class="form__input" required />
+                <label for="height" class="form__label ">Wzrost (cm)</label>
+                <input type="number" name="height" id="height" class="form__input" min="130" max="210" required />
             </div>
             <div class="form__group">
-                <label for="weight" class="form__label ">Waga</label>
-                <input type="number" name="weight" id="weight" class="form__input" required />
+                <label for="weight" class="form__label ">Waga (kg)</label>
+                <input type="number" name="weight" id="weight" class="form__input" min="35" max="200" step="0.1" required />
             </div>
 
             <div class="form__group">
                 <label for="activity" class="form__label ">Aktywność</label>
-                <select class="form__input" name="activity" id="activity" required>
-                    <option value="high">Wysoka aktywność</option>
-                    <option value="medium">Średnia aktywność</option>
-                    <option value="low">Niska aktywność</option>
+                <select class="form__input" name="activity" id="activity" aria-describedby="activity-note" required>
+                    <option value="" disabled selected>Wybierz poziom...</option>
+                    ${ACTIVITY_OPTIONS.map(
+                        (option) => `<option value="${option.value}">${option.label}</option>`,
+                    ).join("")}
                 </select>
+                <p class="form__note" id="activity-note">${ACTIVITY_HINT}</p>
             </div>
             <div class="form__group">
                 <label for="sport" class="form__label ">Rodzaj sportu</label>
@@ -93,5 +129,17 @@ export const initOnboarding = () => {
 
     if (formElement) {
         formElement.addEventListener("submit", handleOnboardingSubmit);
+    }
+
+    // Opis pod polem pokazuje, co dokładnie oznacza wybrany poziom —
+    // w <option> się nie zmieści, a bez niego użytkownik wybiera na oko.
+    const activitySelect = document.getElementById("activity");
+    const activityNote = document.getElementById("activity-note");
+
+    if (activitySelect && activityNote) {
+        activitySelect.addEventListener("change", () => {
+            const selected = ACTIVITY_OPTIONS.find((option) => option.value === activitySelect.value);
+            activityNote.textContent = selected ? selected.description : ACTIVITY_HINT;
+        });
     }
 };

@@ -1,12 +1,20 @@
 import { saveState, loadState } from '../state/store.js';
 
-const userProfile = {
-    gender: "male",
-    age: 33,
-    height: 180,
-    weight: 90,
-    activityLevel: "high",
-    goal: "reduction",
+// Zgodność wstecz: profile zapisane przed 5-poziomową skalą aktywności mają
+// stare klucze. Stare mnożniki (1.2 / 1.55 / 1.725) są podzbiorem nowych,
+// więc tłumaczenie jest bezstratne. Jedno miejsce odczytu = jedno miejsce tłumaczenia.
+const LEGACY_ACTIVITY = {
+    low: "sedentary",
+    medium: "moderate",
+    high: "active",
+};
+
+const normalizeUser = (user) => {
+    const newActivity = LEGACY_ACTIVITY[user.activity];
+    if (!newActivity) {
+        return user;
+    }
+    return { ...user, activity: newActivity };
 };
 
 export const saveUser = (userData) => {
@@ -14,7 +22,8 @@ export const saveUser = (userData) => {
 };
 
 export const getUser = () => {
-    return loadState("keto_user");
+    const user = loadState("keto_user");
+    return user ? normalizeUser(user) : null;
 };
 
 export const clearUser = () => {
