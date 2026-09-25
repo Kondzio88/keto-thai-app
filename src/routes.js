@@ -1,5 +1,6 @@
 import { renderHome, initHome } from "./pages/home.js";
 import { renderRecipes, initRecipes } from "./pages/recipes.js";
+import { renderMealBuilder, initMealBuilder } from "./pages/mealBuilder.js";
 import { renderOnboarding, initOnboarding } from "./pages/onboarding.js";
 import { renderDashboard, initDashboard, cleanupDashboard } from "./pages/dashboard.js";
 import { renderCamp, initCamp } from "./pages/camp.js";
@@ -22,6 +23,12 @@ export const routes = {
     "/recipes": {
         render: renderRecipes,
         init: initRecipes,
+    },
+    // Osobny adres, żeby gest "wstecz" wracał do listy przepisów zamiast
+    // gubić komponowany posiłek. Wymaga profilu — guard w router.js.
+    "/recipes/new": {
+        render: renderMealBuilder,
+        init: initMealBuilder,
     },
     "/knowledge": {
         render: () => `

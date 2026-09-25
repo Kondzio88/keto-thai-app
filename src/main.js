@@ -17,7 +17,9 @@ const updateActiveTab = () => {
 
     links.forEach((link) => {
         const href = link.getAttribute("href");
-        const isActive = href === path;
+        // Podstrona też zapala swoją zakładkę (/recipes/new → "Przepisy").
+        // "/" sprawdzamy dokładnie, bo każda ścieżka zaczyna się od "/".
+        const isActive = href === "/" ? path === "/" : path === href || path.startsWith(`${href}/`);
 
         link.classList.toggle("tabbar__link--active", isActive);
     });

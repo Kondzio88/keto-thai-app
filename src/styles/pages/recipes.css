@@ -103,8 +103,110 @@
     color: var(--amber);
 }
 
+/* Główna akcja na górze, ewentualna destrukcyjna pod nią i cichsza —
+   usunięcie nie może wyglądać na równorzędne z "Dodaj do dnia". */
 .recipe__footer {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
     padding-top: var(--spacing-md);
+}
+
+.recipe__delete {
+    min-height: 44px; /* tap target z DESIGN.md §8 */
+}
+
+/* Pora posiłku i data dodania — pod tytułem, nigdy nad nim (DESIGN.md §4) */
+.recipe__meta {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--bone-dim);
+}
+
+/* Blok z ikoną w miejscu zdjęcia — przepis użytkownika nie ma fotografii.
+   Tło --ground (ciemniejsze niż karta --ground2), więc czyta się jako osobne pole. */
+.card__image-container--user,
+.recipe__image-container--user {
+    display: grid;
+    place-items: center;
+    background-color: var(--ground);
+}
+
+.card__placeholder-icon {
+    width: 56px;
+    height: 56px;
+    stroke-width: 1.4; /* DESIGN.md §6: jeden spójny stroke 1.4–1.8 */
+    color: var(--amber);
+}
+
+/* Skład przepisu użytkownika: tabela, bo to dane porównywalne w kolumnach */
+.ingredients-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ingredients-table th,
+.ingredients-table td {
+    padding: var(--spacing-sm) 0;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--bone);
+}
+
+.ingredients-table th:first-child,
+.ingredients-table td:first-child {
+    text-align: left;
+    padding-right: var(--spacing-sm);
+}
+
+.ingredients-table thead th {
+    font-size: var(--font-size-tag);
+    font-weight: 400;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--bone-dim);
+}
+
+/* Linia perforacji między wierszami — ten sam motyw co w Steps/FAQ */
+.ingredients-table tbody tr + tr td {
+    border-top: 1px dashed var(--bone-faint);
+}
+
+/* Nazwa składnika czytelnym krojem tekstowym, liczby w mono (pomiar) */
+.ingredients-table td:first-child {
+    font-family: var(--font-main);
+    font-size: 1rem;
+    color: var(--bone);
+}
+
+.ingredients-table tfoot th,
+.ingredients-table tfoot td {
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--bone-dim);
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   LISTA PRZEPISÓW — wejście do kreatora i własne przepisy
+   ========================================================================== */
+
+.recipes__actions {
+    margin-bottom: var(--spacing-md);
+}
+
+.recipes__empty {
+    grid-column: 1 / -1;
+    color: var(--bone-dim);
+}
+
+/* Skład pod tytułem karty własnego przepisu — wypełnia kartę treścią, nie pustką */
+.card__ingredients {
+    margin-bottom: var(--spacing-md);
+    color: var(--bone-dim);
+    font-size: 0.9rem;
+    line-height: 1.5;
 }

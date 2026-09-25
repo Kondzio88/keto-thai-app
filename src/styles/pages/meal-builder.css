@@ -1,0 +1,270 @@
+/* ================================================
+   KREATOR POSIŁKU (/recipes/new) — tryb Operate.
+   Lewa strona: wyszukiwarka produktów na macie.
+   Prawa: "kartka posiłku" (.paper + dziurki) —
+   jedyna elewacja, to na niej rośnie posiłek.
+   ================================================ */
+
+.builder__nav {
+    margin-bottom: var(--spacing-md);
+}
+
+.builder__layout {
+    display: grid;
+    gap: var(--spacing-lg);
+    align-items: start;
+}
+
+.builder__panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    min-width: 0; /* długie nazwy produktów nie rozpychają kolumny grida */
+}
+
+.builder__section-title {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    font-weight: 700;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--amber);
+}
+
+/* ---------- Wyniki wyszukiwania ---------- */
+
+.product-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.product-result {
+    border-bottom: 1px dashed var(--bone-faint);
+}
+
+.product-result__toggle {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+    min-height: 44px;
+    padding: var(--spacing-sm) 0;
+    background: none;
+    border: none;
+    color: var(--bone);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.product-result__toggle:hover .product-result__name,
+.product-result.is-expanded .product-result__name {
+    color: var(--amber);
+}
+
+.product-result__toggle:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: 2px;
+}
+
+.product-result__name {
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.product-result__meta {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    color: var(--bone-dim);
+}
+
+.product-result__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding-bottom: var(--spacing-md);
+}
+
+.product-result__row {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.product-result__grams {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ---------- Kartka posiłku ---------- */
+
+.builder__sheet {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+}
+
+.builder__sheet-holes {
+    position: absolute;
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.builder__sheet .builder__section-title {
+    color: var(--ink);
+}
+
+.builder-ingredients {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.builder-ingredients__empty {
+    color: var(--ink-dim);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.builder-ingredients__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) 0;
+}
+
+/* Linia perforacji między wpisami — ten sam motyw co w Steps/FAQ */
+.builder-ingredients__item + .builder-ingredients__item {
+    border-top: 1px dashed var(--ink-faint);
+}
+
+.builder-ingredients__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.builder-ingredients__name {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.builder-ingredients__meta {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    color: var(--ink-dim);
+}
+
+.builder__sheet .btn-icon-text {
+    min-height: 44px;
+    color: var(--ink);
+    border-color: var(--ink-faint);
+}
+
+.builder__sheet .btn-icon-text:hover {
+    border-color: var(--ink);
+}
+
+.builder-totals {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+    margin: 0;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--ink-faint);
+}
+
+.builder-totals__item dt {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--ink-dim);
+}
+
+.builder-totals__item dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--ink);
+}
+
+.builder__sheet .form__error {
+    color: var(--ink);
+}
+
+.builder__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.builder__actions .btn {
+    flex: 1 1 auto;
+}
+
+/* Domyślny .btn--secondary jest pod ciemne tło — na papierze byłby niewidoczny
+   (ten sam problem rozwiązany wcześniej w .hero i .final-cta). */
+.paper .builder__cancel {
+    color: var(--ink);
+    border-color: var(--ink);
+}
+
+/* ---------- Stan po zapisie ---------- */
+
+.builder-success {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    max-width: 640px;
+    padding: var(--spacing-lg) var(--spacing-md);
+}
+
+.builder-success__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h3);
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.builder-success__title:focus {
+    outline: none;
+}
+
+.builder-success__meta {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--ink);
+}
+
+.builder-success__text {
+    color: var(--ink-dim);
+}
+
+.builder-success .builder__actions {
+    width: 100%;
+}
+
+@media (min-width: 1024px) {
+    .builder__layout {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+    }
+
+    /* Kartka zostaje w zasięgu wzroku, gdy lista wyników jest długa */
+    .builder__sheet {
+        position: sticky;
+        top: var(--spacing-lg);
+    }
+
+}

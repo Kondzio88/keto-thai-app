@@ -1,7 +1,9 @@
 import { html } from "../utils/template.js";
+import { escapeHtml } from "../utils/escapeHtml.js";
 import { getUser, clearUser, saveUser } from "../services/userService.js";
 import { generateDietPlan } from "../services/calculatorService.js";
 import { getTodayMeal, removeMeal, sumMacros, clearMeals } from "../services/mealService.js";
+import { clearCustomRecipes, clearMealDraft } from "../services/customRecipeService.js";
 import { getDateKey } from "../utils/date.js";
 import { navigateTo } from "../router.js";
 import { trapFocus } from "../utils/focusTrap.js";
@@ -111,14 +113,14 @@ const generateMealLogHTML = (meals) => {
                         <li class="meal-log__entry">
                             ${generateMealIconHTML(meal.category)}
                             <span class="meal-log__time">${meal.time}</span>
-                            <span class="meal-log__title">${meal.title}</span>
+                            <span class="meal-log__title">${escapeHtml(meal.title)}</span>
                             <span class="meal-log__kcal">${meal.calories} kcal</span>
                             <span class="meal-log__macros">B ${meal.protein} · T ${meal.fats} · W ${meal.carbs}</span>
                             <button
                                 type="button"
                                 class="meal-log__remove"
                                 data-meal-id="${meal.id}"
-                                aria-label="Usuń: ${meal.title}"
+                                aria-label="Usuń: ${escapeHtml(meal.title)}"
                             >
                                 <i data-lucide="x" aria-hidden="true"></i>
                                 <span>Usuń</span>
@@ -369,12 +371,14 @@ export const initDashboard = () => {
     document.getElementById("btn-delete").addEventListener("click", () => {
         showConfirmModal({
             title: "Skasować dane aplikacji?",
-            message: "Usuniemy Twój profil i wszystkie zapisane posiłki. Tej operacji nie można cofnąć.",
+            message: "Usuniemy Twój profil, wszystkie zapisane posiłki i Twoje własne przepisy. Tej operacji nie można cofnąć.",
             confirmLabel: "Skasuj",
             cancelLabel: "Anuluj",
             onConfirm: () => {
                 clearUser();
                 clearMeals();
+                clearCustomRecipes();
+                clearMealDraft();
                 navigateTo("/");
             },
         });

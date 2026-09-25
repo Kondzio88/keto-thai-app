@@ -40,7 +40,10 @@
     border: 1px solid var(--bone-faint);
 }
 
-.card__time {
+/* Lewa plakietka na obrazku: czas przygotowania (przepisy trenera)
+   albo oznaczenie "Twój przepis" (przepisy użytkownika). */
+.card__time,
+.card__owner {
     position: absolute;
     top: var(--spacing-sm);
     left: var(--spacing-sm);

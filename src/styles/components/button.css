@@ -52,6 +52,16 @@
     filter: brightness(1.1);
 }
 
+/* Przycisk z ikoną Lucide przed tekstem */
+.btn--icon {
+    gap: 8px;
+}
+
+.btn--icon svg {
+    width: 16px;
+    height: 16px;
+}
+
 .btn--secondary {
     background-color: transparent;
     color: var(--bone);
