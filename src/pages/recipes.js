@@ -1,5 +1,6 @@
 import { html } from "../utils/template.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
+import { getBase } from "../utils/env.js";
 import { RECIPES_DATA } from "../data/recipesData.js";
 import { addMeal } from "../services/mealService.js";
 import { getUser } from "../services/userService.js";
@@ -109,7 +110,7 @@ const generateCardsHTML = (recepiesArray) => {
                 ? generateUserCardHTML(recipe)
                 : html`<article class="card" data-id="${recipe.id}">
                       <div class="card__image-container">
-                          <img src="${recipe.imageUrl}" alt="" class="card__image" loading="lazy" />
+                          <img src="${getBase()}${recipe.imageUrl}" alt="" class="card__image" loading="lazy" />
                           <span class="card__badge">${recipe.calories} kcal</span>
                           <span class="card__time">${recipe.time}</span>
                       </div>
@@ -184,7 +185,7 @@ const genrateRecipeDetailHTML = (recipe) => {
             ${isOwn
                 ? generateUserImageHTML(recipe, "recipe__image-container recipe__image-container--user")
                 : html`<div class="recipe__image-container">
-                      <img src="${recipe.imageUrl}" alt="${recipe.title}" class="recipe__image" loading="lazy" />
+                      <img src="${getBase()}${recipe.imageUrl}" alt="${recipe.title}" class="recipe__image" loading="lazy" />
                       <span class="card__badge">${recipe.calories} kcal</span>
                       <span class="card__time">${recipe.time}</span>
                   </div>`}

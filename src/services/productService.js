@@ -38,15 +38,18 @@ export const getProductById = (productId) => PRODUCTS_DATA.find((product) => pro
 
 // Makro składnika przeliczone z wartości na 100 g. Bez zaokrąglania —
 // zaokrąglamy dopiero sumę, żeby błędy nie kumulowały się przy wielu składnikach.
+// fiber bywa `null` (USDA nie podaje wartości dla części produktów) — traktujemy
+// to jak 0, żeby nie psuć sumy (patrz komentarz w productsData.js).
 export const calculateIngredientMacros = (product, grams) => {
     const ratio = grams / 100;
-    const { calories, protein, fats, carbs } = product.per100g;
+    const { calories, protein, fats, carbs, fiber } = product.per100g;
 
     return {
         calories: calories * ratio,
         protein: protein * ratio,
         fats: fats * ratio,
         carbs: carbs * ratio,
+        fiber: (fiber ?? 0) * ratio,
     };
 };
 
@@ -64,9 +67,10 @@ export const sumIngredients = (ingredients) => {
                 protein: sum.protein + macros.protein,
                 fats: sum.fats + macros.fats,
                 carbs: sum.carbs + macros.carbs,
+                fiber: sum.fiber + macros.fiber,
             };
         },
-        { calories: 0, protein: 0, fats: 0, carbs: 0 },
+        { calories: 0, protein: 0, fats: 0, carbs: 0, fiber: 0 },
     );
 
     return {
@@ -74,5 +78,6 @@ export const sumIngredients = (ingredients) => {
         protein: Math.round(total.protein),
         fats: Math.round(total.fats),
         carbs: Math.round(total.carbs),
+        fiber: Math.round(total.fiber),
     };
 };
