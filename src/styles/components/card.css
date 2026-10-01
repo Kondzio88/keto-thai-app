@@ -115,6 +115,9 @@
     background-color: color-mix(in srgb, var(--bone) 5%, transparent);
     padding: var(--spacing-sm) 0;
     border-bottom: 2px solid transparent; /* Miejsce na kolor */
+    /* align-items centruje blok, nie tekst w nim — przy zawinięciu
+       tekst uciekałby do lewej krawędzi kolumny */
+    text-align: center;
 }
 
 .macro__label {
@@ -131,7 +134,6 @@
     font-size: 0.85rem;
     color: var(--bone);
 }
-
 /* Mapowanie kolorów makro — spójne z home.css (macro-bar) i DESIGN.md §3 */
 .macro--protein {
     border-color: var(--red);

@@ -5,6 +5,14 @@ import { getBase, getCurrentPath } from "./utils/env.js";
 let currentRoute = null;
 const appContainer = document.getElementById("app");
 
+// Adres bez kotwicy (#…) — ścieżka + query. Query się liczy:
+// /recipes/edit?id=a i ?id=b to różne ekrany.
+const getPageAddress = () => getCurrentPath() + window.location.search;
+
+// Adres ostatnio wyrenderowanej strony — pozwala odróżnić zmianę strony
+// od zmiany samej kotwicy.
+let renderedAddress = null;
+
 const renderContent = () => {
     currentRoute?.cleanup?.();
 
@@ -31,6 +39,7 @@ const renderContent = () => {
     const route = routes[path] || routes["/"];
 
     currentRoute = route;
+    renderedAddress = getPageAddress(); // po ewentualnym przekierowaniu guarda
 
     appContainer.innerHTML = route.render();
 
@@ -71,7 +80,14 @@ export const initRouter = () => {
         }
     });
 
-    window.addEventListener("popstate", renderContent);
+    // Kliknięcie w kotwicę (np. "#steps") też wywołuje popstate. Gdy zmieniła się
+    // tylko kotwica, strona jest ta sama — nie przerysowujemy jej (to robiło
+    // scrollTo(0, 0) i skok na górę), przewinięcie zostawiamy przeglądarce.
+    // "Wstecz" do innej trasy zmienia ścieżkę, więc nadal przerysowuje.
+    window.addEventListener("popstate", () => {
+        if (getPageAddress() === renderedAddress) return;
+        renderContent();
+    });
 
     renderContent();
 };

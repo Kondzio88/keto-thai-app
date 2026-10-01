@@ -126,6 +126,11 @@
     color: var(--bone-dim);
 }
 
+/* Rozbicie węgli pod makrami — skąd się bierze liczba "netto" */
+.recipe__carbs-note {
+    margin-top: var(--spacing-sm);
+}
+
 /* Blok z ikoną w miejscu zdjęcia — przepis użytkownika nie ma fotografii.
    Tło --ground (ciemniejsze niż karta --ground2), więc czyta się jako osobne pole. */
 .card__image-container--user,

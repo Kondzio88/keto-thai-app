@@ -4,15 +4,19 @@ import { getBase } from "../utils/env.js";
 import { RECIPES_DATA } from "../data/recipesData.js";
 import { addMeal } from "../services/mealService.js";
 import { getUser } from "../services/userService.js";
-import { getProductById, calculateIngredientMacros } from "../services/productService.js";
+import { getProductById, calculateIngredientMacros, getNetCarbs } from "../services/productService.js";
 import { formatDateKey } from "../utils/date.js";
 import { getCustomRecipes, deleteCustomRecipe } from "../services/customRecipeService.js";
 import { showConfirmModal } from "../components/confirmModal.js";
 
+// `getValue` zamiast samego klucza: węgle pokazujemy netto (ta sama wielkość,
+// co limit na Dashboardzie), a w przepisie zapisane są całkowite + błonnik.
+// Na wąskich kartach (~360 px) "Węgle netto" łamie się na dwie linie —
+// celowo, wyśrodkowane przez text-align w .macro (card.css).
 const MACROS = [
-    { key: "protein", icon: "beef", label: "Białko" },
-    { key: "fats", icon: "droplet", label: "Tłuszcz" },
-    { key: "carbs", icon: "wheat", label: "Węgle" },
+    { key: "protein", icon: "beef", label: "Białko", getValue: (recipe) => recipe.protein },
+    { key: "fats", icon: "droplet", label: "Tłuszcz", getValue: (recipe) => recipe.fats },
+    { key: "carbs", icon: "wheat", label: "Węgle netto", getValue: getNetCarbs },
 ];
 
 // Własne przepisy użytkownika na początku listy — to te, po które wraca najczęściej.
@@ -24,10 +28,10 @@ const isUserRecipe = (recipe) => recipe.source === "user";
 const generateMacrosHTML = (recipe) => html`
     <div class="card__macros">
         ${MACROS.map(
-            ({ key, icon, label }) => html`
+            ({ key, icon, label, getValue }) => html`
                 <div class="macro macro--${key}">
                     <i data-lucide="${icon}" class="macro__icon" aria-hidden="true"></i>
-                    <span class="macro__value">${recipe[key]}g</span>
+                    <span class="macro__value">${getValue(recipe)}g</span>
                     <span class="macro__label">${label}</span>
                 </div>
             `,
@@ -201,6 +205,9 @@ const genrateRecipeDetailHTML = (recipe) => {
                     : ""}
 
                 ${generateMacrosHTML(recipe)}
+                <p class="recipe__meta recipe__carbs-note">
+                    Węglowodany ogółem ${recipe.carbs} g − błonnik ${recipe.fiber ?? 0} g = ${getNetCarbs(recipe)} g netto
+                </p>
             </header>
 
             <section class="recipe__section">
@@ -219,6 +226,16 @@ const genrateRecipeDetailHTML = (recipe) => {
 
             <footer class="recipe__footer">
                 <button class="btn btn--primary" id="btn-add-to-day">Dodaj do mojego dnia</button>
+                ${isOwn
+                    ? html`<a
+                          href="/recipes/edit?id=${encodeURIComponent(recipe.id)}"
+                          class="btn btn--secondary btn--icon"
+                          data-link
+                      >
+                          <i data-lucide="pencil" aria-hidden="true"></i>
+                          Edytuj przepis
+                      </a>`
+                    : ""}
                 ${isOwn
                     ? html`<button type="button" class="btn-icon-text recipe__delete" id="btn-delete-recipe">
                           <i data-lucide="trash-2" aria-hidden="true"></i>

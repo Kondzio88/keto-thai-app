@@ -554,10 +554,30 @@
     position: relative;
 }
 
-.timeline__image {
-    width: 100%;
-    max-width: 300px;
+/* Zrzut ekranu jako odbitka — ten sam margines i ramka co .hero__photo-card, bez taśmy. */
+.timeline__print {
+    position: relative;
+    width: fit-content;
     margin: 0 auto;
+    padding: 8px;
+    background-color: var(--ground2);
+    border: 1px solid color-mix(in srgb, var(--bone) 8%, transparent);
+}
+
+.timeline__image {
+    display: block;
+    width: 100%;
+    max-width: 250px; /* proporcje telefonu (390×844) — szerzej robi się zbyt wysoko */
+    height: auto;
+}
+
+/* Krok 4 — pomost do Campu: sam tekst, bez zrzutu, więc na całą szerokość */
+.timeline__item--bridge .timeline__content {
+    text-align: center;
+}
+
+.timeline__item--bridge .timeline__desc {
+    margin-inline: auto;
 }
 
 /* CAMP-OFfER SECTION */
@@ -884,6 +904,17 @@
     .timeline__content,
     .timeline__visual {
         width: 45%;
+    }
+
+    /* Pomost nie ma zrzutu — bez tego row-reverse (parzysty wpis) i 45%
+       zepchnęłyby tekst w prawą połowę */
+    .timeline__item--bridge {
+        justify-content: center;
+    }
+
+    .timeline__item.timeline__item--bridge .timeline__content {
+        width: 100%;
+        text-align: center;
     }
 
     .camp-offer__card {

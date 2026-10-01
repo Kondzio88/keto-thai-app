@@ -53,6 +53,13 @@ export const calculateIngredientMacros = (product, grams) => {
     };
 };
 
+// Węgle netto = węglowodany całkowite (USDA "by difference", z błonnikiem) − błonnik.
+// JEDYNE miejsce w appce, które to liczy — przepis, wpis w dzienniku, suma dnia
+// i makro składnika mają te same pola `carbs`/`fiber`, więc wszystkie przechodzą tędy.
+// Brak `fiber` (stare wpisy, 3 produkty bez danych USDA) = 0, czyli netto = całkowite:
+// błąd tylko w stronę ostrożności, alarm limitu nigdy nie zapali się za późno.
+export const getNetCarbs = ({ carbs, fiber }) => carbs - (fiber ?? 0);
+
 // Suma makro listy składników { productId, grams }, zaokrąglona do pełnych
 // jednostek — ten sam kształt co przepisy z RECIPES_DATA, więc addMeal() go przyjmie.
 export const sumIngredients = (ingredients) => {

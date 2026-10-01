@@ -3,7 +3,8 @@ import { escapeHtml } from "../utils/escapeHtml.js";
 import { getUser, clearUser, saveUser } from "../services/userService.js";
 import { generateDietPlan } from "../services/calculatorService.js";
 import { getTodayMeal, removeMeal, sumMacros, clearMeals } from "../services/mealService.js";
-import { clearCustomRecipes, clearMealDraft } from "../services/customRecipeService.js";
+import { getNetCarbs } from "../services/productService.js";
+import { clearCustomRecipes, clearAllMealDrafts } from "../services/customRecipeService.js";
 import { getDateKey } from "../utils/date.js";
 import { navigateTo } from "../router.js";
 import { trapFocus } from "../utils/focusTrap.js";
@@ -22,13 +23,13 @@ const CHART_COLORS = {
 
 const CHART_FONT = { family: '"Martian Mono", monospace', size: 11 };
 
-// Plan z kalkulatora i wpis posiłku używają tych samych nazw pól,
-// więc jeden `key` czyta cel, spożycie i nazwę modyfikatora CSS.
+// Plan z kalkulatora i suma dnia używają tych samych nazw pól, więc jeden `key`
+// czyta cel i spożycie. `meter` = modyfikator CSS miarki (kolor makro).
 const BALANCE_ROWS = [
-    { key: "calories", label: "Kalorie", unit: "kcal" },
-    { key: "protein", label: "Białko", unit: "g" },
-    { key: "fats", label: "Tłuszcz", unit: "g" },
-    { key: "carbs", label: "Węgle", unit: "g" },
+    { key: "calories", label: "Kalorie", unit: "kcal", meter: "calories" },
+    { key: "protein", label: "Białko", unit: "g", meter: "protein" },
+    { key: "fats", label: "Tłuszcz", unit: "g", meter: "fats" },
+    { key: "netCarbs", label: "Węgle netto", unit: "g", meter: "carbs" },
 ];
 
 const checkWeightReminder = (user) => {
@@ -62,7 +63,7 @@ const generateMealIconHTML = (category) => {
 const formatDate = (date) => date.toLocaleDateString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric" });
 
 const generateBalanceRowsHTML = (plan, eaten) => {
-    return BALANCE_ROWS.map(({ key, label, unit }) => {
+    return BALANCE_ROWS.map(({ key, label, unit, meter }) => {
         const target = plan[key];
         const consumed = eaten[key];
         const left = target - consumed;
@@ -85,7 +86,7 @@ const generateBalanceRowsHTML = (plan, eaten) => {
             </tr>
             <tr class="balance__meter-row" aria-hidden="true">
                 <td colspan="4">
-                    <div class="meter meter--${key}">
+                    <div class="meter meter--${meter}">
                         <span class="meter__fill" style="width: ${fillPercent}%"></span>
                         ${isOver ? html`<span class="meter__limit" style="left: ${limitPercent}%"></span>` : ""}
                     </div>
@@ -115,7 +116,7 @@ const generateMealLogHTML = (meals) => {
                             <span class="meal-log__time">${meal.time}</span>
                             <span class="meal-log__title">${escapeHtml(meal.title)}</span>
                             <span class="meal-log__kcal">${meal.calories} kcal</span>
-                            <span class="meal-log__macros">B ${meal.protein} · T ${meal.fats} · W ${meal.carbs}</span>
+                            <span class="meal-log__macros">B ${meal.protein} · T ${meal.fats} · W netto ${getNetCarbs(meal)}</span>
                             <button
                                 type="button"
                                 class="meal-log__remove"
@@ -164,6 +165,8 @@ export const renderDashboard = () => {
                         </thead>
                         <tbody id="balance-body"></tbody>
                     </table>
+
+                    <p class="balance__note" id="balance-note"></p>
 
                     <p class="stamp balance__alert is-hidden" id="carbs-alert" role="status">
                         Limit węgli przekroczony
@@ -242,6 +245,7 @@ export const initDashboard = () => {
 
     const balanceBody = document.getElementById("balance-body");
     const carbsAlert = document.getElementById("carbs-alert");
+    const balanceNote = document.getElementById("balance-note");
     const mealLog = document.getElementById("meal-log");
 
     // JEDNO miejsce, które rysuje stan dnia. Każda zmiana danych (waga, posiłek)
@@ -252,7 +256,9 @@ export const initDashboard = () => {
         const eaten = sumMacros(meals);
 
         balanceBody.innerHTML = generateBalanceRowsHTML(plan, eaten);
-        carbsAlert.classList.toggle("is-hidden", eaten.carbs <= plan.carbs);
+        carbsAlert.classList.toggle("is-hidden", eaten.netCarbs <= plan.netCarbs);
+        // Błonnik informacyjnie, bez celu — mówi, skąd się bierze "netto".
+        balanceNote.textContent = `Błonnik dziś: ${eaten.fiber} g — odjęty od węgli netto.`;
         mealLog.innerHTML = generateMealLogHTML(meals);
 
         window.lucide?.createIcons();
@@ -378,7 +384,7 @@ export const initDashboard = () => {
                 clearUser();
                 clearMeals();
                 clearCustomRecipes();
-                clearMealDraft();
+                clearAllMealDrafts();
                 navigateTo("/");
             },
         });

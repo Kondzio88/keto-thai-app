@@ -30,6 +30,12 @@ export const routes = {
         render: renderMealBuilder,
         init: initMealBuilder,
     },
+    // Ten sam kreator w trybie edycji: /recipes/edit?id=user-123.
+    // Router dopasowuje samą ścieżkę, id czyta kreator z query stringa.
+    "/recipes/edit": {
+        render: renderMealBuilder,
+        init: initMealBuilder,
+    },
     "/knowledge": {
         render: () => `
             <div class="page-container">

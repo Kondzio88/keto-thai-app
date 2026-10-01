@@ -166,6 +166,15 @@
     background-color: var(--blue);
 }
 
+/* Skąd się bierze "netto" — informacja, nie cel: bez miarki i bez koloru makro */
+.balance__note {
+    margin: var(--spacing-sm) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    color: var(--ink-dim);
+}
+
 /* Pieczątka ostrzeżenia — czerwień tylko w ramce, tekst w --ink (§3: kontrast) */
 .balance__alert {
     margin-top: var(--spacing-sm);

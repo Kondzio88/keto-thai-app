@@ -1,15 +1,19 @@
 import { html } from "../utils/template.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
 import { navigateTo } from "../router.js";
-import { addMeal } from "../services/mealService.js";
+import { getCurrentPath } from "../utils/env.js";
+import { addMeal, countTodayMealsByRecipe, updateTodayMealsFromRecipe } from "../services/mealService.js";
 import {
     searchProducts,
     getProductById,
     calculateIngredientMacros,
     sumIngredients,
+    getNetCarbs,
 } from "../services/productService.js";
 import {
     createCustomRecipe,
+    updateCustomRecipe,
+    getCustomRecipeById,
     getMealDraft,
     saveMealDraft,
     clearMealDraft,
@@ -34,10 +38,35 @@ const guessCategory = () => {
 
 const formatNumber = (value) => value.toLocaleString("pl-PL", { maximumFractionDigits: 1 });
 
-const formatMacroLine = ({ calories, protein, fats, carbs }) =>
-    `${Math.round(calories)} kcal · B ${formatNumber(protein)} · T ${formatNumber(fats)} · W ${formatNumber(carbs)}`;
+const formatMacroLine = (macros) =>
+    `${Math.round(macros.calories)} kcal · B ${formatNumber(macros.protein)} · T ${formatNumber(macros.fats)} · W netto ${formatNumber(getNetCarbs(macros))}`;
 
-export const renderMealBuilder = () => html`
+// Tryb kreatora wynika z adresu: /recipes/new albo /recipes/edit?id=user-123.
+// Render i init wołają to osobno — obaj czytają ten sam adres, więc się zgadzają.
+// Edytować można tylko własne przepisy: getCustomRecipeById nie widzi RECIPES_DATA.
+const getEditContext = () => {
+    if (getCurrentPath() !== "/recipes/edit") return { isEdit: false, recipe: null };
+
+    const recipeId = new URLSearchParams(window.location.search).get("id");
+    return { isEdit: true, recipe: recipeId ? getCustomRecipeById(recipeId) : null };
+};
+
+// Zły lub nieaktualny link (np. przepis usunięty w innej karcie) — mówimy wprost, co się stało.
+const renderMissingRecipe = () => html`
+    <main class="page-container builder">
+        <header class="page-header">
+            <h1 class="page-header__title">Nie ma takiego przepisu</h1>
+            <p class="page-header__desc">Mógł zostać usunięty. Edytować można tylko własne posiłki.</p>
+        </header>
+        <a href="/recipes" class="btn btn--secondary" data-link>Wróć do przepisów</a>
+    </main>
+`;
+
+export const renderMealBuilder = () => {
+    const { isEdit, recipe } = getEditContext();
+    if (isEdit && !recipe) return renderMissingRecipe();
+
+    return html`
     <main class="page-container builder">
         <nav class="builder__nav">
             <a href="/recipes" class="btn-icon-text" data-link>
@@ -47,8 +76,12 @@ export const renderMealBuilder = () => html`
         </nav>
 
         <header class="page-header">
-            <h1 class="page-header__title">Nowy posiłek</h1>
-            <p class="page-header__desc">Wybierz produkty i podaj gramy — makro liczymy z wartości na 100 g.</p>
+            <h1 class="page-header__title">${isEdit ? "Edytuj posiłek" : "Nowy posiłek"}</h1>
+            <p class="page-header__desc">
+                ${isEdit
+                    ? "Popraw nazwę, porę albo składniki — makro przeliczy się samo."
+                    : "Wybierz produkty i podaj gramy — makro liczymy z wartości na 100 g."}
+            </p>
         </header>
 
         <div id="builder-view" class="builder__layout">
@@ -102,7 +135,9 @@ export const renderMealBuilder = () => html`
 
                 <div class="builder__actions">
                     <button type="button" class="btn btn--secondary builder__cancel" id="builder-cancel">Anuluj</button>
-                    <button type="button" class="btn btn--primary" id="builder-create">Stwórz posiłek</button>
+                    <button type="button" class="btn btn--primary" id="builder-create">
+                        ${isEdit ? "Zapisz zmiany" : "Stwórz posiłek"}
+                    </button>
                 </div>
             </section>
         </div>
@@ -112,6 +147,7 @@ export const renderMealBuilder = () => html`
         <p class="visually-hidden" id="builder-status" role="status" aria-live="polite"></p>
     </main>
 `;
+};
 
 const generateResultsHTML = (products, expandedId) =>
     products
@@ -196,14 +232,16 @@ const generateTotalsHTML = (totals) => html`
     <div class="builder-totals__item"><dt>Kalorie</dt><dd>${totals.calories} kcal</dd></div>
     <div class="builder-totals__item"><dt>Białko</dt><dd>${totals.protein} g</dd></div>
     <div class="builder-totals__item"><dt>Tłuszcz</dt><dd>${totals.fats} g</dd></div>
-    <div class="builder-totals__item"><dt>Węgle</dt><dd>${totals.carbs} g</dd></div>
+    <div class="builder-totals__item"><dt>Węgle netto</dt><dd>${getNetCarbs(totals)} g</dd></div>
 `;
 
-const generateSuccessHTML = (recipe) => html`
+const generateSuccessHTML = (recipe, isEdit) => html`
     <span class="stamp builder-success__stamp">Zapisano</span>
     <h2 class="builder-success__title" id="builder-success-title" tabindex="-1">${escapeHtml(recipe.title)}</h2>
     <p class="builder-success__meta">${formatMacroLine(recipe)}</p>
-    <p class="builder-success__text">Posiłek jest teraz na liście przepisów jako Twój własny.</p>
+    <p class="builder-success__text" id="builder-success-text">
+        ${isEdit ? "Zmiany zapisane w Twoim przepisie." : "Posiłek jest teraz na liście przepisów jako Twój własny."}
+    </p>
     <div class="builder__actions">
         <a href="/recipes" class="btn btn--secondary builder__cancel" data-link>Zobacz w przepisach</a>
         <button type="button" class="btn btn--primary" id="builder-add-to-day">Dodaj do dziś</button>
@@ -211,6 +249,10 @@ const generateSuccessHTML = (recipe) => html`
 `;
 
 export const initMealBuilder = () => {
+    const { isEdit, recipe: editedRecipe } = getEditContext();
+    if (isEdit && !editedRecipe) return; // render pokazał "Nie ma takiego przepisu"
+    const editId = editedRecipe?.id ?? null;
+
     const titleInput = document.getElementById("builder-title");
     const categorySelect = document.getElementById("builder-category");
     const searchInput = document.getElementById("builder-search");
@@ -222,19 +264,31 @@ export const initMealBuilder = () => {
     const builderView = document.getElementById("builder-view");
     const successView = document.getElementById("builder-success");
 
+    // Punkt wyjścia: niedokończony szkic > zapisany przepis (edycja) > pusty kreator.
+    const initial = getMealDraft(editId) ?? editedRecipe;
+
     // Jedyny stan kreatora. Wszystko na ekranie jest z niego wyliczane.
-    const draft = getMealDraft();
+    // Składniki kopiujemy: addIngredient zmienia `grams` w miejscu, a nie wolno
+    // ruszyć obiektu przepisu, zanim użytkownik kliknie "Zapisz zmiany".
     const state = {
-        title: draft?.title ?? "",
-        category: draft?.category ?? guessCategory(),
-        ingredients: draft?.ingredients ?? [],
+        title: initial?.title ?? "",
+        category: initial?.category ?? guessCategory(),
+        ingredients: (initial?.ingredients ?? []).map((item) => ({ ...item })),
         expandedId: null,
     };
 
     titleInput.value = state.title;
     categorySelect.value = state.category;
 
-    const persistDraft = () => saveMealDraft(state);
+    const persistDraft = () => saveMealDraft(state, editId);
+
+    // Czy jest co stracić przy "Anuluj"? Nowy posiłek: cokolwiek wpisano.
+    // Edycja: cokolwiek różni się od zapisanego przepisu.
+    const snapshotForm = ({ title, category, ingredients }) => JSON.stringify({ title: title.trim(), category, ingredients });
+    const hasUnsavedWork = () =>
+        isEdit
+            ? snapshotForm(state) !== snapshotForm(editedRecipe)
+            : Boolean(state.title.trim() || state.ingredients.length > 0);
 
     const announce = (message) => {
         statusBox.textContent = message;
@@ -362,25 +416,60 @@ export const initMealBuilder = () => {
     // ---------- Akcje ----------
 
     document.getElementById("builder-cancel").addEventListener("click", () => {
-        const hasWork = state.title.trim() || state.ingredients.length > 0;
         const leave = () => {
-            clearMealDraft();
+            clearMealDraft(editId);
             navigateTo("/recipes");
         };
 
-        if (!hasWork) {
+        if (!hasUnsavedWork()) {
             leave();
             return;
         }
 
         showConfirmModal({
-            title: "Porzucić ten posiłek?",
-            message: "Nazwa i dodane składniki zostaną usunięte.",
+            title: isEdit ? "Porzucić zmiany?" : "Porzucić ten posiłek?",
+            message: isEdit
+                ? "Przepis zostanie taki, jak przed edycją."
+                : "Nazwa i dodane składniki zostaną usunięte.",
             confirmLabel: "Porzuć",
             cancelLabel: "Wróć do edycji",
             onConfirm: leave,
         });
     });
+
+    const showSuccess = (recipe) => {
+        successView.innerHTML = generateSuccessHTML(recipe, isEdit);
+        builderView.classList.add("is-hidden");
+        successView.classList.remove("is-hidden");
+        document.getElementById("builder-success-title").focus();
+
+        document.getElementById("builder-add-to-day").addEventListener("click", (event) => {
+            addMeal(recipe);
+            event.currentTarget.textContent = "Dodano do dnia";
+            event.currentTarget.disabled = true;
+            announce(`${recipe.title} dodano do dzisiejszego dnia.`);
+        });
+    };
+
+    // Po edycji: wpisy w dzienniku to kopie (snapshot), więc same się nie zmienią.
+    // Jeśli przepis jest w dzisiejszym dzienniku — pytamy, czy je poprawić.
+    // Wcześniejsze dni zostają bez zmian niezależnie od odpowiedzi.
+    const offerTodayUpdate = (recipe) => {
+        const todayCount = countTodayMealsByRecipe(recipe.id);
+        if (todayCount === 0) return;
+
+        showConfirmModal({
+            title: "Poprawić też dzisiejszy wpis?",
+            message: `Ten posiłek jest dziś w dzienniku${todayCount > 1 ? ` (${todayCount}×)` : ""} ze starymi wartościami. Wcześniejsze dni zostaną bez zmian.`,
+            confirmLabel: "Popraw wpis",
+            cancelLabel: "Zostaw",
+            onConfirm: () => {
+                updateTodayMealsFromRecipe(recipe);
+                document.getElementById("builder-success-text").textContent =
+                    "Zmiany zapisane w przepisie i w dzisiejszym dzienniku.";
+            },
+        });
+    };
 
     document.getElementById("builder-create").addEventListener("click", () => {
         const title = state.title.trim();
@@ -398,24 +487,24 @@ export const initMealBuilder = () => {
             return;
         }
 
-        const recipe = createCustomRecipe({
-            title,
-            category: state.category,
-            ingredients: state.ingredients,
-        });
-        clearMealDraft();
+        const formData = { title, category: state.category, ingredients: state.ingredients };
 
-        successView.innerHTML = generateSuccessHTML(recipe);
-        builderView.classList.add("is-hidden");
-        successView.classList.remove("is-hidden");
-        document.getElementById("builder-success-title").focus();
+        if (!isEdit) {
+            const recipe = createCustomRecipe(formData);
+            clearMealDraft();
+            showSuccess(recipe);
+            return;
+        }
 
-        document.getElementById("builder-add-to-day").addEventListener("click", (event) => {
-            addMeal(recipe);
-            event.currentTarget.textContent = "Dodano do dnia";
-            event.currentTarget.disabled = true;
-            announce(`${recipe.title} dodano do dzisiejszego dnia.`);
-        });
+        const recipe = updateCustomRecipe(editId, formData);
+        if (!recipe) {
+            // Przepis zniknął w międzyczasie (np. usunięty w innej karcie) — nie udajemy sukcesu.
+            showError("Tego przepisu już nie ma — mógł zostać usunięty. Wróć do przepisów.");
+            return;
+        }
+        clearMealDraft(editId);
+        showSuccess(recipe);
+        offerTodayUpdate(recipe);
     });
 
     renderIngredients();

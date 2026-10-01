@@ -78,15 +78,17 @@ const calculateTargetCalories = (tdee, goal, gender) => {
     return Math.max(target, floor);
 };
 
+// Plan zwraca `netCarbs`, nie `carbs`: w przepisach i wpisach `carbs` to węgle
+// CAŁKOWITE (z błonnikiem). Inna nazwa nie pozwala ich przypadkiem porównać.
 const calculateKetoMacros = (calories, referenceWeight, proteinPerKg) => {
-    const carbs = NET_CARBS_LIMIT;
+    const netCarbs = NET_CARBS_LIMIT;
     const protein = Math.round(referenceWeight * proteinPerKg);
 
-    const usedCalories = carbs * KCAL_PER_GRAM.carbs + protein * KCAL_PER_GRAM.protein;
+    const usedCalories = netCarbs * KCAL_PER_GRAM.carbs + protein * KCAL_PER_GRAM.protein;
     const fats = Math.round((calories - usedCalories) / KCAL_PER_GRAM.fats);
 
     return {
-        carbs,
+        netCarbs,
         protein,
         fats,
     };

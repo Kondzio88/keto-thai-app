@@ -251,15 +251,18 @@ export const renderHome = () => {
                                 </p>
                             </div>
 
+                            <!-- Zrzuty z prawdziwej appki: node scripts/screenshot-steps.js -->
                             <div class="timeline__visual reveal reveal--right">
-                                <!-- Podmień ścieżkę do swojego zdjęcia Onboardingu -->
-                                <span class="tape tape--tl" aria-hidden="true"></span>
-                                <span class="tape tape--br" aria-hidden="true"></span>
-                                <img
-                                    src="${getBase()}/iphonMobileOnboarding.png"
-                                    alt="Widok kwestionariusza aplikacji"
-                                    class="timeline__image"
-                                />
+                                <figure class="timeline__print">
+                                    <img
+                                        src="${getBase()}/images/steps/onboarding.webp"
+                                        alt="Ekran kalkulatora: kwestionariusz z płcią, wiekiem, wzrostem, wagą, aktywnością i rodzajem sportu"
+                                        class="timeline__image"
+                                        width="390"
+                                        height="844"
+                                        loading="lazy"
+                                    />
+                                </figure>
                             </div>
                         </div>
 
@@ -275,14 +278,16 @@ export const renderHome = () => {
                             </div>
 
                             <div class="timeline__visual reveal reveal--right">
-                                <!-- Podmień ścieżkę do swojego zdjęcia Przepisów -->
-                                <span class="tape tape--tl" aria-hidden="true"></span>
-                                <span class="tape tape--br" aria-hidden="true"></span>
-                                <img
-                                    src="${getBase()}/iphonMobileRecipes.png"
-                                    alt="Widok bazy przepisów w aplikacji"
-                                    class="timeline__image"
-                                />
+                                <figure class="timeline__print">
+                                    <img
+                                        src="${getBase()}/images/steps/recipes.webp"
+                                        alt="Ekran przepisów: filtry kategorii i karta dania z kaloriami, białkiem, tłuszczem i węglami netto"
+                                        class="timeline__image"
+                                        width="390"
+                                        height="844"
+                                        loading="lazy"
+                                    />
+                                </figure>
                             </div>
                         </div>
 
@@ -298,14 +303,28 @@ export const renderHome = () => {
                             </div>
 
                             <div class="timeline__visual reveal reveal--right">
-                                <!-- Podmień ścieżkę do swojego zdjęcia Dashboardu -->
-                                <span class="tape tape--tl" aria-hidden="true"></span>
-                                <span class="tape tape--br" aria-hidden="true"></span>
-                                <img
-                                    src="${getBase()}/iphonMobileDashboard.png"
-                                    alt="Widok wykresów progresu"
-                                    class="timeline__image"
-                                />
+                                <figure class="timeline__print">
+                                    <img
+                                        src="${getBase()}/images/steps/dashboard.webp"
+                                        alt="Ekran dziennika: bilans dnia z celem, zjedzonymi i pozostałymi makro oraz lista dzisiejszych posiłków"
+                                        class="timeline__image"
+                                        width="390"
+                                        height="844"
+                                        loading="lazy"
+                                    />
+                                </figure>
+                            </div>
+                        </div>
+
+                        <!-- Wpis 04 (Camp) — pomost, nie powtórka sekcji Camp-offer tuż poniżej -->
+                        <div class="timeline__item timeline__item--bridge reveal">
+                            <div class="timeline__content">
+                                <h3 class="timeline__subtitle">Chcesz prowadzenia 1-na-1?</h3>
+                                <span class="timeline__step-num">Krok 4</span>
+                                <p class="timeline__desc">
+                                    Aplikacja wystarczy, żeby zacząć samemu. Jeśli wolisz, żeby ktoś rozliczał Cię co
+                                    tydzień i korygował plan na bieżąco — Fighter's Camp znajdziesz tuż poniżej.
+                                </p>
                             </div>
                         </div>
                     </div>
