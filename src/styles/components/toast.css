@@ -1,0 +1,96 @@
+/* ================================================
+   TOAST (components/toast.js) — potwierdzenie bez blokowania ekranu.
+   Pasek kartki (.paper) na macie: jedyna elewacja, zero cienia
+   (DESIGN.md §5). Stoi nad tabbarem jak .install-banner, ale wyżej
+   w stosie (95: nad banerem 90, pod modalem 100).
+   ================================================ */
+
+.toast-region {
+    position: fixed;
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    bottom: calc(4.5rem + var(--safe-area-bottom) + var(--spacing-xs));
+    z-index: 95;
+    pointer-events: none; /* pusty region nie może łapać kliknięć w treść pod spodem */
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
+    pointer-events: auto;
+    animation: toast-in 0.2s ease-out;
+}
+
+.toast__text {
+    flex: 1 1 12rem;
+    min-width: 0;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--ink);
+}
+
+.toast__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-left: auto;
+}
+
+/* Ghost na papierze — domyślny .btn--secondary jest pod ciemne tło
+   (ten sam problem co .paper .builder__cancel). */
+.toast__action {
+    min-height: 44px;
+    padding: 0 var(--spacing-md);
+    color: var(--ink);
+    border-color: var(--ink);
+}
+
+.toast__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: none;
+    border: none;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.toast__close svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* --amber (domyślny obrys fokusu) ginie na papierze — tu obrys atramentem. */
+.toast a:focus-visible,
+.toast button:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toast {
+        animation: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .toast-region {
+        left: calc(5rem + var(--spacing-md));
+        right: auto;
+        bottom: var(--spacing-md);
+        width: min(30rem, calc(100vw - 5rem - 2 * var(--spacing-md)));
+    }
+}

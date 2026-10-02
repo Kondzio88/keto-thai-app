@@ -33,8 +33,11 @@
     outline-offset: 4px;
 }
 
+/* aria-disabled wygląda jak disabled, ale zostaje w kolejności Tab i nie gubi
+   fokusu — używane po akcji, która już się wykonała (components/addToDay.js). */
 .btn:disabled,
-.btn[disabled] {
+.btn[disabled],
+.btn[aria-disabled="true"] {
     opacity: 0.35;
     cursor: not-allowed;
     pointer-events: none;

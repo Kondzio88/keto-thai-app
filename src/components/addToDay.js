@@ -1,0 +1,31 @@
+import { addMeal } from "../services/mealService.js";
+import { getUser } from "../services/userService.js";
+import { showToast } from "./toast.js";
+
+// Wspólna reakcja na "Dodaj do mojego dnia" — karta przepisu (/recipes)
+// i ekran po zapisie w kreatorze. Użytkownik zostaje tam, gdzie jest
+// (może przeglądać dalej), a toast daje mu jedno kliknięcie do Dashboardu.
+export const addRecipeToDay = (recipe, button) => {
+    // aria-disabled zamiast disabled: zablokowany przycisk wypada z fokusu
+    // i osoba na klawiaturze ląduje "nigdzie". Dlatego blokujemy sami.
+    if (button.getAttribute("aria-disabled") === "true") return;
+
+    addMeal(recipe);
+
+    button.setAttribute("aria-disabled", "true");
+    button.classList.add("btn--icon");
+    button.innerHTML = '<i data-lucide="check" aria-hidden="true"></i> Dodano do dnia';
+    window.lucide?.createIcons();
+
+    // Bez profilu Dashboard jest za guardem (router.js) — "Zobacz dzień"
+    // przerzuciłoby na onboarding bez słowa wyjaśnienia. Mówimy to wprost.
+    const hasProfile = Boolean(getUser());
+    showToast({
+        message: hasProfile
+            ? `Dodano do dnia: ${recipe.title} · ${recipe.calories} kcal`
+            : `Dodano do dnia: ${recipe.title}. Bilans zobaczysz po uzupełnieniu profilu.`,
+        action: hasProfile
+            ? { label: "Zobacz dzień", href: "/dashboard" }
+            : { label: "Uzupełnij profil", href: "/onboarding" },
+    });
+};

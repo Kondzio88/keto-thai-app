@@ -13,6 +13,7 @@
 @import "./components/modal.css";
 @import "./components/filters.css";
 @import "./components/banner.css";
+@import "./components/toast.css";
 @import "./components/footer.css";
 @import "./pages/camp.css";
 @import "./pages/contact.css"

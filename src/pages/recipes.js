@@ -2,7 +2,7 @@ import { html } from "../utils/template.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
 import { getBase } from "../utils/env.js";
 import { RECIPES_DATA } from "../data/recipesData.js";
-import { addMeal } from "../services/mealService.js";
+import { addRecipeToDay } from "../components/addToDay.js";
 import { getUser } from "../services/userService.js";
 import { getProductById, calculateIngredientMacros, getNetCarbs } from "../services/productService.js";
 import { formatDateKey } from "../utils/date.js";
@@ -225,7 +225,7 @@ const genrateRecipeDetailHTML = (recipe) => {
                 : ""}
 
             <footer class="recipe__footer">
-                <button class="btn btn--primary" id="btn-add-to-day">Dodaj do mojego dnia</button>
+                <button type="button" class="btn btn--primary" id="btn-add-to-day">Dodaj do mojego dnia</button>
                 ${isOwn
                     ? html`<a
                           href="/recipes/edit?id=${encodeURIComponent(recipe.id)}"
@@ -302,9 +302,7 @@ export const initRecipes = () => {
         }
 
         if (btnAdd && currentRecipe) {
-            addMeal(currentRecipe);
-            btnAdd.textContent = "✓ Dodano do dnia!";
-            btnAdd.disabled = true;
+            addRecipeToDay(currentRecipe, btnAdd);
         }
 
         // Przycisk istnieje tylko przy własnych przepisach, ale sprawdzamy

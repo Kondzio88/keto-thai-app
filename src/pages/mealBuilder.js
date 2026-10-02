@@ -2,7 +2,8 @@ import { html } from "../utils/template.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
 import { navigateTo } from "../router.js";
 import { getCurrentPath } from "../utils/env.js";
-import { addMeal, countTodayMealsByRecipe, updateTodayMealsFromRecipe } from "../services/mealService.js";
+import { countTodayMealsByRecipe, updateTodayMealsFromRecipe } from "../services/mealService.js";
+import { addRecipeToDay } from "../components/addToDay.js";
 import {
     searchProducts,
     getProductById,
@@ -484,11 +485,9 @@ export const initMealBuilder = () => {
         successView.classList.remove("is-hidden");
         document.getElementById("builder-success-title").focus();
 
+        // Toast ma własny region role="status" — osobny announce() czytałby to samo dwa razy.
         document.getElementById("builder-add-to-day").addEventListener("click", (event) => {
-            addMeal(recipe);
-            event.currentTarget.textContent = "Dodano do dnia";
-            event.currentTarget.disabled = true;
-            announce(`${recipe.title} dodano do dzisiejszego dnia.`);
+            addRecipeToDay(recipe, event.currentTarget);
         });
     };
 
