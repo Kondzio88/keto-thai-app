@@ -50,21 +50,49 @@ export function hideToast() {
     if (region) region.replaceChildren();
 }
 
-// message — zwykły tekst. Wstawiany przez textContent, nie innerHTML: w komunikacie
-// bywa nazwa własnego przepisu wpisana przez użytkownika (ta sama klasa błędu co XSS
-// w dzienniku Dashboardu z 25.09).
-// action — opcjonalnie { label, href }; link idzie przez router (data-link).
-export const showToast = ({ message, action }) => {
+// Treść w osobnych częściach, każda z własną wagą wizualną (wcześniej jedno
+// zdanie — nazwa, kalorie i "dodano" ginęły w nim na równi):
+//   stamp  — pieczątka, np. "Dodano" (DESIGN.md §5: pieczątka zamiast badge'a)
+//   title  — główna treść, np. nazwa posiłku
+//   meta   — opcjonalnie DANE pod spodem, np. "375 kcal" (Martian Mono — pomiar)
+//   note   — opcjonalnie ZDANIE pod spodem (Public Sans — mono to nie kostium, §9)
+//   action — opcjonalnie { label, href }; link idzie przez router (data-link)
+// Wszystko przez textContent, nie innerHTML: title bywa nazwą własnego przepisu
+// wpisaną przez użytkownika (ta sama klasa błędu co XSS w dzienniku z 25.09).
+export const showToast = ({ stamp, title, meta, note, action }) => {
     const target = getRegion();
     hideToast();
 
     const toast = document.createElement("div");
     toast.className = "toast paper";
 
-    const text = document.createElement("p");
-    text.className = "toast__text";
-    text.textContent = message;
-    toast.appendChild(text);
+    const body = document.createElement("div");
+    body.className = "toast__body";
+
+    if (stamp) {
+        const stampEl = document.createElement("span");
+        stampEl.className = "stamp toast__stamp";
+        stampEl.textContent = stamp;
+        body.appendChild(stampEl);
+    }
+
+    const titleEl = document.createElement("p");
+    titleEl.className = "toast__title";
+    titleEl.textContent = title;
+    body.appendChild(titleEl);
+
+    for (const [text, className] of [
+        [meta, "toast__meta"],
+        [note, "toast__note"],
+    ]) {
+        if (!text) continue;
+        const el = document.createElement("p");
+        el.className = className;
+        el.textContent = text;
+        body.appendChild(el);
+    }
+
+    toast.appendChild(body);
 
     const actions = document.createElement("div");
     actions.className = "toast__actions";

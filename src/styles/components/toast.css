@@ -16,20 +16,56 @@
 
 .toast {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     flex-wrap: wrap;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
+    gap: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
     pointer-events: auto;
     animation: toast-in 0.2s ease-out;
 }
 
-.toast__text {
+/* Pieczątka → nazwa → dane. Hierarchia z wagi i kroju, nie z koloru. */
+.toast__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
     flex: 1 1 12rem;
     min-width: 0;
-    font-weight: 600;
-    line-height: 1.4;
+}
+
+/* .stamp z global.css (to samo co "Zapisano" w kreatorze), ale tekst --ink:
+   --red w 12px łamie próg kontrastu (§3) — czerwień zostaje w ramce,
+   jak w pieczątce "Limit węgli przekroczony" na Dashboardzie. */
+.toast__stamp {
+    margin-bottom: var(--spacing-xs);
+    padding: 4px 10px;
+    font-size: 11px;
     color: var(--ink);
+    transform: rotate(-4deg);
+    animation: stamp-in 0.25s ease-out 0.1s backwards;
+}
+
+.toast__title {
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--ink);
+    overflow-wrap: anywhere; /* długa nazwa własnego posiłku bez spacji */
+}
+
+.toast__meta {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    font-weight: 700;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.toast__note {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--ink-dim);
 }
 
 .toast__actions {
@@ -80,8 +116,18 @@
     }
 }
 
+/* Przybicie pieczątki: ląduje odrobinę za duża i dociska się do papieru.
+   Ruch dosłowny dla pieczątki, nie dekoracja — i tylko raz. */
+@keyframes stamp-in {
+    from {
+        opacity: 0;
+        transform: rotate(-4deg) scale(1.15);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .toast {
+    .toast,
+    .toast__stamp {
         animation: none;
     }
 }

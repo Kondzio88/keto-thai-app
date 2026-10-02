@@ -21,9 +21,10 @@ export const addRecipeToDay = (recipe, button) => {
     // przerzuciłoby na onboarding bez słowa wyjaśnienia. Mówimy to wprost.
     const hasProfile = Boolean(getUser());
     showToast({
-        message: hasProfile
-            ? `Dodano do dnia: ${recipe.title} · ${recipe.calories} kcal`
-            : `Dodano do dnia: ${recipe.title}. Bilans zobaczysz po uzupełnieniu profilu.`,
+        stamp: "Dodano",
+        title: recipe.title,
+        meta: `${recipe.calories} kcal`,
+        note: hasProfile ? null : "Bilans dnia zobaczysz po uzupełnieniu profilu.",
         action: hasProfile
             ? { label: "Zobacz dzień", href: "/dashboard" }
             : { label: "Uzupełnij profil", href: "/onboarding" },
