@@ -88,13 +88,21 @@
     padding-bottom: var(--spacing-md);
 }
 
+/* Ilość | jednostka | Dodaj. Na wąskim telefonie jednostka (długie etykiety typu
+   "awokado Hass (bez skórki i pestki)") spada do drugiej linii zamiast ściskać pole ilości. */
 .product-result__row {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--spacing-sm);
 }
 
-.product-result__grams {
-    flex: 1;
+.product-result__amount {
+    flex: 1 1 5rem;
+    min-width: 0;
+}
+
+.product-result__unit {
+    flex: 3 1 12rem;
     min-width: 0;
 }
 

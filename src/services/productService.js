@@ -53,6 +53,11 @@ export const calculateIngredientMacros = (product, grams) => {
     };
 };
 
+// Miara domowa (product.portions[i]) × liczba sztuk → gramy. Zaokrąglamy do 0,1 g,
+// bo 3 × 4,7 g w JS daje 14,100000000000001 — a gramy trafiają do zapisanego przepisu.
+// Do bazy idą wyłącznie gramy: miara to tylko wygodniejszy sposób ich wpisania.
+export const portionToGrams = (portion, count) => Math.round(portion.grams * count * 10) / 10;
+
 // Węgle netto = węglowodany całkowite (USDA "by difference", z błonnikiem) − błonnik.
 // JEDYNE miejsce w appce, które to liczy — przepis, wpis w dzienniku, suma dnia
 // i makro składnika mają te same pola `carbs`/`fiber`, więc wszystkie przechodzą tędy.

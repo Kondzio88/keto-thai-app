@@ -5,6 +5,8 @@
 // Wartości na 100 g części jadalnej. `carbs` to "Carbohydrate, by difference" z USDA —
 // ZAWIERA błonnik; węgle netto = carbs − fiber (PROGRES.md pkt 33).
 // `fiber: null` = USDA nie podaje wartości dla tego produktu.
+// `portions` = miary domowe (łyżka, jajko M…) z food_portion.csv USDA; waga części
+// jadalnej jednej miary. Dobór i polskie etykiety — patrz scripts/build-products.js.
 
 export const PRODUCTS_DATA = [
     {
@@ -226,7 +228,13 @@ export const PRODUCTS_DATA = [
             "fats": 11.5,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "sardynka",
+                "grams": 12
+            }
+        ]
     },
     {
         "id": "usda-171986",
@@ -318,10 +326,20 @@ export const PRODUCTS_DATA = [
             "carbs": 0.7,
             "fiber": 0
         },
-        "piece": {
-            "label": "1 jajko (L)",
-            "grams": 50
-        }
+        "portions": [
+            {
+                "label": "jajko M",
+                "grams": 50
+            },
+            {
+                "label": "jajko L",
+                "grams": 56
+            },
+            {
+                "label": "jajko S",
+                "grams": 44
+            }
+        ]
     },
     {
         "id": "usda-172184",
@@ -335,10 +353,12 @@ export const PRODUCTS_DATA = [
             "carbs": 3.6,
             "fiber": 0
         },
-        "piece": {
-            "label": "1 żółtko",
-            "grams": 17
-        }
+        "portions": [
+            {
+                "label": "żółtko (z jajka M)",
+                "grams": 17
+            }
+        ]
     },
     {
         "id": "usda-172183",
@@ -352,10 +372,12 @@ export const PRODUCTS_DATA = [
             "carbs": 0.7,
             "fiber": 0
         },
-        "piece": {
-            "label": "1 białko",
-            "grams": 33
-        }
+        "portions": [
+            {
+                "label": "białko (z jajka M)",
+                "grams": 33
+            }
+        ]
     },
     {
         "id": "usda-173430",
@@ -368,7 +390,17 @@ export const PRODUCTS_DATA = [
             "fats": 81.1,
             "carbs": 0.1,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 14.2
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.7
+            }
+        ]
     },
     {
         "id": "usda-173412",
@@ -381,7 +413,17 @@ export const PRODUCTS_DATA = [
             "fats": 99.5,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 12.8
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.3
+            }
+        ]
     },
     {
         "id": "usda-170859",
@@ -394,7 +436,13 @@ export const PRODUCTS_DATA = [
             "fats": 36.1,
             "carbs": 2.8,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 15
+            }
+        ]
     },
     {
         "id": "usda-171257",
@@ -407,7 +455,13 @@ export const PRODUCTS_DATA = [
             "fats": 19.4,
             "carbs": 4.6,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 12
+            }
+        ]
     },
     {
         "id": "usda-171304",
@@ -524,7 +578,13 @@ export const PRODUCTS_DATA = [
             "fats": 34.4,
             "carbs": 5.5,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 14.5
+            }
+        ]
     },
     {
         "id": "usda-171251",
@@ -550,7 +610,17 @@ export const PRODUCTS_DATA = [
             "fats": 100,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 13.5
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.5
+            }
+        ]
     },
     {
         "id": "usda-171412",
@@ -563,7 +633,17 @@ export const PRODUCTS_DATA = [
             "fats": 99.1,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 13.6
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.5
+            }
+        ]
     },
     {
         "id": "usda-173573",
@@ -576,7 +656,17 @@ export const PRODUCTS_DATA = [
             "fats": 100,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 14
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.5
+            }
+        ]
     },
     {
         "id": "usda-171016",
@@ -589,7 +679,17 @@ export const PRODUCTS_DATA = [
             "fats": 100,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 13.6
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.5
+            }
+        ]
     },
     {
         "id": "usda-171401",
@@ -602,7 +702,17 @@ export const PRODUCTS_DATA = [
             "fats": 100,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 12.8
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.3
+            }
+        ]
     },
     {
         "id": "usda-170173",
@@ -615,7 +725,17 @@ export const PRODUCTS_DATA = [
             "fats": 21.3,
             "carbs": 2.8,
             "fiber": null
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 15
+            },
+            {
+                "label": "szklanka (240 ml)",
+                "grams": 226
+            }
+        ]
     },
     {
         "id": "usda-171705",
@@ -629,10 +749,12 @@ export const PRODUCTS_DATA = [
             "carbs": 8.5,
             "fiber": 6.7
         },
-        "piece": {
-            "label": "1 awokado",
-            "grams": 201
-        }
+        "portions": [
+            {
+                "label": "awokado Hass (bez skórki i pestki)",
+                "grams": 136
+            }
+        ]
     },
     {
         "id": "usda-168462",
@@ -710,7 +832,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.3,
             "carbs": 5,
             "fiber": 2
-        }
+        },
+        "portions": [
+            {
+                "label": "różyczka",
+                "grams": 13
+            }
+        ]
     },
     {
         "id": "usda-169291",
@@ -724,10 +852,20 @@ export const PRODUCTS_DATA = [
             "carbs": 3.1,
             "fiber": 1
         },
-        "piece": {
-            "label": "1 średnia cukinia",
-            "grams": 196
-        }
+        "portions": [
+            {
+                "label": "cukinia średnia",
+                "grams": 196
+            },
+            {
+                "label": "cukinia mała",
+                "grams": 118
+            },
+            {
+                "label": "cukinia duża",
+                "grams": 323
+            }
+        ]
     },
     {
         "id": "usda-169228",
@@ -754,10 +892,20 @@ export const PRODUCTS_DATA = [
             "carbs": 4.6,
             "fiber": 1.7
         },
-        "piece": {
-            "label": "1 średnia papryka",
-            "grams": 119
-        }
+        "portions": [
+            {
+                "label": "papryka średnia",
+                "grams": 119
+            },
+            {
+                "label": "papryka mała",
+                "grams": 74
+            },
+            {
+                "label": "papryka duża",
+                "grams": 164
+            }
+        ]
     },
     {
         "id": "usda-170108",
@@ -771,10 +919,20 @@ export const PRODUCTS_DATA = [
             "carbs": 6,
             "fiber": 2.1
         },
-        "piece": {
-            "label": "1 średnia papryka",
-            "grams": 119
-        }
+        "portions": [
+            {
+                "label": "papryka średnia",
+                "grams": 119
+            },
+            {
+                "label": "papryka mała",
+                "grams": 74
+            },
+            {
+                "label": "papryka duża",
+                "grams": 164
+            }
+        ]
     },
     {
         "id": "usda-168409",
@@ -787,7 +945,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.1,
             "carbs": 3.6,
             "fiber": 0.5
-        }
+        },
+        "portions": [
+            {
+                "label": "ogórek długi (ok. 21 cm)",
+                "grams": 301
+            }
+        ]
     },
     {
         "id": "usda-170457",
@@ -801,10 +965,24 @@ export const PRODUCTS_DATA = [
             "carbs": 3.9,
             "fiber": 1.2
         },
-        "piece": {
-            "label": "1 średni pomidor",
-            "grams": 123
-        }
+        "portions": [
+            {
+                "label": "pomidor średni",
+                "grams": 123
+            },
+            {
+                "label": "pomidor mały",
+                "grams": 91
+            },
+            {
+                "label": "pomidor duży",
+                "grams": 182
+            },
+            {
+                "label": "pomidorek koktajlowy",
+                "grams": 17
+            }
+        ]
     },
     {
         "id": "usda-169251",
@@ -817,7 +995,17 @@ export const PRODUCTS_DATA = [
             "fats": 0.3,
             "carbs": 3.3,
             "fiber": 1
-        }
+        },
+        "portions": [
+            {
+                "label": "pieczarka średnia",
+                "grams": 18
+            },
+            {
+                "label": "pieczarka duża",
+                "grams": 23
+            }
+        ]
     },
     {
         "id": "usda-168389",
@@ -830,7 +1018,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.1,
             "carbs": 3.9,
             "fiber": 2.1
-        }
+        },
+        "portions": [
+            {
+                "label": "szparag",
+                "grams": 16
+            }
+        ]
     },
     {
         "id": "usda-169961",
@@ -843,7 +1037,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.2,
             "carbs": 7,
             "fiber": 2.7
-        }
+        },
+        "portions": [
+            {
+                "label": "strąk",
+                "grams": 5.5
+            }
+        ]
     },
     {
         "id": "usda-169975",
@@ -856,7 +1056,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.1,
             "carbs": 5.8,
             "fiber": 2.5
-        }
+        },
+        "portions": [
+            {
+                "label": "liść",
+                "grams": 23
+            }
+        ]
     },
     {
         "id": "usda-170390",
@@ -909,10 +1115,16 @@ export const PRODUCTS_DATA = [
             "carbs": 3.4,
             "fiber": 1.6
         },
-        "piece": {
-            "label": "1 rzodkiewka",
-            "grams": 4.5
-        }
+        "portions": [
+            {
+                "label": "rzodkiewka średnia",
+                "grams": 4.5
+            },
+            {
+                "label": "rzodkiewka duża",
+                "grams": 9
+            }
+        ]
     },
     {
         "id": "usda-169988",
@@ -926,10 +1138,12 @@ export const PRODUCTS_DATA = [
             "carbs": 3,
             "fiber": 1.6
         },
-        "piece": {
-            "label": "1 łodyga",
-            "grams": 40
-        }
+        "portions": [
+            {
+                "label": "łodyga",
+                "grams": 40
+            }
+        ]
     },
     {
         "id": "usda-170000",
@@ -942,7 +1156,25 @@ export const PRODUCTS_DATA = [
             "fats": 0.1,
             "carbs": 9.3,
             "fiber": 1.7
-        }
+        },
+        "portions": [
+            {
+                "label": "cebula średnia",
+                "grams": 110
+            },
+            {
+                "label": "cebula mała",
+                "grams": 70
+            },
+            {
+                "label": "cebula duża",
+                "grams": 150
+            },
+            {
+                "label": "łyżka posiekanej",
+                "grams": 10
+            }
+        ]
     },
     {
         "id": "usda-169230",
@@ -956,10 +1188,12 @@ export const PRODUCTS_DATA = [
             "carbs": 33.1,
             "fiber": 2.1
         },
-        "piece": {
-            "label": "1 ząbek",
-            "grams": 3
-        }
+        "portions": [
+            {
+                "label": "ząbek",
+                "grams": 3
+            }
+        ]
     },
     {
         "id": "usda-169279",
@@ -985,7 +1219,13 @@ export const PRODUCTS_DATA = [
             "fats": 10.9,
             "carbs": 6,
             "fiber": 1.6
-        }
+        },
+        "portions": [
+            {
+                "label": "oliwka",
+                "grams": 4.4
+            }
+        ]
     },
     {
         "id": "usda-169096",
@@ -998,7 +1238,13 @@ export const PRODUCTS_DATA = [
             "fats": 15.3,
             "carbs": 3.8,
             "fiber": 3.3
-        }
+        },
+        "portions": [
+            {
+                "label": "oliwka",
+                "grams": 2.7
+            }
+        ]
     },
     {
         "id": "usda-170106",
@@ -1024,7 +1270,17 @@ export const PRODUCTS_DATA = [
             "fats": 0.8,
             "carbs": 17.8,
             "fiber": 2
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżeczka tartego",
+                "grams": 2
+            },
+            {
+                "label": "plasterek",
+                "grams": 2.2
+            }
+        ]
     },
     {
         "id": "usda-169997",
@@ -1063,7 +1319,13 @@ export const PRODUCTS_DATA = [
             "fats": 49.9,
             "carbs": 21.6,
             "fiber": 12.5
-        }
+        },
+        "portions": [
+            {
+                "label": "migdał",
+                "grams": 1.2
+            }
+        ]
     },
     {
         "id": "usda-170187",
@@ -1076,7 +1338,13 @@ export const PRODUCTS_DATA = [
             "fats": 65.2,
             "carbs": 13.7,
             "fiber": 6.7
-        }
+        },
+        "portions": [
+            {
+                "label": "połówka orzecha",
+                "grams": 2
+            }
+        ]
     },
     {
         "id": "usda-170178",
@@ -1102,7 +1370,13 @@ export const PRODUCTS_DATA = [
             "fats": 72,
             "carbs": 13.9,
             "fiber": 9.6
-        }
+        },
+        "portions": [
+            {
+                "label": "połówka orzecha",
+                "grams": 1.5
+            }
+        ]
     },
     {
         "id": "usda-170581",
@@ -1115,7 +1389,13 @@ export const PRODUCTS_DATA = [
             "fats": 60.8,
             "carbs": 16.7,
             "fiber": 9.7
-        }
+        },
+        "portions": [
+            {
+                "label": "orzech",
+                "grams": 1.4
+            }
+        ]
     },
     {
         "id": "usda-170569",
@@ -1129,10 +1409,12 @@ export const PRODUCTS_DATA = [
             "carbs": 11.7,
             "fiber": 7.5
         },
-        "piece": {
-            "label": "1 orzech",
-            "grams": 5
-        }
+        "portions": [
+            {
+                "label": "orzech",
+                "grams": 5
+            }
+        ]
     },
     {
         "id": "usda-170554",
@@ -1158,7 +1440,25 @@ export const PRODUCTS_DATA = [
             "fats": 42.2,
             "carbs": 28.9,
             "fiber": 27.3
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka (całe)",
+                "grams": 10.3
+            },
+            {
+                "label": "łyżka (mielone)",
+                "grams": 7
+            },
+            {
+                "label": "łyżeczka (całe)",
+                "grams": 3.4
+            },
+            {
+                "label": "łyżeczka (mielone)",
+                "grams": 2.5
+            }
+        ]
     },
     {
         "id": "usda-170556",
@@ -1184,7 +1484,17 @@ export const PRODUCTS_DATA = [
             "fats": 49.7,
             "carbs": 23.5,
             "fiber": 11.8
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 9
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 3
+            }
+        ]
     },
     {
         "id": "usda-168588",
@@ -1197,7 +1507,17 @@ export const PRODUCTS_DATA = [
             "fats": 55.5,
             "carbs": 18.8,
             "fiber": 10.3
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 16
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 5.3
+            }
+        ]
     },
     {
         "id": "usda-170170",
@@ -1223,7 +1543,17 @@ export const PRODUCTS_DATA = [
             "fats": 53.8,
             "carbs": 21.2,
             "fiber": 9.3
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 15
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 5
+            }
+        ]
     },
     {
         "id": "usda-170148",
@@ -1236,7 +1566,13 @@ export const PRODUCTS_DATA = [
             "fats": 48.8,
             "carbs": 8.7,
             "fiber": 4
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 10
+            }
+        ]
     },
     {
         "id": "usda-167755",
@@ -1249,7 +1585,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.7,
             "carbs": 11.9,
             "fiber": 6.5
-        }
+        },
+        "portions": [
+            {
+                "label": "malina",
+                "grams": 1.9
+            }
+        ]
     },
     {
         "id": "usda-167762",
@@ -1262,7 +1604,17 @@ export const PRODUCTS_DATA = [
             "fats": 0.3,
             "carbs": 7.7,
             "fiber": 2
-        }
+        },
+        "portions": [
+            {
+                "label": "truskawka średnia",
+                "grams": 12
+            },
+            {
+                "label": "truskawka duża",
+                "grams": 18
+            }
+        ]
     },
     {
         "id": "usda-173946",
@@ -1289,10 +1641,16 @@ export const PRODUCTS_DATA = [
             "carbs": 9.3,
             "fiber": 2.8
         },
-        "piece": {
-            "label": "1 cytryna",
-            "grams": 58
-        }
+        "portions": [
+            {
+                "label": "cytryna mała (bez skórki)",
+                "grams": 58
+            },
+            {
+                "label": "cytryna duża (bez skórki)",
+                "grams": 84
+            }
+        ]
     },
     {
         "id": "usda-168155",
@@ -1306,10 +1664,12 @@ export const PRODUCTS_DATA = [
             "carbs": 10.5,
             "fiber": 2.8
         },
-        "piece": {
-            "label": "1 limonka",
-            "grams": 67
-        }
+        "portions": [
+            {
+                "label": "limonka",
+                "grams": 67
+            }
+        ]
     },
     {
         "id": "usda-172475",
@@ -1335,7 +1695,17 @@ export const PRODUCTS_DATA = [
             "fats": 0,
             "carbs": 3.6,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 18
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 6
+            }
+        ]
     },
     {
         "id": "usda-174278",
@@ -1348,7 +1718,17 @@ export const PRODUCTS_DATA = [
             "fats": 0.1,
             "carbs": 5.6,
             "fiber": 0.8
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 18
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 6
+            }
+        ]
     },
     {
         "id": "usda-169593",
@@ -1361,7 +1741,17 @@ export const PRODUCTS_DATA = [
             "fats": 13.7,
             "carbs": 57.9,
             "fiber": 37
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 5.4
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 1.8
+            }
+        ]
     },
     {
         "id": "usda-172390",
@@ -1621,7 +2011,13 @@ export const PRODUCTS_DATA = [
             "fats": 9.7,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "filet",
+                "grams": 4
+            }
+        ]
     },
     {
         "id": "usda-173687",
@@ -1738,7 +2134,13 @@ export const PRODUCTS_DATA = [
             "fats": 2.3,
             "carbs": 5,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "ostryga średnia",
+                "grams": 50
+            }
+        ]
     },
     {
         "id": "usda-174218",
@@ -1791,10 +2193,12 @@ export const PRODUCTS_DATA = [
             "carbs": 1.5,
             "fiber": 0
         },
-        "piece": {
-            "label": "1 jajo",
-            "grams": 70
-        }
+        "portions": [
+            {
+                "label": "jajo",
+                "grams": 70
+            }
+        ]
     },
     {
         "id": "usda-172191",
@@ -1808,10 +2212,12 @@ export const PRODUCTS_DATA = [
             "carbs": 0.4,
             "fiber": 0
         },
-        "piece": {
-            "label": "1 jajo",
-            "grams": 9
-        }
+        "portions": [
+            {
+                "label": "jajo",
+                "grams": 9
+            }
+        ]
     },
     {
         "id": "usda-173410",
@@ -1824,7 +2230,17 @@ export const PRODUCTS_DATA = [
             "fats": 81.1,
             "carbs": 0.1,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 14.2
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.7
+            }
+        ]
     },
     {
         "id": "usda-170858",
@@ -1837,7 +2253,13 @@ export const PRODUCTS_DATA = [
             "fats": 30.9,
             "carbs": 3,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 15
+            }
+        ]
     },
     {
         "id": "usda-171255",
@@ -1850,7 +2272,13 @@ export const PRODUCTS_DATA = [
             "fats": 11.5,
             "carbs": 4.3,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 15
+            }
+        ]
     },
     {
         "id": "usda-171284",
@@ -1876,7 +2304,17 @@ export const PRODUCTS_DATA = [
             "fats": 3.3,
             "carbs": 4.8,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 15
+            },
+            {
+                "label": "szklanka (240 ml)",
+                "grams": 244
+            }
+        ]
     },
     {
         "id": "usda-170851",
@@ -1980,7 +2418,17 @@ export const PRODUCTS_DATA = [
             "fats": 100,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 12.8
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.3
+            }
+        ]
     },
     {
         "id": "usda-171030",
@@ -1993,7 +2441,17 @@ export const PRODUCTS_DATA = [
             "fats": 100,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 13.6
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.5
+            }
+        ]
     },
     {
         "id": "usda-167702",
@@ -2006,7 +2464,17 @@ export const PRODUCTS_DATA = [
             "fats": 100,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 13.6
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.5
+            }
+        ]
     },
     {
         "id": "usda-171427",
@@ -2019,7 +2487,17 @@ export const PRODUCTS_DATA = [
             "fats": 100,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 13.6
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.5
+            }
+        ]
     },
     {
         "id": "usda-171410",
@@ -2032,7 +2510,17 @@ export const PRODUCTS_DATA = [
             "fats": 100,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 13.5
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.5
+            }
+        ]
     },
     {
         "id": "usda-171009",
@@ -2045,7 +2533,17 @@ export const PRODUCTS_DATA = [
             "fats": 74.9,
             "carbs": 0.6,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 13.8
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 4.6
+            }
+        ]
     },
     {
         "id": "usda-168429",
@@ -2097,7 +2595,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.5,
             "carbs": 6.8,
             "fiber": 2.5
-        }
+        },
+        "portions": [
+            {
+                "label": "grzyb",
+                "grams": 19
+            }
+        ]
     },
     {
         "id": "usda-169255",
@@ -2110,7 +2614,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.4,
             "carbs": 3.9,
             "fiber": 1.3
-        }
+        },
+        "portions": [
+            {
+                "label": "grzyb",
+                "grams": 84
+            }
+        ]
     },
     {
         "id": "usda-168424",
@@ -2150,10 +2660,12 @@ export const PRODUCTS_DATA = [
             "carbs": 7.3,
             "fiber": 2.6
         },
-        "piece": {
-            "label": "1 średnia dymka",
-            "grams": 15
-        }
+        "portions": [
+            {
+                "label": "dymka średnia",
+                "grams": 15
+            }
+        ]
     },
     {
         "id": "usda-170416",
@@ -2232,10 +2744,12 @@ export const PRODUCTS_DATA = [
             "carbs": 6.5,
             "fiber": 2.8
         },
-        "piece": {
-            "label": "1 papryczka",
-            "grams": 14
-        }
+        "portions": [
+            {
+                "label": "papryczka",
+                "grams": 14
+            }
+        ]
     },
     {
         "id": "usda-169210",
@@ -2261,7 +2775,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.3,
             "carbs": 5.1,
             "fiber": 0.3
-        }
+        },
+        "portions": [
+            {
+                "label": "arkusz",
+                "grams": 2.6
+            }
+        ]
     },
     {
         "id": "usda-172238",
@@ -2274,7 +2794,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.9,
             "carbs": 4.9,
             "fiber": 3.2
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka (odsączone)",
+                "grams": 8.6
+            }
+        ]
     },
     {
         "id": "usda-170383",
@@ -2287,7 +2813,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.3,
             "carbs": 9,
             "fiber": 3.8
-        }
+        },
+        "portions": [
+            {
+                "label": "główka",
+                "grams": 19
+            }
+        ]
     },
     {
         "id": "usda-169246",
@@ -2404,7 +2936,17 @@ export const PRODUCTS_DATA = [
             "fats": 51.4,
             "carbs": 22.3,
             "fiber": 5
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 16
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 5.3
+            }
+        ]
     },
     {
         "id": "usda-170568",
@@ -2417,7 +2959,13 @@ export const PRODUCTS_DATA = [
             "fats": 52.5,
             "carbs": 18.7,
             "fiber": 9.9
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 9.1
+            }
+        ]
     },
     {
         "id": "usda-170169",
@@ -2443,7 +2991,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.3,
             "carbs": 14.5,
             "fiber": 2.4
-        }
+        },
+        "portions": [
+            {
+                "label": "borówka",
+                "grams": 1.4
+            }
+        ]
     },
     {
         "id": "usda-171722",
@@ -2469,7 +3023,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.2,
             "carbs": 4.5,
             "fiber": 1.8
-        }
+        },
+        "portions": [
+            {
+                "label": "łodyga",
+                "grams": 51
+            }
+        ]
     },
     {
         "id": "usda-173964",
@@ -2495,7 +3055,17 @@ export const PRODUCTS_DATA = [
             "fats": 0.2,
             "carbs": 6.9,
             "fiber": 0.3
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 15.3
+            },
+            {
+                "label": "sok z 1 cytryny",
+                "grams": 48
+            }
+        ]
     },
     {
         "id": "usda-170273",
@@ -2521,7 +3091,13 @@ export const PRODUCTS_DATA = [
             "fats": 3.3,
             "carbs": 5.8,
             "fiber": 4
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżeczka",
+                "grams": 5
+            }
+        ]
     },
     {
         "id": "usda-173469",
@@ -2534,7 +3110,17 @@ export const PRODUCTS_DATA = [
             "fats": 0,
             "carbs": 0.9,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 14.9
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 5
+            }
+        ]
     },
     {
         "id": "usda-174277",
@@ -2547,7 +3133,17 @@ export const PRODUCTS_DATA = [
             "fats": 0.6,
             "carbs": 4.9,
             "fiber": 0.8
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 16
+            },
+            {
+                "label": "łyżeczka",
+                "grams": 5.3
+            }
+        ]
     },
     {
         "id": "usda-167961",
@@ -2573,7 +3169,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.1,
             "carbs": 0,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżka",
+                "grams": 7
+            }
+        ]
     },
     {
         "id": "usda-172883",
@@ -2586,7 +3188,13 @@ export const PRODUCTS_DATA = [
             "fats": 0.1,
             "carbs": 1.2,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "szklanka (240 ml)",
+                "grams": 240
+            }
+        ]
     },
     {
         "id": "usda-172884",
@@ -2599,7 +3207,13 @@ export const PRODUCTS_DATA = [
             "fats": 1.2,
             "carbs": 3.5,
             "fiber": 0
-        }
+        },
+        "portions": [
+            {
+                "label": "szklanka (240 ml)",
+                "grams": 240
+            }
+        ]
     },
     {
         "id": "usda-174832",
@@ -2612,7 +3226,13 @@ export const PRODUCTS_DATA = [
             "fats": 1,
             "carbs": 1.3,
             "fiber": 0.2
-        }
+        },
+        "portions": [
+            {
+                "label": "szklanka (240 ml)",
+                "grams": 262
+            }
+        ]
     },
     {
         "id": "usda-168410",
@@ -2638,7 +3258,17 @@ export const PRODUCTS_DATA = [
             "fats": 1.2,
             "carbs": 80.6,
             "fiber": 53.1
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżeczka",
+                "grams": 2.6
+            },
+            {
+                "label": "łyżka",
+                "grams": 7.8
+            }
+        ]
     },
     {
         "id": "usda-172231",
@@ -2651,7 +3281,17 @@ export const PRODUCTS_DATA = [
             "fats": 3.3,
             "carbs": 67.1,
             "fiber": 22.7
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżeczka",
+                "grams": 3
+            },
+            {
+                "label": "łyżka",
+                "grams": 9.4
+            }
+        ]
     },
     {
         "id": "usda-170931",
@@ -2664,7 +3304,13 @@ export const PRODUCTS_DATA = [
             "fats": 3.3,
             "carbs": 64,
             "fiber": 25.3
-        }
+        },
+        "portions": [
+            {
+                "label": "łyżeczka (mielony)",
+                "grams": 2.3
+            }
+        ]
     },
     {
         "id": "usda-174272",

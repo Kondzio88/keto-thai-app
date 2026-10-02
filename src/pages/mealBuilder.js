@@ -9,6 +9,7 @@ import {
     calculateIngredientMacros,
     sumIngredients,
     getNetCarbs,
+    portionToGrams,
 } from "../services/productService.js";
 import {
     createCustomRecipe,
@@ -40,6 +41,25 @@ const formatNumber = (value) => value.toLocaleString("pl-PL", { maximumFractionD
 
 const formatMacroLine = (macros) =>
     `${Math.round(macros.calories)} kcal · B ${formatNumber(macros.protein)} · T ${formatNumber(macros.fats)} · W netto ${formatNumber(getNetCarbs(macros))}`;
+
+// Wartość opcji "gramy" w liście jednostek. Miary domowe mają wartość = indeks w product.portions.
+const UNIT_GRAMS = "g";
+
+// Miara wybrana w liście jednostek albo null, gdy liczymy w gramach
+// (także gdy produkt nie ma miar i listy w ogóle nie ma).
+const getSelectedPortion = (product, unitSelect) =>
+    unitSelect && unitSelect.value !== UNIT_GRAMS ? product.portions[Number(unitSelect.value)] : null;
+
+// Podpowiedź pod polem ilości. "≈", bo waga miary to średnia z USDA, nie pomiar —
+// użytkownik ma widzieć, że "łyżka" to szacunek, a gramy z wagi kuchennej są dokładne.
+const describeAmount = (product, portion, count) => {
+    if (!(count > 0)) {
+        return portion ? `${portion.label} ≈ ${formatNumber(portion.grams)} g` : "Podaj wagę produktu.";
+    }
+    const grams = portion ? portionToGrams(portion, count) : count;
+    const macros = formatMacroLine(calculateIngredientMacros(product, grams));
+    return portion ? `${formatNumber(count)} × ${portion.label} ≈ ${formatNumber(grams)} g = ${macros}` : `= ${macros}`;
+};
 
 // Tryb kreatora wynika z adresu: /recipes/new albo /recipes/edit?id=user-123.
 // Render i init wołają to osobno — obaj czytają ten sam adres, więc się zgadzają.
@@ -80,7 +100,7 @@ export const renderMealBuilder = () => {
             <p class="page-header__desc">
                 ${isEdit
                     ? "Popraw nazwę, porę albo składniki — makro przeliczy się samo."
-                    : "Wybierz produkty i podaj gramy — makro liczymy z wartości na 100 g."}
+                    : "Wybierz produkty i podaj ilość — w gramach, łyżkach albo sztukach."}
             </p>
         </header>
 
@@ -153,7 +173,8 @@ const generateResultsHTML = (products, expandedId) =>
     products
         .map((product) => {
             const isExpanded = product.id === expandedId;
-            const formId = `grams-form-${product.id}`;
+            const formId = `amount-form-${product.id}`;
+            const hasPortions = Boolean(product.portions?.length);
 
             return html`
                 <li class="product-result ${isExpanded ? "is-expanded" : ""}" data-id="${product.id}">
@@ -169,22 +190,35 @@ const generateResultsHTML = (products, expandedId) =>
                     ${isExpanded
                         ? html`
                               <form class="product-result__form" id="${formId}" novalidate>
-                                  <label for="grams-input" class="form__label">Ilość (g)</label>
+                                  <label for="amount-input" class="form__label">${hasPortions ? "Ilość" : "Ilość (g)"}</label>
                                   <div class="product-result__row">
                                       <input
                                           type="number"
-                                          id="grams-input"
-                                          class="form__input product-result__grams"
-                                          min="1"
-                                          max="${MAX_GRAMS}"
-                                          step="1"
+                                          id="amount-input"
+                                          class="form__input product-result__amount"
+                                          min="0"
+                                          step="any"
                                           inputmode="decimal"
-                                          aria-describedby="grams-preview"
+                                          aria-describedby="amount-preview"
                                       />
+                                      ${hasPortions
+                                          ? html`
+                                                <label for="unit-select" class="visually-hidden">Jednostka</label>
+                                                <select id="unit-select" class="form__input product-result__unit">
+                                                    ${product.portions
+                                                        .map(
+                                                            (portion, index) =>
+                                                                `<option value="${index}" ${index === 0 ? "selected" : ""}>${portion.label} (${formatNumber(portion.grams)} g)</option>`,
+                                                        )
+                                                        .join("")}
+                                                    <option value="${UNIT_GRAMS}">gramy</option>
+                                                </select>
+                                            `
+                                          : ""}
                                       <button type="submit" class="btn btn--primary">Dodaj</button>
                                   </div>
-                                  <p class="form__note" id="grams-preview">
-                                      ${product.piece ? `${product.piece.label} ≈ ${formatNumber(product.piece.grams)} g` : "Podaj wagę produktu."}
+                                  <p class="form__note" id="amount-preview">
+                                      ${describeAmount(product, product.portions?.[0] ?? null, 0)}
                                   </p>
                               </form>
                           `
@@ -197,7 +231,7 @@ const generateResultsHTML = (products, expandedId) =>
 const generateIngredientsHTML = (ingredients) => {
     if (ingredients.length === 0) {
         return html`<li class="builder-ingredients__empty">
-            Jeszcze nic tu nie ma. Wyszukaj produkt, podaj gramy i kliknij „Dodaj".
+            Jeszcze nic tu nie ma. Wyszukaj produkt, podaj ilość i kliknij „Dodaj".
         </li>`;
     }
 
@@ -313,9 +347,11 @@ export const initMealBuilder = () => {
 
     const addIngredient = (productId, grams) => {
         // Ten sam produkt drugi raz = więcej gramów, nie drugi wiersz.
+        // Zaokrąglenie do 0,1 g: miary dają ułamki (4,7 + 4,7 + 4,7), a JS sumuje je
+        // z ogonkiem w stylu 14,100000000000001.
         const existing = state.ingredients.find((item) => item.productId === productId);
         if (existing) {
-            existing.grams += grams;
+            existing.grams = Math.round((existing.grams + grams) * 10) / 10;
         } else {
             state.ingredients.push({ productId, grams });
         }
@@ -339,47 +375,52 @@ export const initMealBuilder = () => {
         renderResults();
 
         if (state.expandedId) {
-            document.getElementById("grams-input")?.focus();
+            document.getElementById("amount-input")?.focus();
         } else {
             resultsList.querySelector(`[data-id="${productId}"] .product-result__toggle`)?.focus();
         }
     });
 
-    // Podgląd makro na żywo podczas wpisywania gramów
+    // Podgląd makro na żywo — przy wpisywaniu ilości i przy zmianie jednostki
+    // (<select> też wysyła zdarzenie "input", więc jeden listener obsługuje oba pola).
     resultsList.addEventListener("input", (event) => {
-        if (event.target.id !== "grams-input") return;
+        if (event.target.id !== "amount-input" && event.target.id !== "unit-select") return;
 
         const product = getProductById(state.expandedId);
-        const grams = Number(event.target.value);
-        const preview = document.getElementById("grams-preview");
+        const preview = document.getElementById("amount-preview");
         if (!product || !preview) return;
 
-        preview.textContent =
-            grams > 0
-                ? `= ${formatMacroLine(calculateIngredientMacros(product, grams))}`
-                : product.piece
-                  ? `${product.piece.label} ≈ ${formatNumber(product.piece.grams)} g`
-                  : "Podaj wagę produktu.";
+        const portion = getSelectedPortion(product, document.getElementById("unit-select"));
+        preview.textContent = describeAmount(product, portion, Number(document.getElementById("amount-input").value));
     });
 
     resultsList.addEventListener("submit", (event) => {
         event.preventDefault();
 
         const product = getProductById(state.expandedId);
-        const gramsInput = document.getElementById("grams-input");
-        const grams = Number(gramsInput.value);
-
         if (!product) return;
 
-        if (!(grams > 0 && grams <= MAX_GRAMS)) {
-            document.getElementById("grams-preview").textContent = `Podaj ilość od 1 do ${MAX_GRAMS} g.`;
-            gramsInput.focus();
+        const amountInput = document.getElementById("amount-input");
+        const portion = getSelectedPortion(product, document.getElementById("unit-select"));
+        const count = Number(amountInput.value);
+        // Do przepisu trafiają zawsze gramy — miara to tylko sposób ich wpisania.
+        const grams = portion ? portionToGrams(portion, count) : count;
+
+        if (!(count > 0 && grams > 0 && grams <= MAX_GRAMS)) {
+            document.getElementById("amount-preview").textContent = portion
+                ? `Podaj liczbę większą od zera (łącznie maks. ${MAX_GRAMS} g).`
+                : `Podaj ilość od 1 do ${MAX_GRAMS} g.`;
+            amountInput.focus();
             return;
         }
 
         addIngredient(product.id, grams);
         hideError();
-        announce(`Dodano: ${product.name}, ${formatNumber(grams)} g.`);
+        announce(
+            portion
+                ? `Dodano: ${product.name}, ${formatNumber(count)} × ${portion.label} (${formatNumber(grams)} g).`
+                : `Dodano: ${product.name}, ${formatNumber(grams)} g.`,
+        );
 
         // Czyścimy wyszukiwarkę — lista wyników znika i karta składników
         // podjeżdża pod pole wyszukiwania, więc na telefonie widać efekt.
