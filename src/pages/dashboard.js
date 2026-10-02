@@ -1,14 +1,15 @@
 import { html } from "../utils/template.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
-import { getUser, clearUser, saveUser } from "../services/userService.js";
+import { getUser, clearUser, saveUser, WEIGHT_LIMITS } from "../services/userService.js";
 import { generateDietPlan, FLOOR_LIMIT, TARGET_DEFICIT_PERCENT } from "../services/calculatorService.js";
 import { getTodayMeal, removeMeal, sumMacros, clearMeals } from "../services/mealService.js";
 import { getNetCarbs } from "../services/productService.js";
 import { clearCustomRecipes, clearAllMealDrafts } from "../services/customRecipeService.js";
-import { getDateKey } from "../utils/date.js";
+import { getDateKey, getDaysSince } from "../utils/date.js";
 import { navigateTo } from "../router.js";
 import { trapFocus } from "../utils/focusTrap.js";
 import { showConfirmModal } from "../components/confirmModal.js";
+import { showToast } from "../components/toast.js";
 
 let weightChartInstance = null;
 let closeWeightModal = null; // pozwala cleanupowi zamknąć modal przy zmianie trasy
@@ -32,15 +33,11 @@ const BALANCE_ROWS = [
     { key: "netCarbs", label: "Węgle netto", unit: "g", meter: "carbs" },
 ];
 
-const checkWeightReminder = (user) => {
-    const lastRecord = user.weightHistory[user.weightHistory.length - 1];
-    const lastDate = new Date(lastRecord.date);
-    const today = new Date();
-    const diffTime = today - lastDate;
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+// Po tylu dniach bez pomiaru dziennik przypomina o wadze — plan liczy się
+// z ostatniej wpisanej wagi, więc stara waga = nieaktualny cel.
+const WEIGH_IN_INTERVAL_DAYS = 7;
 
-    return diffDays >= 7;
-};
+const getDaysSinceLastWeighIn = (user) => getDaysSince(user.weightHistory[user.weightHistory.length - 1].date);
 
 // Ikona pory posiłku — informacja, nie dekoracja. Tekst dla czytnika w aria-label.
 const MEAL_CATEGORY_ICONS = {
@@ -133,7 +130,11 @@ const generateMealLogHTML = (meals) => {
                             <span class="meal-log__time">${meal.time}</span>
                             <span class="meal-log__title">${escapeHtml(meal.title)}</span>
                             <span class="meal-log__kcal">${meal.calories} kcal</span>
-                            <span class="meal-log__macros">B ${meal.protein} · T ${meal.fats} · W netto ${getNetCarbs(meal)}</span>
+                            <span class="meal-log__macros">
+                                <span class="nowrap">B ${meal.protein}</span> ·
+                                <span class="nowrap">T ${meal.fats}</span> ·
+                                <span class="nowrap">W netto ${getNetCarbs(meal)}</span>
+                            </span>
                             <button
                                 type="button"
                                 class="meal-log__remove"
@@ -167,8 +168,18 @@ export const renderDashboard = () => {
                     </div>
 
                     <div class="journal__header">
-                        <h2 class="journal__title" id="journal-title">Bilans dnia</h2>
+                        <h2 class="journal__title" id="journal-title" tabindex="-1">Bilans dnia</h2>
                         <span class="tag journal__date">${formatDate(new Date())}</span>
+                    </div>
+
+                    <!-- Przypomnienie o pomiarze: wpis w dzienniku nad bilansem, nie baner
+                         w kolumnie wykresu (na telefonie był pod całym dziennikiem). -->
+                    <div class="weigh-in is-hidden" id="weigh-in-reminder">
+                        <p class="weigh-in__text" id="weigh-in-text"></p>
+                        <button type="button" class="btn-icon-text weigh-in__btn" id="btn-weigh-in">
+                            <i data-lucide="plus" aria-hidden="true"></i>
+                            Dodaj pomiar
+                        </button>
                     </div>
 
                     <table class="balance" aria-label="Cel, spożycie i pozostały limit na dziś">
@@ -195,23 +206,6 @@ export const renderDashboard = () => {
                 </section>
 
                 <aside class="trend" aria-label="Trend wagi">
-                    <div class="reminder-banner is-hidden" id="weight-reminder">
-                        <div class="reminder-banner__text">
-                            <i data-lucide="bell" class="reminder-icon"></i>
-                            <span>Minęło 7 dni! Podaj dzisiejszą wagę:</span>
-                        </div>
-                        <div class="reminder-banner__actions">
-                            <input
-                                type="number"
-                                class="banner-input"
-                                id="banner-input-weight"
-                                placeholder="kg"
-                                step="0.1"
-                            />
-                            <button class="btn btn--primary btn--small" id="btn-banner-save">Zapisz</button>
-                        </div>
-                    </div>
-
                     <section class="trend__panel">
                         <div class="trend__header">
                             <h2 class="trend__title">Trend wagi</h2>
@@ -246,7 +240,9 @@ export const renderDashboard = () => {
                     step="0.1"
                     placeholder="kg"
                     aria-label="Waga w kilogramach"
+                    aria-describedby="modal-weight-error"
                 />
+                <p class="form__error is-hidden" id="modal-weight-error" role="alert"></p>
                 <div class="modal__actions">
                     <button class="btn btn--primary" id="btn-save-weight">Zapisz</button>
                     <button class="btn btn--secondary" id="btn-exit">Wyjdź</button>
@@ -280,7 +276,9 @@ export const initDashboard = () => {
         planNote.innerHTML = planNoteHTML ?? "";
         planNote.classList.toggle("is-hidden", !planNoteHTML);
         // Błonnik informacyjnie, bez celu — mówi, skąd się bierze "netto".
-        balanceNote.textContent = `Błonnik dziś: ${eaten.fiber} g — odjęty od węgli netto.`;
+        // Dwie nierozdzielne części: linia łamie się tylko między nimi, nie w środku zdania.
+        balanceNote.innerHTML = html`<span class="nowrap">Błonnik dziś: ${eaten.fiber} g</span>
+            <span class="nowrap">— odjęty od węgli netto.</span>`;
         mealLog.innerHTML = generateMealLogHTML(meals);
 
         window.lucide?.createIcons();
@@ -297,9 +295,14 @@ export const initDashboard = () => {
         refreshDay();
     });
 
-    const reminderBanner = document.getElementById("weight-reminder");
-    if (checkWeightReminder(userProfile)) {
-        reminderBanner.classList.remove("is-hidden");
+    const weighInRow = document.getElementById("weigh-in-reminder");
+    const daysSinceWeighIn = getDaysSinceLastWeighIn(userProfile);
+    if (daysSinceWeighIn >= WEIGH_IN_INTERVAL_DAYS) {
+        // Liczba dni + skutek: sam "minęło 7 dni!" nie mówi, po co ważyć się znowu.
+        // Zawsze >= 7, więc forma "dni" jest poprawna bez odmiany.
+        document.getElementById("weigh-in-text").textContent =
+            `Ostatni pomiar wagi: ${daysSinceWeighIn} dni temu — cel na dziś liczony jest z tej wagi.`;
+        weighInRow.classList.remove("is-hidden");
     }
 
     weightChartInstance = new Chart(document.getElementById("weight-chart"), {
@@ -332,14 +335,43 @@ export const initDashboard = () => {
         },
     });
 
+    // Komunikat przy polu zamiast alert(): systemowe okienko blokuje stronę,
+    // znika po kliknięciu i nie mówi, CO poprawić. Tekst zostaje obok pola,
+    // aż użytkownik zacznie je poprawiać.
+    const showWeightError = (input, errorBox, message) => {
+        errorBox.textContent = message;
+        errorBox.classList.remove("is-hidden");
+        input.setAttribute("aria-invalid", "true");
+        input.focus();
+    };
+
+    const clearWeightError = (input, errorBox) => {
+        errorBox.classList.add("is-hidden");
+        errorBox.textContent = "";
+        input.removeAttribute("aria-invalid");
+    };
+
+    // null = waga poprawna. Pole type="number" z tekstem w środku daje "" —
+    // dlatego pusty i niepoprawny wpis mają ten sam komunikat.
+    const getWeightError = (rawValue) => {
+        const weight = Number(rawValue);
+        if (rawValue === "" || !(weight >= WEIGHT_LIMITS.min && weight <= WEIGHT_LIMITS.max)) {
+            return `Podaj wagę od ${WEIGHT_LIMITS.min} do ${WEIGHT_LIMITS.max} kg.`;
+        }
+        return null;
+    };
+
     // Jeden zapis wagi dla banera i modala (wcześniej ta logika była skopiowana dwa razy).
-    const recordWeight = (rawValue) => {
-        if (!rawValue) {
-            alert("Najpierw wpisz wagę!");
+    // Wcześniej sprawdzało tylko pusty wpis — 0 albo 500 kg trafiało do profilu i kalkulatora.
+    const recordWeight = (input, errorBox) => {
+        const error = getWeightError(input.value);
+        if (error) {
+            showWeightError(input, errorBox, error);
             return false;
         }
+        clearWeightError(input, errorBox);
 
-        const newWeight = parseFloat(rawValue);
+        const newWeight = Number(input.value);
         const today = getDateKey();
 
         userProfile.weightHistory.push({ date: today, weight: newWeight });
@@ -351,30 +383,27 @@ export const initDashboard = () => {
         weightChartInstance.update();
 
         refreshDay(); // nowa waga = nowy cel = nowy bilans
+        // Pomiar z dowolnego miejsca ("Dodaj pomiar" w dzienniku albo "+ Pomiar") spełnia przypomnienie.
+        weighInRow.classList.add("is-hidden");
         return true;
     };
-
-    const bannerInput = document.getElementById("banner-input-weight");
-    document.getElementById("btn-banner-save").addEventListener("click", () => {
-        if (!recordWeight(bannerInput.value)) return;
-
-        bannerInput.value = "";
-        reminderBanner.classList.add("is-hidden");
-    });
 
     const modalOverlay = document.getElementById("modal-overlay");
     const modalDialog = modalOverlay.querySelector('[role="dialog"]');
     const modalInput = document.getElementById("input-weight");
+    const modalError = document.getElementById("modal-weight-error");
+    modalInput.addEventListener("input", () => clearWeightError(modalInput, modalError));
 
     const openWeightModal = () => {
         modalOverlay.classList.remove("is-hidden");
 
-        // trapFocus zapamiętuje aktywny element (przycisk "Pomiar"), więc wołamy go przed focus().
+        // trapFocus zapamiętuje aktywny element ("+ Pomiar" albo "Dodaj pomiar"), więc wołamy go przed focus().
         const releaseFocus = trapFocus(modalDialog, { onEscape: () => closeWeightModal() });
 
         closeWeightModal = () => {
             modalOverlay.classList.add("is-hidden");
             modalInput.value = "";
+            clearWeightError(modalInput, modalError); // ponowne otwarcie bez starego błędu
             closeWeightModal = null;
             releaseFocus();
         };
@@ -382,7 +411,20 @@ export const initDashboard = () => {
         modalInput.focus();
     };
 
-    document.getElementById("btn-add-weight").addEventListener("click", openWeightModal);
+    // Dwa wejścia, jeden modal i jedna walidacja: "+ Pomiar" przy wykresie
+    // i "Dodaj pomiar" w przypomnieniu w dzienniku.
+    // Czy modal otworzyło przypomnienie — ono znika po zapisie, więc fokus
+    // nie może do niego wrócić (patrz obsługa "Zapisz").
+    let openedFromWeighIn = false;
+
+    document.getElementById("btn-add-weight").addEventListener("click", () => {
+        openedFromWeighIn = false;
+        openWeightModal();
+    });
+    document.getElementById("btn-weigh-in").addEventListener("click", () => {
+        openedFromWeighIn = true;
+        openWeightModal();
+    });
     document.getElementById("btn-exit").addEventListener("click", () => closeWeightModal?.());
 
     // Klik w tło (poza kartą) zamyka modal
@@ -391,9 +433,26 @@ export const initDashboard = () => {
     });
 
     document.getElementById("btn-save-weight").addEventListener("click", () => {
-        if (!recordWeight(modalInput.value)) return;
+        if (!recordWeight(modalInput, modalError)) return;
 
+        const savedWeight = userProfile.weight;
         closeWeightModal?.();
+
+        // Modal oddaje fokus przyciskowi, który go otworzył. "Dodaj pomiar" właśnie
+        // zniknął razem z przypomnieniem — focus() na ukrytym elemencie nic nie robi
+        // i fokus spadłby na <body>. Nie da się tego sprawdzić przez activeElement:
+        // przeglądarka przenosi fokus z ukrytego elementu dopiero przy następnej
+        // klatce. Dlatego decydujemy po tym, KTO otworzył modal.
+        if (openedFromWeighIn) {
+            document.getElementById("journal-title").focus();
+        }
+
+        // Potwierdzenie: modal znika, a zmiana na wykresie bywa niewidoczna bez przewijania.
+        showToast({
+            stamp: "Zapisano",
+            title: "Pomiar wagi",
+            meta: `${savedWeight.toLocaleString("pl-PL")} kg`,
+        });
     });
 
     document.getElementById("btn-delete").addEventListener("click", () => {

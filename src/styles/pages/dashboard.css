@@ -51,6 +51,54 @@
     color: var(--ink);
 }
 
+/* Nagłówek dostaje fokus programowo (po zapisie wagi z przypomnienia) —
+   obrys tylko przy nawigacji klawiaturą, atramentem, bo --amber ginie na papierze. */
+.journal__title:focus {
+    outline: none;
+}
+
+.journal__title:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 4px;
+}
+
+/* Przypomnienie o pomiarze — wpis w dzienniku, nie baner: ten sam papier,
+   linia perforacji pod spodem oddziela go od tabeli bilansu (§5). */
+.weigh-in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px dashed var(--ink-faint);
+}
+
+.weigh-in__text {
+    flex: 1 1 14rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--ink);
+}
+
+/* .btn-icon-text jest pod ciemne tło — na papierze atrament (jak w kreatorze) */
+.weigh-in__btn {
+    min-height: 44px;
+    color: var(--ink);
+    border-color: var(--ink);
+}
+
+.weigh-in__btn:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+    background-color: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.weigh-in__btn:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+}
+
 .journal__date {
     color: var(--ink-dim);
 }
@@ -322,10 +370,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
-}
-
-.trend .reminder-banner {
-    margin-bottom: 0;
 }
 
 .trend__panel {

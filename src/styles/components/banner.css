@@ -1,59 +1,6 @@
-.reminder-banner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
-    background-color: color-mix(in srgb, var(--amber) 12%, transparent);
-    border: 1px solid var(--amber);
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
-}
-
-.reminder-banner__text {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    color: var(--amber);
-    font-weight: 600;
-}
-
-.reminder-icon {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-}
-
-.reminder-banner__actions {
-    display: flex;
-    gap: var(--spacing-xs);
-}
-
-.banner-input {
-    width: 70px;
-    padding: 6px 8px;
-    color: var(--bone);
-    background-color: var(--ground2);
-    border: 1px solid var(--bone-faint);
-    border-radius: 2px;
-    text-align: center;
-    transition: border-color 0.2s ease;
-}
-
-.banner-input:focus {
-    outline: none;
-    border-color: var(--amber);
-}
-
-.banner-input[type="number"]::-webkit-outer-spin-button,
-.banner-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-/* Baner instalacji PWA (home.js) — ten sam wzorzec co .reminder-banner
-   (rządek tekst+akcje na obramowaniu --amber), osobna nazwa, bo to
-   zaproszenie, nie przypomnienie o zaległej czynności. */
+/* Baner instalacji PWA (home.js) — rządek tekst+akcje na obramowaniu --amber.
+   (Do 02.10 ten plik miał też .reminder-banner — przypomnienie o wadze —
+   zastąpione wpisem .weigh-in w dzienniku, dashboard.css.) */
 .install-banner {
     position: fixed;
     left: var(--spacing-sm);

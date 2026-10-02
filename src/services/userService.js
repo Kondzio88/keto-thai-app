@@ -17,6 +17,10 @@ const normalizeUser = (user) => {
     return { ...user, activity: newActivity };
 };
 
+// Zakres wagi w kg — JEDNO źródło dla onboardingu (min/max pola) i pomiarów
+// na Dashboardzie. Dwie osobne pary liczb rozjechałyby się przy pierwszej zmianie.
+export const WEIGHT_LIMITS = { min: 35, max: 200 };
+
 export const saveUser = (userData) => {
     saveState("keto_user", userData);
 };

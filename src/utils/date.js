@@ -8,6 +8,19 @@ export const getDateKey = (date = new Date()) => {
     return `${year}-${month}-${day}`;
 };
 
+// Ile pełnych dni kalendarzowych minęło od dnia "RRRR-MM-DD" do dziś.
+// Obie daty jako północ UTC z tych samych części (rok, miesiąc, dzień) — wtedy
+// różnica to zawsze wielokrotność doby: bez przesunięcia o strefę (new Date(klucz)
+// to UTC, a new Date() to czas lokalny) i bez 23/25-godzinnych dób przy zmianie czasu.
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+export const getDaysSince = (dateKey, today = new Date()) => {
+    const [year, month, day] = dateKey.split("-").map(Number);
+    const then = Date.UTC(year, month - 1, day);
+    const now = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+    return Math.round((now - then) / MS_PER_DAY);
+};
+
 // Odwrotność getDateKey — "2026-09-25" → "25.09.2026".
 // Składamy datę z części (rok, miesiąc, dzień), a nie z new Date("RRRR-MM-DD"):
 // ten zapis jest czytany jako UTC i w strefie na zachód od Greenwich

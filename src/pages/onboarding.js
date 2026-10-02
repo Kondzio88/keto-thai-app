@@ -1,5 +1,5 @@
 import { html } from "../utils/template.js";
-import { saveUser } from "../services/userService.js";
+import { saveUser, WEIGHT_LIMITS } from "../services/userService.js";
 import { generateDietPlan } from "../services/calculatorService.js";
 import { navigateTo } from "../router.js";
 import { getDateKey } from "../utils/date.js";
@@ -73,7 +73,16 @@ export const renderOnboarding = () => {
             </div>
             <div class="form__group">
                 <label for="weight" class="form__label ">Waga (kg)</label>
-                <input type="number" name="weight" id="weight" class="form__input" min="35" max="200" step="0.1" required />
+                <input
+                    type="number"
+                    name="weight"
+                    id="weight"
+                    class="form__input"
+                    min="${WEIGHT_LIMITS.min}"
+                    max="${WEIGHT_LIMITS.max}"
+                    step="0.1"
+                    required
+                />
             </div>
 
             <div class="form__group">

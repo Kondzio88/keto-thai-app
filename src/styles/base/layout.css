@@ -76,6 +76,12 @@
     display: none !important;
 }
 
+/* Para, której nie wolno rozdzielić przy łamaniu linii ("W netto 3",
+   "Błonnik dziś: 4 g") — linia łamie się tylko między takimi parami. */
+.nowrap {
+    white-space: nowrap;
+}
+
 /* Niewidoczne na ekranie, ale czytane przez czytnik ekranu (np. komunikaty role="status") */
 .visually-hidden {
     position: absolute;
