@@ -101,6 +101,80 @@
     height: 18px;
 }
 
+/* Zastrzeżenie medyczne — natywny <details>: zwinięte nie wydłuża stopki
+   na każdej stronie, a klawiatura i czytnik ekranu dostają je za darmo. */
+.site-footer__legal {
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px dashed var(--ink-faint);
+}
+
+.site-footer__legal-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    min-height: 44px;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    font-weight: 700;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--ink);
+    cursor: pointer;
+    list-style: none; /* Firefox: marker przez list-item */
+}
+
+/* display: flex usuwa natywny trójkąt w Chrome, w Safari zostaje — chowamy go
+   wszędzie i pokazujemy ten sam chevron co w FAQ (.accordion__icon). */
+.site-footer__legal-summary::-webkit-details-marker {
+    display: none;
+}
+
+.site-footer__legal-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+}
+
+.site-footer__legal[open] .site-footer__legal-icon {
+    transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-footer__legal-icon {
+        transition: none;
+    }
+}
+
+/* Domyślny obrys fokusu (--amber) ginie na papierze — obrys atramentem. */
+.site-footer__legal-summary:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+}
+
+.site-footer__legal-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    max-width: 75ch;
+    padding-top: var(--spacing-sm);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--ink);
+}
+
+/* reset.css zeruje list-style — bez punktorów 17 pozycji zlewa się w akapit. */
+.site-footer__legal-list {
+    margin: 0;
+    padding-left: 1.2rem;
+    list-style: disc;
+}
+
+.site-footer__legal-source {
+    color: var(--ink-dim);
+    font-size: 0.82rem;
+}
+
 .site-footer__bottom {
     padding-top: var(--spacing-lg);
     text-align: center;

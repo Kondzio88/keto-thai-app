@@ -409,7 +409,10 @@ export const renderHome = () => {
 
                             <div class="accordion__content" id="faq-answer-2">
                                 <p class="accordion__answer">
-                                    Tak , o ile jest prowadzona z głową. Mam w tym kilkuletnie doświadczenie.
+                                    Dla większości zdrowych dorosłych — tak, przy rozsądnym deficycie. Są jednak
+                                    sytuacje, w których keto jest przeciwwskazane (m.in. cukrzyca typu 1, ciąża,
+                                    choroby nerek) — pełna lista w
+                                    <a href="#zastrzezenia" class="accordion__link">zastrzeżeniu w stopce</a>.
                                 </p>
                             </div>
                         </div>

@@ -166,6 +166,30 @@
     background-color: var(--blue);
 }
 
+/* Wyjaśnienie kolumny "Cel" przy podłodze kalorycznej. Oddzielone linią
+   perforacji (§5, ten sam motyw co między wpisami) — nie boczną kolorową belką.
+   Public Sans, nie mono: to pełne zdanie do przeczytania, nie pomiar (§9). */
+.plan-note {
+    margin: var(--spacing-md) 0 0;
+    padding-top: var(--spacing-sm);
+    border-top: 1px dashed var(--ink-faint);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--ink);
+}
+
+.plan-note__link {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.plan-note__link:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+}
+
 /* Skąd się bierze "netto" — informacja, nie cel: bez miarki i bez koloru makro */
 .balance__note {
     margin: var(--spacing-sm) 0 0;

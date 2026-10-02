@@ -53,9 +53,36 @@ const initTopbarDrawer = () => {
     });
 };
 
+/**
+ * Link do #zastrzezenia (onboarding, Dashboard) ma pokazać treść, nie zwinięty
+ * nagłówek — przewinięcie do zamkniętego <details> nic by nie dało.
+ * Otwieramy w `click`, PRZED domyślnym przewinięciem przeglądarki, więc
+ * działa też przy ponownym kliknięciu, gdy adres już ma ten #hash.
+ */
+const DISCLAIMER_ID = "zastrzezenia";
+
+const openDisclaimer = () => {
+    const disclaimer = document.getElementById(DISCLAIMER_ID);
+    if (disclaimer) disclaimer.open = true;
+};
+
+const initDisclaimerLinks = () => {
+    document.addEventListener("click", (event) => {
+        if (event.target.closest(`a[href="#${DISCLAIMER_ID}"]`)) openDisclaimer();
+    });
+
+    // Adres wpisany lub odświeżony z #zastrzezenia — router właśnie wyrenderował
+    // stronę i przewinął na górę, więc przewijamy sami.
+    if (window.location.hash === `#${DISCLAIMER_ID}`) {
+        openDisclaimer();
+        document.getElementById(DISCLAIMER_ID)?.scrollIntoView();
+    }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     initRouter();
     initTopbarDrawer();
+    initDisclaimerLinks();
 
     // Aktualizuj aktywną zakładkę po każdej nawigacji
     updateActiveTab();

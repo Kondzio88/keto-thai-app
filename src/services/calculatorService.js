@@ -19,6 +19,9 @@ const GOAL_MULTIPLIERS = {
     mass: 1.1,
 };
 
+// Docelowy deficyt redukcji w % — do komunikatu "X% zamiast Y%".
+export const TARGET_DEFICIT_PERCENT = Math.round((1 - GOAL_MULTIPLIERS.reduction) * 100);
+
 // Dolne granice redukcji wg AHA/ACC/TOS 2013 (1200–1500 K / 1500–1800 M).
 const CALORIE_FLOOR = {
     male: 1500,
@@ -60,6 +63,17 @@ const calculateReferenceWeight = (weight, height) => {
     return Math.min(weight, weightAtReferenceBMI);
 };
 
+// Wartości `floorLimit` — czy i jak podłoga kaloryczna zmieniła redukcję.
+// Dashboard musi to powiedzieć wprost: bez tego "redukcja" po cichu robi coś
+// innego, niż obiecuje (ok. 3,7% profili w siatce testowej, PROGRES.md 02.10).
+export const FLOOR_LIMIT = {
+    reduced: "reduced", // deficyt mniejszy niż docelowy, ale jest
+    maintenance: "maintenance", // TDEE poniżej podłogi — deficytu nie ma wcale
+};
+
+// Zwraca kalorie RAZEM z informacją o podłodze — tylko ta funkcja wie, że
+// zadziałała. Gdyby wiedza wyciekała gdzie indziej, widok musiałby liczyć TDEE
+// drugi raz i rozjechałby się przy pierwszej zmianie progów.
 const calculateTargetCalories = (tdee, goal, gender) => {
     const multiplier = GOAL_MULTIPLIERS[goal];
     if (multiplier === undefined) {
@@ -68,14 +82,16 @@ const calculateTargetCalories = (tdee, goal, gender) => {
 
     const target = tdee * multiplier;
 
-    if (goal !== "reduction") {
-        return target;
+    if (goal !== "reduction" || target >= CALORIE_FLOOR[gender]) {
+        return { calories: target, floorLimit: null };
     }
 
     // Podłoga nie może przebić TDEE — inaczej małej osobie "redukcja"
     // dałaby nadwyżkę. Wtedy dostaje po prostu utrzymanie.
-    const floor = Math.min(CALORIE_FLOOR[gender], tdee);
-    return Math.max(target, floor);
+    if (CALORIE_FLOOR[gender] >= tdee) {
+        return { calories: tdee, floorLimit: FLOOR_LIMIT.maintenance };
+    }
+    return { calories: CALORIE_FLOOR[gender], floorLimit: FLOOR_LIMIT.reduced };
 };
 
 // Plan zwraca `netCarbs`, nie `carbs`: w przepisach i wpisach `carbs` to węgle
@@ -100,13 +116,32 @@ export const generateDietPlan = (userProfile) => {
 
     const bmr = calculateBMR(weight, height, age, gender);
     const tdee = bmr * pal;
-    const calories = Math.round(calculateTargetCalories(tdee, goal, gender));
+    const target = calculateTargetCalories(tdee, goal, gender);
+    const calories = Math.round(target.calories);
 
     const referenceWeight = calculateReferenceWeight(weight, height);
     const macros = calculateKetoMacros(calories, referenceWeight, proteinPerKg);
 
+    // Faktyczny deficyt w % — komunikat podaje konkretną liczbę ("10% zamiast 15%").
+    // Dwa brzegi zaokrąglenia: "0%" to w praktyce utrzymanie, a "15% zamiast 15%"
+    // (podłoga podniosła cel o ułamek procenta) nie jest warte komunikatu.
+    let { floorLimit } = target;
+    let deficitPercent = null;
+    if (floorLimit === FLOOR_LIMIT.reduced) {
+        deficitPercent = Math.round((1 - calories / tdee) * 100);
+        if (deficitPercent === 0) {
+            floorLimit = FLOOR_LIMIT.maintenance;
+            deficitPercent = null;
+        } else if (deficitPercent >= TARGET_DEFICIT_PERCENT) {
+            floorLimit = null;
+            deficitPercent = null;
+        }
+    }
+
     return {
         calories,
         ...macros,
+        floorLimit,
+        deficitPercent,
     };
 };

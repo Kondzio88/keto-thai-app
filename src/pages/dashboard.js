@@ -1,7 +1,7 @@
 import { html } from "../utils/template.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
 import { getUser, clearUser, saveUser } from "../services/userService.js";
-import { generateDietPlan } from "../services/calculatorService.js";
+import { generateDietPlan, FLOOR_LIMIT, TARGET_DEFICIT_PERCENT } from "../services/calculatorService.js";
 import { getTodayMeal, removeMeal, sumMacros, clearMeals } from "../services/mealService.js";
 import { getNetCarbs } from "../services/productService.js";
 import { clearCustomRecipes, clearAllMealDrafts } from "../services/customRecipeService.js";
@@ -61,6 +61,23 @@ const generateMealIconHTML = (category) => {
 };
 
 const formatDate = (date) => date.toLocaleDateString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric" });
+
+// Wyjaśnienie kolumny "Cel", gdy podłoga kaloryczna zmieniła redukcję.
+// Liczone przy każdym odświeżeniu, bo plan zależy od aktualnej wagi — ktoś,
+// kto chudnie, może wpaść pod podłogę dopiero po kilku tygodniach.
+// null = nic do wyjaśnienia (pełny deficyt albo inny cel niż redukcja).
+// HTML bez danych od użytkownika (tylko liczby z kalkulatora), więc bez escapeHtml.
+const getPlanNoteHTML = (plan) => {
+    if (plan.floorLimit === FLOOR_LIMIT.reduced) {
+        return `Twój cel to bezpieczne minimum (${plan.calories} kcal), więc redukcja jest łagodniejsza: ${plan.deficitPercent}% poniżej zapotrzebowania zamiast ${TARGET_DEFICIT_PERCENT}%.`;
+    }
+    if (plan.floorLimit === FLOOR_LIMIT.maintenance) {
+        return html`Przy Twoich parametrach bezpieczny deficyt nie jest możliwy — cel pokazuje utrzymanie wagi.
+            Redukcję skonsultuj z lekarzem lub dietetykiem.
+            <a href="#zastrzezenia" class="plan-note__link">Przeciwwskazania i zasady</a>`;
+    }
+    return null;
+};
 
 const generateBalanceRowsHTML = (plan, eaten) => {
     return BALANCE_ROWS.map(({ key, label, unit, meter }) => {
@@ -166,6 +183,7 @@ export const renderDashboard = () => {
                         <tbody id="balance-body"></tbody>
                     </table>
 
+                    <p class="plan-note is-hidden" id="plan-note"></p>
                     <p class="balance__note" id="balance-note"></p>
 
                     <p class="stamp balance__alert is-hidden" id="carbs-alert" role="status">
@@ -246,6 +264,7 @@ export const initDashboard = () => {
     const balanceBody = document.getElementById("balance-body");
     const carbsAlert = document.getElementById("carbs-alert");
     const balanceNote = document.getElementById("balance-note");
+    const planNote = document.getElementById("plan-note");
     const mealLog = document.getElementById("meal-log");
 
     // JEDNO miejsce, które rysuje stan dnia. Każda zmiana danych (waga, posiłek)
@@ -257,6 +276,9 @@ export const initDashboard = () => {
 
         balanceBody.innerHTML = generateBalanceRowsHTML(plan, eaten);
         carbsAlert.classList.toggle("is-hidden", eaten.netCarbs <= plan.netCarbs);
+        const planNoteHTML = getPlanNoteHTML(plan);
+        planNote.innerHTML = planNoteHTML ?? "";
+        planNote.classList.toggle("is-hidden", !planNoteHTML);
         // Błonnik informacyjnie, bez celu — mówi, skąd się bierze "netto".
         balanceNote.textContent = `Błonnik dziś: ${eaten.fiber} g — odjęty od węgli netto.`;
         mealLog.innerHTML = generateMealLogHTML(meals);

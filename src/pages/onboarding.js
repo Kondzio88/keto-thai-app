@@ -55,7 +55,17 @@ export const renderOnboarding = () => {
             </div>
             <div class="form__group">
                 <label for="age" class="form__label ">Wiek</label>
-                <input type="number" name="age" id="age" class="form__input" min="16" max="99" required />
+                <input
+                    type="number"
+                    name="age"
+                    id="age"
+                    class="form__input"
+                    min="18"
+                    max="99"
+                    required
+                    aria-describedby="age-note"
+                />
+                <p class="form__note" id="age-note">Kalkulator jest dla osób pełnoletnich.</p>
             </div>
             <div class="form__group">
                 <label for="height" class="form__label ">Wzrost (cm)</label>
@@ -94,6 +104,31 @@ export const renderOnboarding = () => {
                     <option value="mass">Przybranie wagi</option>
                 </select>
             </div>
+            <!-- Przeciwwskazania dotyczą samej ketozy, nie tylko redukcji — blok
+                 obowiązuje przy każdym celu. Zaznaczenie NIE trafia do profilu
+                 (handleOnboardingSubmit wybiera pola ręcznie) — to potwierdzenie,
+                 nie dana o zdrowiu do przechowywania. -->
+            <fieldset class="consent">
+                <legend class="form__label consent__legend">Zanim policzysz</legend>
+                <p class="consent__lead">Ten plan nie jest dla Ciebie, jeśli:</p>
+                <ul class="consent__list">
+                    <li>masz cukrzycę typu 1 lub LADA albo przyjmujesz flozyny (np. dapagliflozyna, empagliflozyna),</li>
+                    <li>jesteś w ciąży lub karmisz piersią,</li>
+                    <li>chorujesz na nerki, wątrobę lub serce (w tym zawał albo udar w ostatnim roku),</li>
+                    <li>masz lub miałeś(-aś) zaburzenia odżywiania,</li>
+                    <li>czeka Cię operacja albo przechodzisz ciężką infekcję.</li>
+                </ul>
+                <p class="consent__lead">Przyjmujesz insulinę lub inne leki na cukrzycę? Dietę uzgodnij najpierw z lekarzem.</p>
+                <label class="consent__check">
+                    <input type="checkbox" name="disclaimer" required />
+                    <span>
+                        <strong>Żadna z tych sytuacji mnie nie dotyczy.</strong> Rozumiem, że kalkulator to narzędzie
+                        edukacyjne, a nie porada lekarza ani dietetyka.
+                    </span>
+                </label>
+                <a href="#zastrzezenia" class="consent__link">Pełna lista przeciwwskazań i zasady korzystania</a>
+            </fieldset>
+
             <button type="submit" class="btn btn--primary">Oblicz kaloryczność</button>
         </form>
     </div>`;

@@ -66,6 +66,75 @@
     line-height: 1.4;
 }
 
+/* Blok przeciwwskazań w onboardingu. Linia perforacji (§5) oddziela go od pól
+   z danymi — to inny rodzaj treści: zdania do przeczytania, nie parametry. */
+.consent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin: 0;
+    padding: var(--spacing-md) 0 0;
+    border: none;
+    border-top: 1px dashed var(--bone-faint);
+}
+
+.consent__legend {
+    padding: 0;
+    margin-bottom: var(--spacing-xs);
+}
+
+.consent__lead,
+.consent__list {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--bone);
+}
+
+/* reset.css zeruje list-style — przywracamy punktory. */
+.consent__list {
+    padding-left: 1.2rem;
+    list-style: disc;
+}
+
+.consent__check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    min-height: 44px;
+    padding-top: var(--spacing-xs);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--bone);
+    cursor: pointer;
+}
+
+.consent__check input {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin: 2px 0 0;
+    accent-color: var(--amber);
+    cursor: pointer;
+}
+
+.consent__check input:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: 2px;
+}
+
+.consent__link {
+    align-self: flex-start;
+    font-size: 0.85rem;
+    color: var(--bone-dim);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.consent__link:hover {
+    color: var(--amber);
+}
+
 .form__note {
     font-size: 0.82rem;
     font-style: italic;

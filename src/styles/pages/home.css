@@ -788,6 +788,17 @@
     padding: var(--spacing-md) 0;
 }
 
+/* Link w odpowiedzi (np. do #zastrzezenia) — --bone, nie --red: §3, mały tekst */
+.accordion__link {
+    color: var(--bone);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.accordion__link:hover {
+    color: var(--amber);
+}
+
 .final-cta {
     padding: var(--spacing-xl) 0;
 }
