@@ -432,6 +432,7 @@
 
 .years-proof {
     margin-top: var(--spacing-xl);
+    container-type: inline-size; /* jednostka cqw = szerokość tej sekcji */
 }
 
 .years-proof__title {
@@ -463,10 +464,50 @@
     display: none;
 }
 
+/* 5 zdjęć dokładnie wypełnia rząd (4 odstępy), ale nigdy poniżej 140 px
+   i powyżej 240 px. Na telefonie zostaje 140, pasek się przewija. */
 .years-proof__item {
     flex: 0 0 auto;
     scroll-snap-align: start;
-    width: 140px;
+    width: clamp(140px, calc((100cqw - 4 * var(--spacing-md)) / 5), 240px);
+}
+
+.years-proof__timeline {
+    display: none;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+}
+
+.years-proof.is-scrollable .years-proof__timeline {
+    display: flex;
+}
+
+.years-proof__year {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 var(--spacing-xs);
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    color: var(--bone-dim);
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.years-proof__year.is-visible {
+    color: var(--bone);
+    border-bottom-color: var(--amber);
+}
+
+.years-proof__year:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: 2px;
 }
 
 .years-proof__photo-card {
@@ -476,10 +517,11 @@
     border: 1px solid color-mix(in srgb, var(--bone) 8%, transparent);
 }
 
-.years-proof__snap {
+.years-proof__photo {
+    display: block;
     width: 100%;
     aspect-ratio: 3 / 4;
-    background: linear-gradient(180deg, #3a342a, #211d17, #15130f);
+    object-fit: cover;
 }
 
 .years-proof__caption {

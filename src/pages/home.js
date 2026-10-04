@@ -186,37 +186,63 @@ export const renderHome = () => {
                         <h3 class="years-proof__title">Bez efektu jo-jo od lat</h3>
                         <span class="years-proof__kicker tag">Ta sama forma, różne lata</span>
                         <div class="years-proof__strip">
-                            <div class="years-proof__item">
+                            <div class="years-proof__item" data-year="2018">
                                 <div class="years-proof__photo-card">
-                                    <div class="years-proof__snap"></div>
+                                    <img
+                                        src="${getBase()}/2018.jpg"
+                                        alt="Zdjęcie grupowe po treningu w Lamai Muay Thai Camp na Koh Samui, 2018"
+                                        class="years-proof__photo"
+                                        loading="lazy"
+                                    />
                                 </div>
-                                <span class="years-proof__caption mono">FOTO 05 — [ROK] (do uzupełnienia)</span>
+                                <span class="years-proof__caption mono">FOTO 05 — 2018</span>
                             </div>
-                            <div class="years-proof__item">
+                            <div class="years-proof__item" data-year="2020">
                                 <div class="years-proof__photo-card">
-                                    <div class="years-proof__snap"></div>
+                                    <img
+                                        src="${getBase()}/2020.jpg"
+                                        alt="Zdjęcie grupowe na sali Muay Thai, wszyscy w świątecznych czapkach, 2020"
+                                        class="years-proof__photo"
+                                        loading="lazy"
+                                    />
                                 </div>
-                                <span class="years-proof__caption mono">FOTO 06 — [ROK] (do uzupełnienia)</span>
+                                <span class="years-proof__caption mono">FOTO 06 — 2020</span>
                             </div>
-                            <div class="years-proof__item">
+                            <div class="years-proof__item" data-year="2021">
                                 <div class="years-proof__photo-card">
-                                    <div class="years-proof__snap"></div>
+                                    <img
+                                        src="${getBase()}/2021.jpg"
+                                        alt="Konrad na skale przy plaży, 2021"
+                                        class="years-proof__photo"
+                                        loading="lazy"
+                                    />
                                 </div>
-                                <span class="years-proof__caption mono">FOTO 07 — [ROK] (do uzupełnienia)</span>
+                                <span class="years-proof__caption mono">FOTO 07 — 2021</span>
                             </div>
-                            <div class="years-proof__item">
+                            <div class="years-proof__item" data-year="2024">
                                 <div class="years-proof__photo-card">
-                                    <div class="years-proof__snap"></div>
+                                    <img
+                                        src="${getBase()}/2024.jpg"
+                                        alt="Konrad na sali treningowej po treningu, 2024"
+                                        class="years-proof__photo"
+                                        loading="lazy"
+                                    />
                                 </div>
-                                <span class="years-proof__caption mono">FOTO 08 — [ROK] (do uzupełnienia)</span>
+                                <span class="years-proof__caption mono">FOTO 08 — 2024</span>
                             </div>
-                            <div class="years-proof__item">
+                            <div class="years-proof__item" data-year="2026">
                                 <div class="years-proof__photo-card">
-                                    <div class="years-proof__snap"></div>
+                                    <img
+                                        src="${getBase()}/2026.jpg"
+                                        alt="Konrad przy wodospadzie, 2026"
+                                        class="years-proof__photo"
+                                        loading="lazy"
+                                    />
                                 </div>
-                                <span class="years-proof__caption mono">FOTO 09 — [ROK] (do uzupełnienia)</span>
+                                <span class="years-proof__caption mono">FOTO 09 — 2026</span>
                             </div>
                         </div>
+                        <div class="years-proof__timeline" id="years-timeline" role="group" aria-label="Przejdź do roku"></div>
                     </div>
                 </div>
             </section>
@@ -423,13 +449,13 @@ export const renderHome = () => {
 
                         <div class="accordion__item">
                             <button class="accordion__header" aria-expanded="false" aria-controls="faq-answer-4">
-                                <span class="accordion__question">Dla kogo jest aplikacja</span>
+                                <span class="accordion__question">Dla kogo jest aplikacja?</span>
                                 <i data-lucide="chevron-down" class="accordion__icon" aria-hidden="true"></i>
                             </button>
 
                             <div class="accordion__content" id="faq-answer-4">
                                 <p class="accordion__answer">
-                                    Dla każdego kto chce zadbać o swoje zdrowie , zgubić tkanke tłuszczową oraz poprawić
+                                    Dla każdego, kto chce zadbać o swoje zdrowie, zgubić tkankę tłuszczową oraz poprawić
                                     swoje wyniki sportowe.
                                 </p>
                             </div>
@@ -521,6 +547,13 @@ export const renderHome = () => {
     `;
 };
 
+let yearsProofObservers = [];
+
+export const cleanupHome = () => {
+    yearsProofObservers.forEach((observer) => observer.disconnect());
+    yearsProofObservers = [];
+};
+
 export const initHome = () => {
     const revealElements = document.querySelectorAll(".reveal");
 
@@ -547,13 +580,65 @@ export const initHome = () => {
         });
     });
 
+    const yearsProof = document.querySelector(".years-proof");
     const yearsStrip = document.querySelector(".years-proof__strip");
+    const yearsTimeline = document.getElementById("years-timeline");
 
-    if (yearsStrip) {
+    if (yearsProof && yearsStrip && yearsTimeline) {
+        const items = [...yearsStrip.querySelectorAll(".years-proof__item")];
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        // Tolerancja 1 px: zaokrąglenia ułamków pikseli potrafią dać "nadmiar"
+        // rzędu 0,3 px, mimo że wszystkie zdjęcia się mieszczą.
+        const isScrollable = () => yearsStrip.scrollWidth - yearsStrip.clientWidth > 1;
+
+        // Oś lat budujemy z danych w DOM (data-year) — rok żyje w jednym miejscu.
+        const yearButtons = items.map((item) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "years-proof__year";
+            button.textContent = item.dataset.year;
+            button.addEventListener("click", () => {
+                item.scrollIntoView({
+                    behavior: reducedMotion.matches ? "auto" : "smooth",
+                    inline: "start",
+                    block: "nearest",
+                });
+            });
+            yearsTimeline.appendChild(button);
+            return button;
+        });
+
+        // Podświetlamy wszystkie lata, które widać w oknie paska — nie jeden "aktywny".
+        const visibilityObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    yearButtons[items.indexOf(entry.target)].classList.toggle("is-visible", entry.isIntersecting);
+                });
+            },
+            { root: yearsStrip, threshold: 0.6 },
+        );
+        items.forEach((item) => visibilityObserver.observe(item));
+
+        // Oś pokazujemy tylko tam, gdzie pasek faktycznie się przewija.
+        const sizeObserver = new ResizeObserver(() => {
+            yearsProof.classList.toggle("is-scrollable", isScrollable());
+        });
+        sizeObserver.observe(yearsStrip);
+
+        yearsProofObservers.push(visibilityObserver, sizeObserver);
+
         yearsStrip.addEventListener(
             "wheel",
             (event) => {
-                if (event.deltaY === 0) return;
+                if (event.deltaY === 0 || !isScrollable()) return;
+
+                // Na brzegu paska oddajemy kółko stronie, inaczej strona "łapie się" na pasku.
+                const atStart = yearsStrip.scrollLeft <= 0 && event.deltaY < 0;
+                const atEnd =
+                    yearsStrip.scrollLeft + yearsStrip.clientWidth >= yearsStrip.scrollWidth - 1 && event.deltaY > 0;
+                if (atStart || atEnd) return;
+
                 event.preventDefault();
                 yearsStrip.scrollLeft += event.deltaY;
             },

@@ -47,7 +47,7 @@ export const renderRecipes = () => {
     return html` <main class="page-container">
         <header class="page-header">
             <h1 class="page-header__title">Przepisy Keto</h1>
-            <p class="page-header__desc">Tluste smaki ,metaboliczna dyscyplina</p>
+            <p class="page-header__desc">Tłuste smaki, metaboliczna dyscyplina</p>
         </header>
 
         ${canCreate

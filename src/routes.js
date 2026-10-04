@@ -1,4 +1,4 @@
-import { renderHome, initHome } from "./pages/home.js";
+import { renderHome, initHome, cleanupHome } from "./pages/home.js";
 import { renderRecipes, initRecipes } from "./pages/recipes.js";
 import { renderMealBuilder, initMealBuilder } from "./pages/mealBuilder.js";
 import { renderOnboarding, initOnboarding } from "./pages/onboarding.js";
@@ -10,6 +10,7 @@ export const routes = {
     "/": {
         render: renderHome,
         init: initHome,
+        cleanup: cleanupHome,
     },
     "/dashboard": {
         render: renderDashboard,
