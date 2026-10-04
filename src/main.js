@@ -2,10 +2,22 @@ import { initRouter } from "./router.js";
 import { getCurrentPath , getBase} from "./utils/env.js";
 import { initInstallPromptCapture } from "./utils/installPrompt.js";
 import { initInstallBanner } from "./components/installBanner.js";
+import { onCorruptedData } from "./state/store.js";
+import { showToast } from "./components/toast.js";
 
 // Rejestrujemy listener na `beforeinstallprompt` jak najwcześniej — event może
 // odpalić się zanim appka w ogóle zdąży wyrenderować pierwszą stronę.
 initInstallPromptCapture();
+
+// Rejestrujemy PRZED initRouter — router woła getUser() przy pierwszym renderze,
+// więc uszkodzony profil zostanie wykryty, zanim cokolwiek się pokaże.
+onCorruptedData((label) => {
+    showToast({
+        stamp: "Uwaga",
+        title: `Nie udało się odczytać ${label}`,
+        note: "Kopia uszkodzonego wpisu została zachowana w przeglądarce. Aplikacja działa dalej od pustego stanu.",
+    });
+});
 
 /**
  * Podświetla aktywną zakładkę w Bottom Tab Bar

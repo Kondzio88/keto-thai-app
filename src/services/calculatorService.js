@@ -11,6 +11,8 @@ export const ACTIVITY_LEVELS = {
     very_active: { pal: 1.9, proteinPerKg: 2.0 },
 };
 
+export const isKnownActivity = (activity) => Object.hasOwn(ACTIVITY_LEVELS, activity);
+
 // Zmiana względem TDEE jako procent, nie sztywne ±500 kcal — ta sama kwota
 // to 18% deficytu dla dużej osoby i 48% dla małej (PROGRES.md, sesja 18.09).
 const GOAL_MULTIPLIERS = {
@@ -21,6 +23,8 @@ const GOAL_MULTIPLIERS = {
 
 // Docelowy deficyt redukcji w % — do komunikatu "X% zamiast Y%".
 export const TARGET_DEFICIT_PERCENT = Math.round((1 - GOAL_MULTIPLIERS.reduction) * 100);
+
+export const isKnownGoal = (goal) => Object.hasOwn(GOAL_MULTIPLIERS, goal);
 
 // Dolne granice redukcji wg AHA/ACC/TOS 2013 (1200–1500 K / 1500–1800 M).
 const CALORIE_FLOOR = {

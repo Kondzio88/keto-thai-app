@@ -252,7 +252,31 @@ export const renderDashboard = () => {
     `;
 };
 
+// Jedyne wyjście awaryjne z zepsutych danych, więc musi działać ZAWSZE — także
+// wtedy, gdy rysowanie bilansu rzuci wyjątek. Dlatego initDashboard() rejestruje
+// je jako pierwsze: wyjątek przerywa funkcję w miejscu, a listenery podpięte
+// niżej już nigdy nie powstają.
+const initDeleteData = () => {
+    document.getElementById("btn-delete")?.addEventListener("click", () => {
+        showConfirmModal({
+            title: "Skasować dane aplikacji?",
+            message: "Usuniemy Twój profil, wszystkie zapisane posiłki i Twoje własne przepisy. Tej operacji nie można cofnąć.",
+            confirmLabel: "Skasuj",
+            cancelLabel: "Anuluj",
+            onConfirm: () => {
+                clearUser();
+                clearMeals();
+                clearCustomRecipes();
+                clearAllMealDrafts();
+                navigateTo("/");
+            },
+        });
+    });
+};
+
 export const initDashboard = () => {
+    initDeleteData();
+
     const userProfile = getUser();
 
     if (!userProfile) return;
@@ -373,10 +397,20 @@ export const initDashboard = () => {
 
         const newWeight = Number(input.value);
         const today = getDateKey();
+        const previousWeight = userProfile.weight;
 
         userProfile.weightHistory.push({ date: today, weight: newWeight });
         userProfile.weight = newWeight;
-        saveUser(userProfile);
+
+        // Zapis może się nie udać (pełna pamięć, tryb prywatny). Cofamy zmianę w pamięci,
+        // żeby wykres i bilans nie pokazywały pomiaru, którego po odświeżeniu nie będzie.
+        if (!saveUser(userProfile)) {
+            userProfile.weightHistory.pop();
+            userProfile.weight = previousWeight;
+            errorBox.textContent = "Nie udało się zapisać pomiaru — pamięć przeglądarki jest pełna albo zablokowana.";
+            errorBox.classList.remove("is-hidden");
+            return false;
+        }
 
         weightChartInstance.data.labels.push(today);
         weightChartInstance.data.datasets[0].data.push(newWeight);
@@ -455,21 +489,6 @@ export const initDashboard = () => {
         });
     });
 
-    document.getElementById("btn-delete").addEventListener("click", () => {
-        showConfirmModal({
-            title: "Skasować dane aplikacji?",
-            message: "Usuniemy Twój profil, wszystkie zapisane posiłki i Twoje własne przepisy. Tej operacji nie można cofnąć.",
-            confirmLabel: "Skasuj",
-            cancelLabel: "Anuluj",
-            onConfirm: () => {
-                clearUser();
-                clearMeals();
-                clearCustomRecipes();
-                clearAllMealDrafts();
-                navigateTo("/");
-            },
-        });
-    });
 };
 
 export const cleanupDashboard = () => {

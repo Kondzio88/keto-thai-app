@@ -1,4 +1,4 @@
-import { saveState, loadState } from "../state/store.js";
+import { saveState, readState, removeState, quarantineCorrupted } from "../state/store.js";
 import { getDateKey } from "../utils/date.js";
 import { sumIngredients } from "./productService.js";
 
@@ -10,10 +10,16 @@ const EDIT_DRAFT_STORAGE_KEY = "keto_meal_edit_draft";
 
 // Przepisy zapisane przed 29.09 nie mają `fiber`. Skład jest zapisany, więc
 // uzupełniamy sam błonnik z bazy produktów — reszta sum zostaje nietknięta.
-export const getCustomRecipes = () =>
-    (loadState(RECIPES_STORAGE_KEY) ?? []).map((recipe) =>
+export const getCustomRecipes = () => {
+    const result = readState(RECIPES_STORAGE_KEY);
+    if (result.status === "corrupted") {
+        quarantineCorrupted(RECIPES_STORAGE_KEY, result.raw, "własnych przepisów");
+        return [];
+    }
+    return (result.data ?? []).map((recipe) =>
         recipe.fiber === undefined ? { ...recipe, fiber: sumIngredients(recipe.ingredients).fiber } : recipe,
     );
+};
 
 export const getCustomRecipeById = (recipeId) => getCustomRecipes().find((recipe) => recipe.id === recipeId);
 
@@ -67,9 +73,7 @@ export const deleteCustomRecipe = (recipeId) => {
     saveState(RECIPES_STORAGE_KEY, remaining);
 };
 
-export const clearCustomRecipes = () => {
-    localStorage.removeItem(RECIPES_STORAGE_KEY);
-};
+export const clearCustomRecipes = () => removeState(RECIPES_STORAGE_KEY);
 
 // ---------- Szkic kreatora ----------
 
@@ -83,7 +87,9 @@ export const clearCustomRecipes = () => {
 const getDraftKey = (editId) => (editId ? EDIT_DRAFT_STORAGE_KEY : DRAFT_STORAGE_KEY);
 
 export const getMealDraft = (editId = null) => {
-    const draft = loadState(getDraftKey(editId));
+    // Uszkodzony szkic traktujemy jak brak szkicu: i tak wygasa następnego
+    // dnia, więc nie jest wart ani kopii, ani komunikatu.
+    const { data: draft } = readState(getDraftKey(editId));
     // Szkic edycji innego przepisu też odrzucamy — nie wolno go wczytać do złej karty.
     if (!draft || draft.date !== getDateKey() || (draft.editId ?? null) !== editId) {
         clearMealDraft(editId);
@@ -96,12 +102,10 @@ export const saveMealDraft = ({ title, category, ingredients }, editId = null) =
     saveState(getDraftKey(editId), { date: getDateKey(), editId, title, category, ingredients });
 };
 
-export const clearMealDraft = (editId = null) => {
-    localStorage.removeItem(getDraftKey(editId));
-};
+export const clearMealDraft = (editId = null) => removeState(getDraftKey(editId));
 
 // "Skasuj dane aplikacji" — oba szkice naraz.
 export const clearAllMealDrafts = () => {
-    localStorage.removeItem(DRAFT_STORAGE_KEY);
-    localStorage.removeItem(EDIT_DRAFT_STORAGE_KEY);
+    removeState(DRAFT_STORAGE_KEY);
+    removeState(EDIT_DRAFT_STORAGE_KEY);
 };

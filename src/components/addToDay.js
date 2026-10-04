@@ -10,7 +10,16 @@ export const addRecipeToDay = (recipe, button) => {
     // i osoba na klawiaturze ląduje "nigdzie". Dlatego blokujemy sami.
     if (button.getAttribute("aria-disabled") === "true") return;
 
-    addMeal(recipe);
+    // Zapis może się nie udać (pełna pamięć, część trybów prywatnych) — wtedy nie
+    // zmieniamy przycisku i nie ogłaszamy sukcesu, żeby można było spróbować ponownie.
+    if (!addMeal(recipe)) {
+        showToast({
+            stamp: "Uwaga",
+            title: "Nie udało się dodać posiłku",
+            note: "Pamięć przeglądarki jest pełna albo zablokowana (np. tryb prywatny).",
+        });
+        return;
+    }
 
     button.setAttribute("aria-disabled", "true");
     button.classList.add("btn--icon");

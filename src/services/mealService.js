@@ -1,20 +1,21 @@
-import { saveState, loadState } from "../state/store.js";
+import { saveState, readState, removeState, quarantineCorrupted } from "../state/store.js";
 import { getDateKey } from "../utils/date.js";
 import { getNetCarbs } from "./productService.js";
 
 const MEALS_STORAGE_KEY = "keto_meals";
 
 export const getAllMeals = () => {
-    const savedMeals = loadState(MEALS_STORAGE_KEY);
-    const allMeals = savedMeals ? savedMeals : {};
-    return allMeals;
+    const result = readState(MEALS_STORAGE_KEY);
+    if (result.status === "corrupted") {
+        quarantineCorrupted(MEALS_STORAGE_KEY, result.raw, "dziennika posiłków");
+        return {};
+    }
+    return result.data ?? {};
 };
 
 export const saveMeals = (meals) => saveState(MEALS_STORAGE_KEY, meals);
 
-export const clearMeals = () => {
-    localStorage.removeItem(MEALS_STORAGE_KEY);
-};
+export const clearMeals = () => removeState(MEALS_STORAGE_KEY);
 
 // Kopia danych przepisu we wpisie (snapshot) — jedno miejsce dla dodania
 // i aktualizacji wpisu, żeby oba zapisywały dokładnie te same pola.
@@ -45,7 +46,8 @@ export const addMeal = (recipe) => {
     };
     meals[today].push(newMeal);
 
-    saveMeals(meals);
+    // true/false z saveState — wywołujący nie może ogłosić "Dodano", gdy zapis się nie udał.
+    return saveMeals(meals);
 };
 
 // Ile razy przepis jest w dzisiejszym dzienniku — po edycji pytamy, czy je poprawić.
