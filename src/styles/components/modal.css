@@ -119,3 +119,72 @@
     margin-top: var(--spacing-md);
     width: 100%;
 }
+
+/* Instrukcja instalacji na iOS (installGuide.js) — kartka dziennika jak
+   .submit-success, ale szersza i wyrównana do lewej: to lista kroków do
+   wykonania, nie komunikat. */
+.install-guide {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.install-guide__holes {
+    position: absolute;
+    top: 10px;
+    left: 16px;
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.install-guide__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h3);
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.install-guide__steps {
+    counter-reset: step;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.install-guide__step {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 1.25rem 22px 1fr;
+    align-items: start;
+    gap: var(--spacing-sm);
+    color: var(--ink);
+    line-height: 1.5;
+}
+
+/* Numer niesie kolejność — tu kroki naprawdę trzeba wykonać po kolei
+   (DESIGN.md §9: numeracja tylko z sensem sekwencyjnym). */
+.install-guide__step::before {
+    content: counter(step);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--ink-dim);
+}
+
+.install-guide__icon {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.6;
+}
+
+.install-guide__note {
+    color: var(--ink-dim);
+    line-height: 1.5;
+}
+
+.install-guide__close {
+    width: 100%;
+}

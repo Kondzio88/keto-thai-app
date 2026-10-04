@@ -1,6 +1,7 @@
 import { initRouter } from "./router.js";
 import { getCurrentPath , getBase} from "./utils/env.js";
 import { initInstallPromptCapture } from "./utils/installPrompt.js";
+import { initInstallBanner } from "./components/installBanner.js";
 
 // Rejestrujemy listener na `beforeinstallprompt` jak najwcześniej — event może
 // odpalić się zanim appka w ogóle zdąży wyrenderować pierwszą stronę.
@@ -83,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initRouter();
     initTopbarDrawer();
     initDisclaimerLinks();
+    initInstallBanner();
 
     // Aktualizuj aktywną zakładkę po każdej nawigacji
     updateActiveTab();

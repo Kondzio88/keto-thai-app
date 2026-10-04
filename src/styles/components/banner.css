@@ -1,4 +1,4 @@
-/* Baner instalacji PWA (home.js) — rządek tekst+akcje na obramowaniu --amber.
+/* Baner instalacji PWA (installBanner.js) — rządek tekst+akcje na obramowaniu --amber.
    (Do 02.10 ten plik miał też .reminder-banner — przypomnienie o wadze —
    zastąpione wpisem .weigh-in w dzienniku, dashboard.css.) */
 .install-banner {
@@ -19,9 +19,9 @@
 }
 
 /* Baner jest fixed, więc stopka musi zrobić mu miejsce, inaczej zasłoni
-   jej koniec. :has() sam się wyłącza, gdy baner jest ukryty albo zniknął
-   z DOM po zmianie trasy — bez cleanupu w JS. */
-body:has(.install-banner:not(.is-hidden)) .site-footer {
+   jej koniec. :has() sam się wyłącza, gdy baner zniknie z DOM — bez
+   cleanupu w JS. */
+body:has(.install-banner) .site-footer {
     padding-bottom: calc(4.5rem + var(--safe-area-bottom) + var(--install-banner-h, 0px) + var(--spacing-sm));
 }
 
@@ -32,7 +32,7 @@ body:has(.install-banner:not(.is-hidden)) .site-footer {
         bottom: var(--spacing-md);
     }
 
-    body:has(.install-banner:not(.is-hidden)) .site-footer {
+    body:has(.install-banner) .site-footer {
         padding-bottom: calc(var(--spacing-xl) + var(--install-banner-h, 0px) + var(--spacing-md));
     }
 }
