@@ -21,6 +21,7 @@
         <link
             href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;900&family=Martian+Mono:wght@400..700&family=Public+Sans:ital,wght@0,400..600;1,400..600&display=swap"
             rel="stylesheet"
+            crossorigin
         />
         <link rel="stylesheet" href="./src/styles/main.css" />
         <link rel="manifest" href="manifest.webmanifest" />
@@ -213,8 +214,9 @@
             </div>
         </footer>
 
-        <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- crossorigin: odpowiedź CORS ma czytelny status, więc Service Worker odróżni sukces od błędu (public/service-worker.js) -->
+        <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" crossorigin></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js" crossorigin></script>
         <script type="module" src="./src/main.js"></script>
     </body>
 </html>

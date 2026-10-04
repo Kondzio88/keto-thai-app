@@ -46,10 +46,15 @@ self.addEventListener("fetch", (event) => {
 
             return fetch(event.request)
                 .then((response) => {
-                    const responseClone = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(event.request, responseClone);
-                    });
+                    // Cache-first serwuje zapamiętane odpowiedzi do następnego wdrożenia,
+                    // więc zapamiętujemy tylko pełne sukcesy. Błąd (404/500) i odpowiedź
+                    // "opaque" (status 0 — nie wiemy, czy to sukces) nie wchodzą do cache.
+                    // 206 (fragment) odrzuca sam cache.put, a status 200 go wyklucza.
+                    if (response.status === 200) {
+                        const responseClone = response.clone();
+                        // waitUntil: bez niego system może uśpić workera, zanim zapis się skończy.
+                        event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone)));
+                    }
                     return response;
                 })
                 .catch(() => {
