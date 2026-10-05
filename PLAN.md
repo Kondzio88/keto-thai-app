@@ -1,179 +1,185 @@
-## 1. Architektura Systemu (System Architecture)
+# PLAN.md: Keto Thai, architektura i plan techniczny
 
-Aplikacja "Keto Thai" to nowoczesna aplikacja typu **SPA (Single Page Application)** z wbudowanym modułem SaaS (Software as a Service) do śledzenia diety.
+> **Aktualizacja 2026-10-02:** plik zsynchronizowany ze stanem kodu (wcześniej opisywał m.in. zewnętrzne API produktów, trasę `/tracker` i design „Dark Fighter”, których nie ma; `RAPORT.md` N9). Oznaczenia: ✅ wdrożone · 🟡 częściowo · 📋 zaplanowane · ❌ porzucone.
+> Źródła prawdy dla innych warstw: wygląd → `DESIGN.md`, treść i sprzedaż → `MARKETING.md`, postęp sesji → `PROGRES.md`, audyt → `RAPORT.md`.
 
-- **Renderowanie:** Cały interfejs jest wstrzykiwany dynamicznie do jednego pliku `index.html` przez czysty JavaScript (Client-Side Rendering).
-- **Routing:** Własny silnik oparty na `History API` (`window.history.pushState` i zdarzeniu `popstate`), wykorzystujący zjawisko Event Delegation do przechwytywania nawigacji.
-- **Guard Onboarding ↔ Dashboard (`src/router.js`, `renderContent`):** przed renderem trasy silnik sprawdza `getUser()` (`src/services/userService.js`, odczyt `localStorage["keto_user"]`).
-    - Brak zapisanego użytkownika (`!user`) i próba wejścia na trasę spoza białej listy publicznych ścieżek (`/`, `/onboarding`, `/recipes`, `/knowledge`, `/contact`, `/camp`) → twarde przekierowanie na `/onboarding` (obecnie jedyna trasa poza tą listą to `/dashboard`, więc de facto: niezapisany użytkownik nie wejdzie na Dashboard bez przejścia Onboardingu).
-    - Zapisany użytkownik (`user` istnieje) i próba wejścia na `/onboarding` → przekierowanie na `/dashboard` (nie przechodzi ponownie kwestionariusza).
-    - Przekierowanie robione przez `window.history.replaceState` (nie dokłada wpisu do historii przeglądarki).
-- **Zarządzanie Stanem (State Management):** Ścisłe oddzielenie warstwy danych od interfejsu. Historia wagi, zjedzone posiłki i ustawienia użytkownika będą przetrzymywane w globalnym obiekcie stanu, zapisywanym do `localStorage` (a docelowo w chmurze Supabase). Zmiana danych automatycznie wywołuje funkcję odświeżającą powiązane elementy na ekranie.
-- **Hosting (docelowo):** aplikacja jest dziś wdrożona na GitHub Pages (`base: "/keto-thai-app/"` w `vite.config.js`) jako rozwiązanie tymczasowe. Docelowo planowana migracja na własną domenę hostowaną na Hostingerze. Stąd świadoma decyzja architektoniczna z sesji PWA (2026-09-24): wszystkie ścieżki do zasobów statycznych (manifest, ikony, `service-worker.js`) i rejestracja Service Workera w `main.js` budowane są **względnie** / przez `import.meta.env.BASE_URL` (`getBase()`), nigdy na sztywno jako `/keto-thai-app/...` — migracja na Hostinger ma wymagać tylko zmiany jednej wartości `base` w `vite.config.js`, bez ruszania reszty kodu. Jedyne miejsca ze sztywno wpisanym adresem GitHub Pages: `og:image` i przyszłe `og:url`/canonical w `index.html` — czekają na decyzję o finalnej domenie (patrz `PROGRES.md`, pkt 25 z listy „Do zrobienia").
-- **Wydajność (Performance):** Zastosowanie techniki _Debounce_ przy wyszukiwaniu oraz _Intersection Observer_ do animacji, aby aplikacja działała w stałych 60 FPS.
+## 1. Architektura systemu
 
-## 2. Stos Technologiczny (Tech Stack)
+Aplikacja „Keto Thai” to **SPA (Single Page Application)** w czystym JavaScripcie, z modułem do śledzenia diety.
 
-Używamy wyłącznie natywnych, nowoczesnych technologii webowych, unikając narzutu wielkich frameworków.
+- **Renderowanie (✅):** cały interfejs wstrzykiwany do jednego `index.html` (Client-Side Rendering). Każda trasa to para `render()` (zwraca HTML jako string) + `init()` (podpina zdarzenia), opcjonalnie `cleanup()` (dziś tylko `/dashboard`). Szablony przez `html` z `src/utils/template.js` (`String.raw`, **nie escape'uje**, więc każdy tekst od użytkownika musi przejść przez `escapeHtml()`).
+- **Routing (✅):** własny silnik na `History API` (`pushState`, `popstate`) z delegacją zdarzeń (`[data-link]` na `body`). Zmiana samej kotwicy (`#…`) nie przerysowuje strony. Trasy z parametrem przez query string (`/recipes/edit?id=…`). Brak parametrów ścieżki (`/recipes/<id>`), patrz `RAPORT.md` #7.
+- **Guard Onboarding ↔ Dashboard (✅, `src/router.js`, `renderContent`):** przed renderem trasy silnik sprawdza `getUser()` (`src/services/userService.js`, odczyt `localStorage["keto_user"]`).
+    - Brak profilu (`!user`) i trasa spoza listy publicznych (`/`, `/onboarding`, `/recipes`, `/knowledge`, `/contact`, `/camp`) → przekierowanie na `/onboarding`. Dotyczy `/dashboard`, `/recipes/new` i `/recipes/edit`.
+    - Zapisany profil i wejście na `/onboarding` → przekierowanie na `/dashboard`.
+    - Przekierowanie przez `window.history.replaceState` (bez wpisu w historii).
+    - 📋 Po wdrożeniu kont (§1a) guard zostaje oparty na **profilu**, nie na koncie: zgodnie z wariantem B aplikacja działa bez logowania.
+- **Deep-linki na GitHub Pages (✅):** `public/404.html` zapamiętuje ścieżkę w `sessionStorage` i odbija na stronę główną; `initRouter()` odtwarza adres przez `replaceState` przed pierwszym renderem.
+- **Warstwa danych (✅ lokalnie, 📋 Supabase):** widoki nigdy nie dotykają `localStorage` bezpośrednio. Zapis i odczyt przechodzą przez serwisy (`userService`, `mealService`, `customRecipeService`), które wołają `src/state/store.js` (`saveState`/`loadState`). To jedyne miejsce do podmiany przy migracji na Supabase.
+    - Klucze: `keto_user` (profil + historia wagi), `keto_meals` (`{ "RRRR-MM-DD": [wpisy] }`), `keto_custom_recipes`, szkice kreatora (`keto_meal_draft`, wygasa następnego dnia).
+    - Stan pochodny nie jest zapisywany: „zostało” na Dashboardzie zawsze liczone jako `generateDietPlan(user) − sumMacros(dzień)`.
+    - Data dnia w czasie lokalnym (`getDateKey()`), różnice dni przez `getDaysSince()` (`utils/date.js`), nigdy `new Date("RRRR-MM-DD")`.
+    - ⚠️ `store.js` nie obsługuje błędów parsowania/zapisu i nie wersjonuje danych (`RAPORT.md` N1, `PROGRES.md` pkt 10).
+- **Hosting (🟡):** dziś GitHub Pages (`base: "/keto-thai-app/"` w `vite.config.js`). **Decyzja: docelowa domena kupiona w Hostingerze** (tylko domena, bez pakietu hostingu). DNS domeny wskazuje na GitHub Pages (4 rekordy `A` na serwery GitHub + `CNAME` dla `www`), więc pliki nadal publikuje GitHub Actions, a Hostinger pełni rolę rejestratora domeny. Płatny hosting Hostingera potrzebny byłby wyłącznie przy własnym backendzie (odrzucony, patrz §1a).
+    - Kolejność: **najpierw backend (Supabase), potem zakup domeny i podpięcie.**
+    - Ścieżki do zasobów budowane względnie / przez `import.meta.env.BASE_URL` (`getBase()`), więc migracja wymaga zmiany `base` na `"/"` w `vite.config.js`. Sztywny adres GitHub Pages zostaje tylko w `og:image` w `index.html` (+ brakujące `og:url`/`canonical`).
+    - `localStorage` jest przypisany do adresu strony: dane zapisane pod `github.io` nie przejdą na nową domenę. Dlatego domenę podpinamy przed pozyskaniem użytkowników.
+- **Wdrażanie (✅ CI/CD):** `.github/workflows/deploy.yml`. Każdy `push` na `main` to `npm install` → `npm run build` (Vite + `scripts/stamp-sw.js`, który wpisuje hash commita jako wersję cache Service Workera) → publikacja `dist/` na GitHub Pages. Brak ręcznego wgrywania plików, także po podpięciu domeny.
+- **Wydajność (🟡):** `IntersectionObserver` do animacji wejścia (`home.js`, `camp.js`), `loading="lazy"` na obrazach. Bez debounce'u (wyszukiwarka produktów filtruje lokalną tablicę, od 2 znaków). Wszystkie dane (produkty + przepisy) ładowane na każdej trasie (`RAPORT.md` N10).
 
-- **Język:** Vanilla JavaScript (ES6+ Modules) – nowoczesne funkcje strzałkowe, asynchroniczność (`async/await`), metody tablicowe (`map`, `filter`, `reduce`).
-- **Środowisko:** Vite – bundler zapewniający błyskawiczny serwer deweloperski (HMR) i optymalizację plików produkcyjnych.
-- **Stylizacja:** Czysty CSS3 z architekturą opartą na zmiennych (`variables.css`), CSS Grid i Flexbox. Podejście Mobile-First.
-- **Dane Zewnętrzne (APIs):** Edamam API lub Open Food Facts API (do pobierania bazy surowych produktów i ich makroskładników).
-- **Wizualizacja Danych:** Chart.js (natywne rysowanie wykresów na elemencie `<canvas>`).
-- **Zasoby:** Lucide Icons (wektorowe SVG renderowane w locie) oraz zdjęcia CC0 z platformy Unsplash.
+## 1a. Backend: Supabase (decyzja architektoniczna 2026-10-02) 📋
 
-## 3. Design System ("Dark Fighter")
+**Wybór:** Supabase (Backend as a Service: PostgreSQL + logowanie + reguły dostępu Row Level Security), plan darmowy, region UE (Frankfurt, ze względu na RODO).
+**Odrzucone:** Firebase (baza dokumentowa, brak SQL, rozliczenie od liczby odczytów), własny backend PHP/Node + MySQL na płatnym hostingu Hostingera (całe bezpieczeństwo po naszej stronie, największy skok trudności), pozostanie przy samym `localStorage` z eksportem pliku (brak synchronizacji urządzeń i wglądu trenera).
+**Uzasadnienie:** nauka SQL, autentykacji/autoryzacji i pracy z siecią bez pisania i utrzymywania serwera; darmowy limit (~500 MB) z dużym zapasem na skalę projektu; relacyjny model pasuje do danych (użytkownik → posiłki, pomiary, własne przepisy); fundament pod wgląd trenera w dziennik podopiecznego z `/camp`.
+**Znane ograniczenie planu darmowego:** projekt usypia po 7 dniach bez aktywności (e-mail z ostrzeżeniem tydzień wcześniej); budzi go wyłącznie właściciel w panelu („Resume project”), dane da się przywrócić do roku. W czasie uśpienia aplikacja musi pokazać komunikat błędu zamiast się wysypać.
 
-Wizualna tożsamość łączy surowość sportów walki z klinicznym podejściem do zdrowia.
+**Ustalenia:**
+- **Rejestracja, wariant B (konto później):** aplikacja działa w pełni bez konta (strona obiecuje „bez rejestracji”: `home.js`, `onboarding.js`). Zaproszenie do konta pada, gdy użytkownik ma już dane do stracenia: **po dodaniu pierwszego posiłku**, **po 5 dniach** używania i jako **stałe miejsce w dzienniku** na Dashboardzie. Po rejestracji dane z `localStorage` są przenoszone do bazy.
+- **Trzy stany użytkownika:** gość bez profilu → gość z profilem (dane lokalne) → zalogowany (dane w Supabase). Nawigacja i zaproszenia zależą od stanu.
+- **Metoda logowania:** e-mail + hasło **oraz** „Zaloguj przez Google”. Ekrany: logowanie, rejestracja, „nie pamiętam hasła”, ustawienie nowego hasła, strona konta (wyloguj, **usuń konto**, wymóg RODO). Google wymaga konfiguracji w Google Cloud (adresy przekierowań dla `localhost` i domeny, ekran zgody). Wbudowana poczta Supabase ma bardzo niski limit wysyłek, więc przed startem trzeba podpiąć własny serwer SMTP.
+- **Wejście w nawigacji:** link „Konto” w szufladzie hamburgera (mobile) i na dole lewego sidebara (desktop). Jedna trasa konta (formularz dla gościa / strona konta dla zalogowanego); zaproszenia prowadzą na nią z informacją, dokąd wrócić.
+- **Co trafia do bazy:** dane należące do użytkownika i zmieniające się (profil, historia wagi, dziennik, własne przepisy). **Zostają w plikach `src/data`:** 200 produktów USDA i 50 przepisów trenera (wspólne dla wszystkich, tylko do odczytu). Szkice kreatora mogą zostać w `localStorage`.
+- **Konsekwencja w kodzie:** serwisy przechodzą z synchronicznych na asynchroniczne (`async/await`); widoki dostają stany „ładowanie” i „błąd”.
+- **Konsekwencja we wdrażaniu:** kod publikuje się sam (`git push`), schemat bazy i reguły RLS zmienia się osobno w Supabase. Zasada: **najpierw baza, potem kod.**
 
-- **Kolorystyka:**
-    - Tło (Background): Głęboki grafit `#121212` oraz panele `#1E1E1E`.
-    - Akcent Główny (Primary): Tajskie Złoto `#D4AF37` (przyciski CTA, nagłówki, wykresy białka).
-    - Akcent Sukcesu (Success/Keto): Żywa Zieleń `#2ECC71` (wykresy tłuszczu, potwierdzenia, cele).
-- **Typografia:** `Oswald` (dynamiczne, rzucające się w oczy nagłówki) oraz `Inter` (maksymalnie czytelny tekst ciągły i interfejs trackera).
-    - System _Fluid Typography_ oparty na tokenach CSS (`clamp()`): `--font-size-hero`, `--font-size-h2`, `--font-size-h3`, `--font-size-lead`, `--font-size-kicker`.
-- **Wzorce UX (User Experience):**
-    - PWA-Ready Navigation (Bottom Tab Bar na Mobile, Sidebar na Desktop).
-    - Skeleton Loaders (ekrany ładowania udające docelowy interfejs).
-    - Toast Notifications (powiadomienia wysuwające się z rogu ekranu).
-    - Natywny element `<details>` dla rozwijanych list.
-    - Ghost Buttons dla akcji drugorzędnych.
-    - Płynna nawigacja wewnątrzstronowa (`scroll-behavior: smooth`, `scroll-padding-top: 80px`).
+**Etapy (każdy implementuje autor, krok po kroku):**
+1. Model danych na papierze (co do bazy, jakie tabele i relacje).
+2. Konto i projekt w Supabase, region UE, klucze (publiczny `anon` vs tajny `service_role`, który nigdy nie trafia do frontendu).
+3. Tabele i reguły RLS („każdy widzi tylko swoje wiersze”).
+4. Logowanie (e-mail + hasło, Google) i trasa konta.
+5. Serwisy na `async`, po jednym; obsługa błędów sieci (poprzedzone naprawą `RAPORT.md` N1).
+6. Przeniesienie danych z `localStorage` przy pierwszym logowaniu, w tym **scalanie** danych z dwóch urządzeń (decyzja otwarta).
+7. RODO (polityka prywatności, dane o wadze), zakup domeny w Hostingerze i podpięcie.
 
-## 4. Funkcjonalności i Ścieżki (Features & Routing)
+## 2. Stos technologiczny
 
-Oto kompletna mapa Twojej aplikacji.
+Natywne technologie webowe, bez frameworka.
 
-### Ścieżka `/` (Strona Główna / Landing Page)
+- **Język (✅):** Vanilla JavaScript (ES Modules): funkcje strzałkowe, `async/await` (wysyłka formularzy), metody tablicowe.
+- **Środowisko (✅):** Vite (jedyna zależność w `package.json`, `devDependencies`), serwer deweloperski z HMR i build produkcyjny.
+- **Stylizacja (✅):** czysty CSS: tokeny w `src/styles/base/global.css` (9 kolorów z `DESIGN.md`), Grid i Flexbox, mobile-first. Pliki: `base/`, `components/`, `pages/`, zbierane w `src/styles/main.css`. Zero `box-shadow`.
+- **Fonty (✅):** Google Fonts: Big Shoulders Stencil, Martian Mono, Public Sans.
+- **Dane żywieniowe (✅):** **USDA FoodData Central, SR Legacy (licencja CC0)**. 200 produktów w `src/data/productsData.js` (wartości na 100 g + miary domowe `portions` z `food_portion.csv`), generowane skryptem `scripts/build-products.js`, który przerywa przy niejednoznacznym dopasowaniu. Żadnego zewnętrznego API w czasie działania.
+    - ❌ **Porzucone:** Edamam API / Open Food Facts API.
+- **Przepisy (✅):** 50 przepisów w `src/data/recipesData.js`, makro i błonnik liczone z bazy USDA; zdjęcia CC0 hostowane lokalnie w `public/images/recipes/` (pobierane skryptem `scripts/fetch-recipe-image.js`).
+- **Model żywieniowy (✅, `src/services/calculatorService.js`):** BMR wzorem Mifflin-St Jeor, 5 poziomów aktywności PAL (`ACTIVITY_LEVELS`: mnożnik + białko g/kg), cel kaloryczny jako % TDEE (redukcja −15%, masa +10%), podłoga kaloryczna (`FLOOR_LIMIT`), białko od masy referencyjnej (BMI 25), węgle 50 g **netto** jako sufit, tłuszcz jako reszta. Uzasadnienie: `PROGRES.md` (sesje 18.09, 25.09, 02.10).
+    - ❌ Porzucone: sztywny split 70/20–25/5 i „mnożniki pod sporty walki” (pole `sport` zapisywane w profilu, bez wpływu na wynik).
+- **Formularze (✅):** **Web3Forms** (`fetch` POST do `api.web3forms.com`) w `/camp` i `/contact`. Klucz publiczny z założenia, zduplikowany w dwóch plikach; brak ochrony antyspamowej (`RAPORT.md` N4).
+- **Wykresy (✅):** Chart.js, tylko wykres liniowy wagi na Dashboardzie. Ładowany z CDN globalnie, bez przypiętej wersji (`RAPORT.md` #24).
+- **Ikony (✅):** Lucide (UMD z CDN `lucide@latest`, renderowane przez `lucide.createIcons()` po każdym renderze trasy) + SVG marek z Simple Icons w stopce.
+- **PWA (✅):** `public/manifest.webmanifest`, ikony 192/512/maskable, `public/service-worker.js` (cache-first, wersja per commit), baner instalacji (`src/utils/installPrompt.js`, zdarzenie `beforeinstallprompt`). ⚠️ SW zapisuje w cache także odpowiedzi z błędem (`RAPORT.md` N2).
+- **Skrypty narzędziowe (poza bundlem, `scripts/`):** `build-products.js` (baza produktów z CSV USDA), `fetch-recipe-image.js` (lokalne zdjęcia przepisów), `screenshot-steps.js` (zrzuty do sekcji Steps; `puppeteer-core` instalowany tymczasowo `--no-save`), `stamp-sw.js` (wersja Service Workera).
+- **Backend (📋):** Supabase (§1a).
+- **Brak (świadomie odnotowane):** testów automatycznych (rekomendacja: Vitest dla `calculatorService`, `productService`, `utils/date.js`), lintera/formattera, analityki.
 
-- **Cel:** Konwersja użytkownika i budowa autorytetu w sporcie i diecie keto.
-- **Struktura:**
-    1. **Hero Section:** Pełnoekranowe, przyciemnione zdjęcie z campu Muay Thai, mocny nagłówek H1 i jeden główny przycisk CTA: "Oblicz swoje Keto-Makro".
-    2. **3 Filary (Grid):** Trzy karty z ikonami SVG (Muay Thai, Ketosis, Mindset).
-    3. **Metamorfozy (Social Proof):** Siatka zdjęć "Przed i Po" podopiecznych.
-    4. **Bio:** Asymetryczna sekcja z Twoim zdjęciem i krótką historią.
+## 3. Design system
 
-### Ścieżka `/camp` (Fighter's Camp – Mentoring 1-on-1 / Sales Page)
+**Jedyne źródło prawdy: `DESIGN.md`** („Keto Thai: Dziennik Treningowy”: papier kraft na ciemnej macie, czerwień ołówka trenera, Big Shoulders Stencil / Martian Mono / Public Sans, detale fizyczne zamiast cieni). Kierunek wybrany metodą skilla `impeccable` (`.claude/skills/impeccable/`); hook detektora AI-slopu włączony przy edycjach UI.
 
-- **Cel:** Główna ścieżka monetyzacji premium (High-Ticket) – kompleksowy, 12-tygodniowy program transformacji sylwetki i wydolności dla osób aktywnych.
-- **Struktura i moduły:**
-    1. **Hero Section:** Dynamiczny nagłówek z obietnicą formy życia, podwójne CTA ("Aplikuj do programu" oraz anchor do szczegółów) i tło oparte na `radial-gradient`.
-    2. **3 Fazy Transformacji (`.camp-phases`):** Przejrzysty podział 12 tygodni (Adaptacja -> Rekompozycja -> Szczyt Formy) ze wskaźnikami postępu, znakami wodnymi w tle i kolorystycznymi poświatami.
-    3. **Bento Grid Wsparcia (`.camp-features`):** 4 kluczowe filary opieki trenerskiej w asymetrycznym układzie (Indywidualny Protokół, Wideo-Analiza, Komunikator 24/7, Protokół Reverse Dieting / gwarancja braku jojo).
-    4. **Kwalifikacja:** Zestawienie kontrastowych kart ("Dla kogo jest ten program" vs "Dla kogo NIE jest").
-    5. **Formularz Aplikacyjny (`#apply`):** Kwalifikacja zgłoszenia (sport, parametry, cel) z obsługą wysyłki i widokiem potwierdzenia (Success State).
+- ❌ **Porzucony kierunek „Dark Fighter”** (złoto `#D4AF37`, zieleń `#2ECC71`, Oswald/Inter, tokeny `--font-size-*`) i „Stealth Minimalism”. Nie stosować.
+- **Wzorce UX wdrożone (✅):** bottom tab bar (mobile) / sidebar po lewej (desktop ≥768 px) + topbar z szufladą hamburgera; toast z pieczątką (`components/toast.js`, `role="status"`, pauza przy hover/fokusie); dostępne modale (`confirmModal.js`, `submitSuccessModal.js`, modal wagi; `utils/focusTrap.js`); natywne `<details>` (zastrzeżenia w stopce); ghost buttons; płynne przewijanie do kotwic.
+- 📋 Nie wdrożone: skeleton loaders (staną się potrzebne razem z ładowaniem danych z Supabase).
 
-### Ścieżka `/onboarding` (Kalkulator BMR)
+## 4. Funkcjonalności i trasy
 
-- **Cel:** Precyzyjne wyliczenie zapotrzebowania i zaplanowanie celu.
-- **Mechanika:** Multi-step Wizard (formularz krokowy). Użytkownik płynnie przechodzi przez pytania (Cel -> Metryka -> Aktywność Sportowa).
-- **Logika:** Wykorzystanie wzoru Mifflin-St Jeor oraz specyficznych mnożników pod sporty walki. Wynik dzielony na sztywny Keto-Split (ok. 70% tłuszczy, 20-25% białka, 5% węglowodanów).
+### `/` Strona główna ✅
+- **Cel:** konwersja i autorytet (tryb Persuade).
+- **Dziś:** Hero → Philosophy (3 karty) → About → Steps (zrzuty prawdziwej aplikacji) → Camp-offer → FAQ → finałowe CTA. 📋 Docelowa kolejność „Lejek” z `MARKETING.md`: Hero → Steps → About → Philosophy → Camp-offer → FAQ → CTA.
+- ❌ Sekcja „Metamorfozy przed/po”: porzucona (brak podopiecznych; dowodem jest wieloletnia forma autora, `MARKETING.md`).
 
-### Ścieżka `/tracker` (Panel Użytkownika / SaaS)
+### `/camp` Fighter's Camp, mentoring 1-na-1 ✅
+- Hero → Camp-coach (trener) → oś czasu 3 faz (12 tygodni) → 4 filary wsparcia (różne kontenery) → kwalifikacja (dla kogo / dla kogo nie) → formularz aplikacyjny (Web3Forms, notka RODO, modal potwierdzenia). Limit 5 miejsc to realne zobowiązanie.
 
-- **Cel:** Codzienne centrum dowodzenia i zarządzanie makroskładnikami.
-- **Elementy interfejsu:**
-    1. **Date Controller:** Nawigacja między dniami z aktualizacją stanu.
-    2. **Daily Intake (Donut Chart):** Dynamiczny wykres kołowy Chart.js pokazujący pozostałe kalorie oraz rozkład B/T/W.
-    3. **Weight Trend (Line Chart):** Wykres liniowy śledzący progresję wagi na przestrzeni tygodni.
-    4. **Meal Accordion:** Lista zjedzonych posiłków z podziałem na pory dnia. Wykorzystanie `<details>`, gdzie kliknięcie rozwija szczegółową listę składników i opcję usuwania.
-    5. **Hydration Module:** Klikalne ikony wody/elektrolitów.
+### `/onboarding` Kalkulator ✅
+- **Jeden formularz** (nie wieloetapowy kreator): płeć, wiek (18–99), wzrost, waga (`WEIGHT_LIMITS` 35–200 kg), aktywność, rodzaj sportu, cel (redukcja / utrzymanie / masa) + wymagany checkbox zastrzeżeń medycznych (niezapisywany). Logika: §2 „Model żywieniowy”.
 
-### Moduł Wyszukiwarki (Search Modal - dla trackera)
+### `/dashboard` Panel użytkownika ✅ (dawniej planowany jako `/tracker`)
+- **Bilans dnia:** tabela Cel / Zjedzone / Zostało + miarki, pieczątka przy przekroczonych węglach, notka przy podłodze kalorycznej.
+- **Dziennik posiłków:** wpisy z ikoną pory, makro, usuwaniem; przypomnienie o ważeniu po 7 dniach (`WEIGH_IN_INTERVAL_DAYS`).
+- **Trend wagi:** wykres liniowy Chart.js + modal pomiaru z walidacją przy polu.
+- „Skasuj dane aplikacji”.
+- ❌ Porzucone: wykres kołowy makro (pokazywał niezmienny plan), moduł nawodnienia.
+- 📋 Przełącznik dni (`getDateKey(date)` przyjmuje już dowolną datę), wejście do `/camp` (`RAPORT.md` #30), stałe miejsce zaproszenia do konta (§1a).
 
-- **Cel:** Dodawanie produktów do dziennika z dbałością o wydajność przeglądarki.
-- **Mechanika:**
-    - Pasek wyszukiwania z opóźnieniem (Debounce), odpytujący zewnętrzne API.
-    - Wyniki wyświetlane tekstowo (bez zdjęć), z ikonami kategorii i "pigułkami" (badges) makroskładników.
-    - Wybór gramatury, który w czasie rzeczywistym przelicza makro na bazie wybranej wagi produktu.
-    - Opcja "Add Custom" pozwalająca wpisać własny produkt ręcznie.
+### `/recipes` Przepisy ✅
+- Siatka 50 przepisów trenera + własne przepisy, filtry kategorii, szczegóły z instrukcjami, „Dodaj do mojego dnia” (wspólne `components/addToDay.js`, toast „Dodano” z linkiem do dnia).
+- 📋 Własny adres szczegółu (`/recipes/<id>`), porcje przy dodawaniu, ulubione.
 
-### Ścieżki Dodatkowe (Wartość Dodana)
+### `/recipes/new` i `/recipes/edit?id=` Kreator własnych przepisów ✅ (dawniej „Search Modal”)
+- Wyszukiwarka 200 produktów lokalnych (`productService.searchProducts`, bez API, bez debounce), ilość w gramach albo w miarach domowych (łyżka, jajko M…), podgląd makro, zapis składu `{ productId, grams }`, szkic odporny na zamknięcie aplikacji, edycja zapisanego przepisu.
+- 📋 „Dodaj własny produkt” (np. twaróg, brak w USDA).
 
-- `/recipes`: Galeria dopracowanych dań keto. Posiada przycisk "Add to my day", który wysyła pełne makro potrawy prosto do obiektu dzisiejszego dnia w trackerze.
-- `/knowledge`: Baza Wiedzy & Dynamiczny Blog / CMS:
-    1. **Widok Siatki (Articles Grid):**
-        - Karty artykułów z miniaturą (cover image), pigułką kategorii (Ketoza, Wydolność, Elektrolity, Regeneracja), czasem czytania, tytułem, abstraktem i CTA "Czytaj artykuł".
-        - Pasek filtrów po kategoriach oraz pole wyszukiwarki z opóźnieniem (Debounce).
-    2. **Widok Pojedynczego Artykułu (Single Article View):**
-        - Dynamiczny routing (`/knowledge?article=slug` lub routing z parametrem).
-        - Pełna treść z formatowaniem, cytatami badań naukowych, sekcją "Kluczowe Wnioski" oraz dolnym banerem CTA kierującym do `/camp`.
-        - Elementy FOMO (artykuły z kłódką dostępne wyłącznie dla podopiecznych Fighter's Camp).
-    3. **Dynamiczny System Zarządzania Artykułami (Hybryda Data-Driven + Panel Twórcy):**
-        - **Warstwa Danych:** Baza wpisów w `src/data/articles.js` jako punkt startowy.
-        - **Formularz Dodawania Postów (Mini-CMS):** Interaktywny modal / widok umożliwiający dodanie nowego artykułu (tytuł, kategoria, treść, zdjęcie, tagi), który zapisuje wpis do `localStorage` (docelowo API/baza danych) i w locie łączy się z bazą statyczną, natychmiast odświeżając widok siatki.
-- `/contact`: Profesjonalny formularz do zapytań o indywidualną współpracę trenerską.
-- `/treningi-tychy` (ustalone 2026-09-09): Osobna trasa dla lokalnej oferty treningów personalnych Muay Thai na macie w Tychach i okolicach (`STRATEGY.md` §3 „Dominacja Lokalna"). Świadomie **nie** jest sekcją na `/` — mieszanie intencji „kalkulator makro" (produkt) z „trener personalny Tychy" (usługa lokalna) na jednej stronie rozmywałoby temat dla obu fraz w wyszukiwarce, a realne lokalne SEO i tak napędza Google Business Profile + dedykowany URL, nie treść na home. Home odsyła tu tylko jednym zdaniem z linkiem — to mały, dodatkowy lejek na lokalnego klienta, nie główna ścieżka produktu. Treść (lokalizacja, forma zajęć, dla kogo, kontakt) do dostarczenia — pełne uzasadnienie decyzji w `MARKETING.md` i `PROGRES.md` (sesja 2026-09-09 cz. 2).
+### `/contact` Kontakt ✅
+- Formularz (Web3Forms), karta zaufania z danymi trenera, notka RODO.
 
-    **Lokalne SEO pod tę trasę (do zrobienia przy wdrożeniu, nie dziś):**
-    - **Google Business Profile (GBP)** — darmowy profil firmy w Google/Google Maps (karta w wynikach + "local pack" z mapką). Dla usługi lokalnej to zwykle większa dźwignia rankingowa niż sama treść strony — założyć jako pierwszy krok, niezależnie od tego, kiedy strona będzie gotowa.
-    - **Spójność NAP** (Name, Address, Phone) — nazwa, adres i telefon muszą być **identyczne wszędzie**: na `/treningi-tychy`, w GBP, na Facebooku/Instagramie. Rozjazd w którymkolwiek miejscu Google odczytuje jako sygnał niepewności/nieaktywności firmy i osłabia ranking lokalny.
-    - **Docelowo:** znacznik `LocalBusiness` (JSON-LD) na samej trasie, gdy adres/godziny/forma zajęć będą ustalone.
+### `/knowledge` Baza wiedzy 🟡
+- Dziś: uczciwy stan „W opracowaniu” (pieczątka `.stamp-off`).
+- **Decyzja architektoniczna (2026-10-05): wariant C, czyli pliki Markdown w repo, najpierw tłumaczenie w przeglądarce, później przy buildzie.**
+    - **Główny kanał:** linki w Stories na Instagramie i w relacjach na Facebooku (naklejka „Link”). Liczy się to, że człowiek po kliknięciu trafia prosto na artykuł. Podgląd linku dla robotów jest drugorzędny. Tempo: 1–2 artykuły tygodniowo, jedyny autor to właściciel repo (publikacja = commit + push, bez panelu admina).
+    - **Treść:** jeden plik `.md` na artykuł. Frontmatter (tytuł, adres, zdjęcie, krótki opis…; lista pól do ustalenia) zasila kartę w siatce, a treść pokazuje się w widoku artykułu.
+    - **Widoki:** `/knowledge` to siatka kart (duży tytuł, zdjęcie, krótki opis; tryb Read z `DESIGN.md`), a `/knowledge/<slug>` to pełny artykuł z CTA do `/camp`.
+    - **Etap 1 (📋):** pliki `.md` wczytywane przez Vite jako tekst (każdy artykuł ładowany dopiero przy otwarciu, żeby nie powiększać `RAPORT.md` N10), frontmatter oddzielany od treści, parser Markdown → HTML w przeglądarce (biblioteka czy własny parser: decyzja otwarta). Działa dla ludzi, ale robot nic nie widzi (brak podglądów i SEO), a wejście z linku przechodzi przez `404.html` (podwójne ładowanie).
+    - **Etap 2 (📋, gdy artykułów będzie kilkanaście):** skrypt po `vite build` (jak `stamp-sw.js`) generuje `dist/knowledge/<slug>/index.html` z własnymi znacznikami Open Graph. Pliki `.md` się nie zmieniają. Do wyboru: B1 (samodzielna strona statyczna) lub B2 (strona statyczna przejmowana przez SPA, czyli ręczna hydratacja).
+    - **Warunki konieczne już w etapie 1:**
+        - **Adres artykułu to ścieżka** (`/knowledge/<slug>`), **nie query** (`?a=<slug>`). GitHub Pages ignoruje query, więc przy query etap 2 wymagałby zmiany adresów, a linki ze starych Stories przestałyby działać.
+        - **Router z parametrem ścieżki** (dziś `routes[path]` dopasowuje tylko dokładne klucze, a nieznana ścieżka cicho pokazuje `/`). Przyda się też dla `/recipes/<id>`.
+        - **Poprawiony guard:** dziś porównuje ścieżkę z listą dokładnych napisów, więc gość wchodzący na `/knowledge/<slug>` trafia na `/onboarding`. Linki z Instagrama i Facebooka otwierają się we wbudowanej przeglądarce z pustym `localStorage`, czyli **każdy klikający w Story jest gościem bez profilu**.
+    - ❌ **Odrzucone:** W1 (artykuły w Supabase i panel admina): przy 1–2 wpisach tygodniowo panel się nie zwraca, a darmowy Supabase usypia po 7 dniach bez aktywności (link ze Story pokazałby błąd). Odrzucone też B od razu (za dużo nowych mechanizmów naraz przy kanale, w którym roboty są drugorzędne).
+    - 📋 **Później:** kłódka 80/20 ze `STRATEGY.md` (treść premium w Supabase za RLS, publiczna zajawka w pliku, czyli rozwinięcie w stronę wariantu W3), parametry UTM w linkach ze Stories (`404.html` zachowuje query string), analityka.
 
-## 5. Struktura Folderów
+### Trasa konta 📋
+- Logowanie / rejestracja (e-mail + hasło, Google) dla gościa; e-mail, wyloguj, usuń konto dla zalogowanego. Szczegóły w §1a.
+
+### `/treningi-tychy` 📋 (ustalone 2026-09-09)
+Osobna trasa dla lokalnej oferty treningów personalnych Muay Thai na macie w Tychach i okolicach (`STRATEGY.md` §3 „Dominacja Lokalna”). Świadomie **nie** jest sekcją na `/`: mieszanie intencji „kalkulator makro” (produkt) z „trener personalny Tychy” (usługa lokalna) na jednej stronie rozmywałoby temat dla obu fraz w wyszukiwarce, a realne lokalne SEO i tak napędza Google Business Profile + dedykowany URL, nie treść na home. Home odsyła tu tylko jednym zdaniem z linkiem. To mały, dodatkowy lejek na lokalnego klienta, nie główna ścieżka produktu. Treść (lokalizacja, forma zajęć, dla kogo, kontakt) do dostarczenia. Pełne uzasadnienie decyzji w `MARKETING.md` i `PROGRES.md` (sesja 2026-09-09 cz. 2).
+
+**Lokalne SEO pod tę trasę (do zrobienia przy wdrożeniu):**
+- **Google Business Profile (GBP):** darmowy profil firmy w Google/Google Maps. Dla usługi lokalnej to zwykle większa dźwignia rankingowa niż sama treść strony, więc warto założyć go jako pierwszy krok.
+- **Spójność NAP** (Name, Address, Phone): identyczne dane wszędzie (strona, GBP, Facebook, Instagram).
+- **Docelowo:** znacznik `LocalBusiness` (JSON-LD), gdy adres, godziny i forma zajęć będą ustalone.
+
+## 5. Struktura folderów (stan na 2026-10-02)
 
 ```text
 keto-thai-app/
-├── index.html
+├── index.html                  # szkielet: topbar, szuflada, tabbar, #app, stopka (zastrzeżenia)
+├── vite.config.js              # base: "/keto-thai-app/" → "/" po podpięciu domeny
 ├── package.json
-├── public/
-│   └── manifest.webmanifest
+├── .github/workflows/deploy.yml   # CI/CD: build + publikacja na GitHub Pages
+├── scripts/                    # narzędzia poza bundlem (produkty, zdjęcia, zrzuty, wersja SW)
+├── public/                     # kopiowane 1:1 do dist/: 404.html, manifest, service-worker.js,
+│                               # ikony, logo SVG, zdjęcia, images/recipes/, images/steps/
 └── src/
-    ├── api/
-    ├── assets/
-    ├── components/
-    ├── data/
-    │   └── articles.js
-    ├── pages/
-    │   ├── camp.js
-    │   ├── dashboard.js
-    │   ├── home.js
-    │   ├── knowledge.js
-    │   ├── onboarding.js
-    │   └── recipes.js
-    ├── services/
-    ├── state/
-    ├── styles/
-    │   ├── base/
-    │   ├── components/
-    │   └── pages/
-    ├── utils/
-    ├── main.js
-    ├── router.js
-    └── routes.js
+    ├── main.js                 # start: router, aktywny tab, szuflada, SW, zastrzeżenia
+    ├── router.js               # History API + guard profilu
+    ├── routes.js               # mapa tras → render/init/cleanup
+    ├── components/             # addToDay, confirmModal, submitSuccessModal, toast
+    ├── data/                   # productsData.js (USDA), recipesData.js
+    ├── pages/                  # home, camp, onboarding, dashboard, recipes, mealBuilder, contact
+    ├── services/               # calculator, user, meal, customRecipe, product
+    ├── state/store.js          # jedyny dostęp do localStorage (przyszła podmiana na Supabase)
+    ├── styles/                 # main.css + base/ components/ pages/
+    └── utils/                  # date, env, escapeHtml, focusTrap, installPrompt, template
 ```
+⚠️ `src/assets/` (stare makiety i kopie zdjęć, 5,2 MB) nie jest nigdzie używany: do usunięcia (`RAPORT.md` N7). 📋 Przy Supabase dojdzie klient bazy (np. `src/services/supabaseClient.js` lub `src/api/`).
 
-## 6. Dalszy Rozwój Aplikacji (Post-MVP / Roadmap)
+## 6. Dalszy rozwój (Post-MVP / roadmap)
 
-Sekcja gromadząca zaawansowane funkcjonalności planowane do wdrożenia po ukończeniu i przetestowaniu wersji podstawowej (MVP).
+### 1. PWA ✅ wdrożone (2026-09-24)
+Manifest, ikony, Service Worker z wersją per commit, baner instalacji. Do poprawy: cache tylko poprawnych odpowiedzi (`RAPORT.md` N2), test na fizycznym telefonie.
 
-### 1. Moduł PWA (Progressive Web App – Instalowalność Mobilna)
+### 2. Książka przepisów 🟡
+- ✅ Szczegóły z instrukcją krok po kroku, „Dodaj do mojego dnia”, pora posiłku z kategorii przepisu.
+- 📋 Przelicznik porcji (1×, 2×, 0,5×), wybór pory posiłku przy dodawaniu, własny URL przepisu.
 
-- **Cel:** Przekształcenie SPA w aplikację instalowalną bezpośrednio na ekranie głównym smartfona (iOS / Android) w trybie pełnoekranowym (`display: standalone`).
-- **Web App Manifest (`public/manifest.webmanifest`):** Definicja ikon (192x192, 512x512, maskable), kolorów motywu (`theme_color: #121212`) i nazwy.
-- **Service Worker (`service-worker.js`):** Buforowanie kluczowych zasobów w Cache API dla wsparcia trybu **Offline-First**.
-- **Install Prompt:** Dedykowany baner zachęcający do instalacji po wykryciu zdarzenia `beforeinstallprompt`
+### 3. Dynamiczny bilans w Dashboardzie ✅
+Cel z kalkulatora − zjedzone, węgle netto, ostrzeżenie o przekroczeniu węgli, natychmiastowe przeliczenie po dodaniu posiłku.
 
-### 2. Interaktywna Książka Przepisów (`/recipes`)
+### 4. Konta i synchronizacja (Supabase) 📋
+Patrz §1a. Odblokowuje: dane na wielu urządzeniach, wgląd trenera w dziennik podopiecznego Campu, artykuły tylko dla podopiecznych.
 
-- **Widok Szczegółowy / Modal Przepisu:**
-    - Składniki z gramaturami i przelicznikiem porcji (1x, 2x, 0.5x).
-    - Instrukcja przygotowania krok po kroku (numerowane etapy).
-    - Przycisk _"Dodaj do mojego dnia"_: Wybór posiłku (Śniadanie / Obiad / Kolacja) i automatyczny transfer makro do dziennika.
-
-### 3. Zaawansowany Dynamiczny Bilans w Dashboardzie (`/tracker`)
-
-- **Wykres Pozostałego Limitu (Macro & Calorie Remaining):**
-    - Wizualizacja w czasie rzeczywistym: _Zapotrzebowanie z Onboardingu - Zjedzone posiłki_.
-    - Dokładny licznik pozostałych kalorii oraz gramatury makroskładników (Białko, Tłuszcz, Węglowodany netto).
-- **Keto Threshold Alert:** Wizualne ostrzeżenie przed przekroczeniem dziennego limitu węglowodanów (ochrona przed wypadnięciem z ketozy).
-- **Reaktywna Integracja:** Każdy posiłek dodany z bazy lub z `/recipes` natychmiastowo przelicza bilans w Dashboardzie.
-
-### 4. Narzędzia Inteligentnej Konwersji & Analityki (Mentoring Upsell)
-
-- **Keto Readiness Score (Poranny Test Gotowości):**
-    - 3 szybkie pytania diagnostyczne (Jakość snu, Poziom energii, Regeneracja/Nawodnienie).
-    - Kontekstowy system rekomendacji: w przypadku powtarzających się spadków formy lub stagnacji system wyświetla inteligentną sugestię konsultacji i audytu parametrów z mentorem na ścieżce `/camp`.
-- **Eksport Raportu Postępów (Fighter's Metabolic Report):**
-    - Możliwość wygenerowania i pobrania estetycznego raportu podsumowującego (trendy wagi, średni bilans makro, nawodnienie) do formatu PDF / podglądu do druku, ułatwiającego analizę postępów z trenerem.
+### 5. Narzędzia konwersji i analityki (mentoring upsell) 📋
+- **Keto Readiness Score (poranny test gotowości):** 3 pytania (sen, energia, regeneracja); przy powtarzających się spadkach formy kontekstowa sugestia konsultacji na `/camp`.
+- **Raport postępów (Fighter's Metabolic Report):** podsumowanie (trendy wagi, średni bilans makro) do PDF / druku dla analizy z trenerem.
+- Przechwyt e-maila dla niezdecydowanych i analityka bez ciasteczek (`RAPORT.md` #29).

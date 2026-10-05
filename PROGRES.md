@@ -11,12 +11,16 @@ Aplikacja Keto Thai to Vanilla JS SPA. Jedyne i ostateczne źródło prawdy dla 
 - **Wspólne narzędzia (`src/utils/`):** `env.js` (`getBase()` z `import.meta.env.BASE_URL`, `getCurrentPath()`), `date.js` (`getDateKey()`, `formatDateKey()`), `focusTrap.js` (`trapFocus()` — używany przez modale), `escapeHtml.js` (każdy tekst od użytkownika wstawiany do `innerHTML` musi przez niego przejść).
 - **Komponenty (`src/components/`):** `confirmModal.js` (decyzje), `submitSuccessModal.js`, `toast.js` (od 2026-10-02 — potwierdzenia bez blokowania ekranu z pieczątką, `showToast({ stamp, title, meta, note, action })`; używany przez „Dodaj do dnia" i zapis wagi), `addToDay.js` (wspólne „Dodaj do dnia" dla `/recipes` i kreatora).
 - **Waga (od 2026-10-02):** jeden modal pomiaru z dwoma wejściami („+ Pomiar" przy wykresie, „Dodaj pomiar" w przypomnieniu w dzienniku po `WEIGH_IN_INTERVAL_DAYS` = 7 dniach). Zakres `WEIGHT_LIMITS` (35–200 kg) w `userService.js` — wspólny dla onboardingu i Dashboardu. Dni kalendarzowe przez `getDaysSince()` (`utils/date.js`), nigdy `new Date("RRRR-MM-DD")`.
+- **Warstwa danych (od 2026-10-04):** `src/state/store.js` jest jedynym dostępem do `localStorage`. `readState(key)` zwraca `{status: "empty" | "ok" | "corrupted"}`, `saveState()` zwraca `true/false`, `removeState()` kasuje też kopię `<klucz>_corrupted`. Serwisy decydują, co znaczy uszkodzenie (`quarantineCorrupted` + toast), widoki tylko pokazują wynik. `getUser()` waliduje kształt profilu i naprawia brakującą `weightHistory`.
+- **Baner instalacji PWA (od 2026-10-04):** globalny (`components/installBanner.js`, w `<body>` poza `#app`), dwa tryby: `beforeinstallprompt` (Android/desktop Chrome) i instrukcja ręczna na iOS (`installGuide.js`). `isStandalone()` i `isIOS()` w `utils/installPrompt.js`. Service Worker cache'uje tylko status 200; zewnętrzne skrypty i fonty mają `crossorigin`.
 - **Footer:** istnieje od dziś, `src/styles/components/footer.css` — nowy plik, od razu na docelowych tokenach (nic do migracji).
 - **Narzędzie:** skill `impeccable` (`.claude/skills/impeccable/`) używany do audytów i jako checklista (`craft-floor.md`) przy każdej edycji UI. Hook detektora **włączony**.
 - **Audyt całościowy:** `RAPORT.md` (2026-09-14) — pierwszy pełny audyt architektury/layoutu/designu/UI-UX/a11y/wydajności/SEO/copywritingu całej aplikacji naraz (nie pojedynczej strony). 30 znalezisk z tabelą metryk stanu do porównań w kolejnych sesjach. Odtąd punkt odniesienia do priorytetyzacji pracy, obok `MARKETING.md`/`DESIGN.md`.
 - **Przechwytywanie leadów:** formularz `/camp` wysyła realnie przez **Web3Forms** (klucz w `camp.js`, `initCamp()`) — pierwsza zewnętrzna integracja sieciowa w projekcie (wcześniej appka rozmawiała wyłącznie z `localStorage`).
 - **Model żywieniowy (w kodzie od 2026-09-25, decyzje z 18.09):** `calculatorService.js` liczy plan metodą **kotwic fizjologicznych**: 5 poziomów aktywności PAL z tabeli `ACTIVITY_LEVELS` (mnożnik + białko g/kg w jednym miejscu), cel kaloryczny jako **% TDEE** (redukcja −15%, masa +10%), podłoga 1200 K / 1500 M ograniczona przez TDEE, białko od **masy referencyjnej** (`min(waga, waga przy BMI 25)`), węgle **50 g netto** jako sufit, tłuszcz jako reszta. Kontrakt `generateDietPlan()`: `calories/protein/fats/netCarbs` (od 01.10 `netCarbs` zamiast `carbs`) + `floorLimit/deficitPercent` (od 02.10 — czy i jak podłoga zmieniła redukcję; Dashboard pokazuje to w notce pod bilansem). Pełne uzasadnienie: sesje 2026-09-18, 2026-09-25, 2026-10-02.
 - **Zastrzeżenie medyczne (od 2026-10-02):** jedno źródło treści — sekcja `<details id="zastrzezenia">` w stopce (`index.html`); linkują do niej onboarding (wymagany checkbox, niezapisywany), notka „zero deficytu" na Dashboardzie i FAQ. Lista przeciwwskazań z Muscogiuri i in. 2021 (Obesity Facts). Kalkulator od 18 lat.
+- **Baza wiedzy `/knowledge` (decyzja 2026-10-05, niewdrożone):** wariant C, czyli pliki `.md` w repo, najpierw parser w przeglądarce, później statyczne strony przy buildzie. Główny kanał to linki w Stories. Adres artykułu to ścieżka `/knowledge/<slug>`. Wymaga routera z parametrem i poprawionego guarda. Szczegóły: `PLAN.md` §4.
+- **Backend i domena (decyzja 2026-10-02, niewdrożone):** Supabase (konto później, e-mail + hasło + Google, „Konto” w szufladzie i sidebarze); domena z Hostingera wskazująca na GitHub Pages, podpinana po backendzie. Szczegóły: `PLAN.md` §1a.
 - **Produkty i własne przepisy (od 2026-09-25) — trzy różne byty:** (1) **produkt** — tylko do odczytu, `src/data/productsData.js`, 200 pozycji z USDA SR Legacy (CC0), wartości na 100 g, opcjonalnie miary domowe `portions` (od 2026-10-02, wagi z `food_portion.csv`, do przepisu trafiają zawsze gramy); (2) **własny przepis** — `localStorage["keto_custom_recipes"]`, skład `{ productId, grams }` + sumy w kształcie `RECIPES_DATA`; (3) **wpis w dzienniku** — kopia makro (snapshot) w `keto_meals`, więc usunięcie przepisu nie rusza historii. Szkic kreatora: `keto_meal_draft` (z datą, wygasa następnego dnia). Żadnego zewnętrznego API w runtime.
 
 ---
@@ -383,6 +387,105 @@ Sesja prowadzona częściowo metodą mentorską (warianty, decyzje użytkownika)
 
 ---
 
+### Sesja 2026-10-02 (cz. 2): priorytety z audytu + decyzja o backendzie (Supabase) i domenie (Hostinger)
+
+Sesja bez zmian w kodzie aplikacji: przegląd `RAPORT.md` (aktualizacja z 02.10) oraz decyzje architektoniczne. Zmienione pliki: `PLAN.md` (pełna synchronizacja ze stanem kodu) i ten plik.
+
+1. **Priorytety „na już” z `RAPORT.md` §5 Etap 1, oba potwierdzone ponownie w kodzie:**
+    - **N1:** `loadState` w `src/state/store.js` robi `JSON.parse` bez `try/catch`. Uszkodzony wpis w `localStorage` przerywa `initDashboard()` w połowie, a wraz z nim przestaje działać „Skasuj dane aplikacji”, czyli jedyne wyjście z sytuacji.
+    - **N2:** `public/service-worker.js` robi `cache.put` bez sprawdzenia `response.ok`, więc błędy (404/500 z CDN) są serwowane z cache do następnego wdrożenia.
+    - **#17 + #18:** nieprawdziwe dane na stronie głównej (pasek makro 70%, „SERIA 5/7”, „2450 kcal”), zdjęcia z Unsplash w idiomie dziennika, publiczne „[ROK] (do uzupełnienia)”.
+    - **#26:** trzy literówki (`recipes.js:50`, `home.js:438`, `home.js:444`).
+    - Kolejność rekomendowana: N1 jako pierwszy (skutki trudne do odwrócenia, a jednocześnie rozgrzewka przed Supabase: ta sama lekcja o obsłudze błędów).
+2. **Backend: wybrany Supabase** (z 4 wariantów: `localStorage` + eksport pliku / Supabase / Firebase / własny PHP lub Node + MySQL na płatnym hostingu Hostingera). Uzasadnienie i pełne ustalenia: `PLAN.md` §1a. Uczciwie odnotowane: Supabase uczy SQL, autentykacji/autoryzacji, RLS i pracy z siecią, ale **nie** uczy pisania serwera (endpointy, hashowanie haseł). Na to ewentualnie osobny projekt Node + Express w przyszłości.
+    - **Usypianie planu darmowego** (sprawdzone w dokumentacji Supabase): po 7 dniach niskiej aktywności, e-mail z ostrzeżeniem tydzień wcześniej, budzi wyłącznie właściciel („Resume project”), przywrócenie możliwe do roku od uśpienia. Na stałe wyłącza je tylko plan Pro.
+3. **Rejestracja: wariant B (konto później)**, wybrany przez użytkownika, bo strona obiecuje „bez rejestracji” (`home.js:34`, `onboarding.js:45`). Drugi argument: prośba o konto pada, gdy człowiek ma już dane do stracenia. Momenty zaproszenia: **po 1. posiłku + po 5 dniach + stałe miejsce w dzienniku**. Trzy stany użytkownika: gość bez profilu → gość z profilem → zalogowany.
+4. **Logowanie: e-mail + hasło + Google.** Ekrany: logowanie, rejestracja, reset hasła, nowe hasło, konto (wyloguj, usuń konto, RODO). **Wejście: wariant 2**, czyli „Konto” w szufladzie hamburgera (mobile) i na dole sidebara (desktop). Odrzucone: przycisk w topbarze (ciasno przy 320 px), 5. zakładka tabbara (konto to rzadka akcja).
+5. **Do bazy trafiają tylko dane użytkownika** (profil, waga, dziennik, własne przepisy). Produkty USDA i 50 przepisów trenera zostają w `src/data`.
+6. **Domena: Hostinger, tylko domena.** DNS (4 × `A` + `CNAME` dla `www`) wskazuje na GitHub Pages, a publikacja dalej przez GitHub Actions (`git push` → build → deploy, bez ręcznego wgrywania). Kolejność: **najpierw backend, potem domena**. Pułapka: `localStorage` jest per adres, więc dane z `github.io` nie przejdą na domenę.
+7. **`PLAN.md` przepisany do stanu faktycznego** (domyka `RAPORT.md` N9): usunięte Edamam/Open Food Facts, „Dark Fighter”, `/tracker`, wykres kołowy, nawodnienie i fałszywa wzmianka o debounce; dopisane USDA, Web3Forms, PWA, CI/CD, skrypty, struktura folderów i statusy ✅/🟡/📋/❌.
+8. **Wytłumaczone (do nietłumaczenia od zera):** domena vs hosting vs baza (restauracja: szyld / lokal / spiżarnia); DNS jako książka telefoniczna; hosting statyczny vs dynamiczny; backend jako usługa (BaaS) vs własny; CI/CD w projekcie; „najpierw baza, potem kod”; synchroniczny `localStorage` vs asynchroniczna sieć jako główny koszt migracji.
+9. **Niezacommitowane:** `RAPORT.md` (aktualizacja audytu z 02.10), `PLAN.md`, `PROGRES.md`.
+
+---
+
+### Sesja 2026-10-04: baner instalacji globalnie + iOS, karuzela „lat” ze zdjęciami, N1 i N2 domknięte
+
+Cztery commity (`00a57ab`, `617b386`, `2b7179c`, `32cd71f`). Wszystko zweryfikowane w Chrome; **nie sprawdzone na fizycznym iPhonie ani telefonie**.
+
+1. **Diagnoza buga z iPhone'a (znajomy nie dostał modala instalacji).** Baner czekał na zdarzenie `beforeinstallprompt`, a to niestandardowe API Chromium: iOS go nie ma (wszystkie przeglądarki na iOS używają silnika WebKit), a instalacja jest tam wyłącznie ręczna („Udostępnij → Do ekranu początkowego”). Strona nie może wywołać systemowego okna. Brak zdarzenia ≠ iOS (Firefox desktop też go nie ma), więc iOS rozpoznajemy po user agencie; iPadOS 13+ udaje Maca, odróżnia go ekran dotykowy (`maxTouchPoints`). W `<head>` brakowało też `apple-touch-icon`.
+2. **Decyzje autora:** wariant **B** (baner + panel z instrukcją krok po kroku), rytm przypomnień **co sesję** (`sessionStorage`, do zmiany później), baner **globalnie** na każdej trasie (wcześniej tylko `/`). Świadomie pominięte: rosnące przerwy i limit odmów.
+3. **Baner instalacji (`components/installBanner.js`, `installGuide.js`):** żyje w `<body>` poza `#app`, tworzony przy pokazaniu i usuwany przy chowaniu (brak starych węzłów i zdublowanych listenerów; rozwiązuje to problem `pendingCallback` z poprzedniego rozwiązania). Dwa tryby: Android/desktop Chrome (przycisk „Zainstaluj”, `beforeinstallprompt`) i iOS („Pokaż jak” otwiera kartkę z 3 krokami, dziurkami i ikonami). Nic nie pokazuje się w trybie `standalone` (`display-mode` + `navigator.standalone`). Ograniczenie platformy: Safari nie zdradza stronie, że appka jest na ekranie, więc kto otworzy stronę w karcie zamiast z ikonki, zobaczy baner mimo instalacji.
+4. **Karuzela „Bez efektu jo-jo od lat” na `/`:** 5 prawdziwych zdjęć (`public/2018…2026.jpg`) w dotychczasowych ramkach **3:4**, podpisy z rokiem. Szerokość zdjęcia liczona z jednostek kontenera (`cqw`): na desktopie 5 sztuk dokładnie wypełnia rząd (140–240 px), na telefonie zostaje 140 px i pasek się przewija. **Oś lat pod paskiem** (budowana z `data-year`): widoczna tylko gdy pasek faktycznie się przewija, podświetla wszystkie lata w oknie (`IntersectionObserver`, kreska `--amber`, nie tylko kolor), klik przewija do zdjęcia, `prefers-reduced-motion` respektowane. Obserwatory zwalnia nowy `cleanupHome` (podpięty w `routes.js`). Naprawiony błąd: kółko myszy blokowało przewijanie całej strony, gdy pasek nie miał ukrytej części albo był na brzegu.
+5. **N1 domknięte (`RAPORT.md` N1):**
+    - `store.js`: `readState()` zwraca `empty` / `ok` / `corrupted` zamiast rzucać wyjątek (wariant **C** wybrany przez autora); `saveState()` zwraca `true/false` zamiast rzucać przy pełnej pamięci. Uszkodzony wpis jest kopiowany do `<klucz>_corrupted`, zanim kolejny zapis go nadpisze, a użytkownik dostaje toast raz na klucz na sesję. `removeState()` kasuje też kopię. Poza `store.js` nic nie dotyka `localStorage` bezpośrednio.
+    - `userService`: poprawny JSON ≠ poprawny profil. `getUser()` sprawdza kształt (liczby, płeć, znany cel i aktywność, wpisy historii) i odkłada zły profil do kwarantanny. Profil bez lub z pustą `weightHistory` (sprzed historii wagi) jest naprawiany jednym wpisem z bieżącej wagi (data nieznana, więc dzisiejsza). Złapane testem: profil bez `goal` wywracał cały Dashboard (`Niezdefiniowany cel`).
+    - `dashboard.js`: „Skasuj dane aplikacji” rejestrowane **jako pierwsze** (`initDeleteData`), zanim cokolwiek może rzucić wyjątek.
+    - Nieudany zapis nie jest już ogłaszany jako sukces: „Dodaj do dnia” pokazuje toast błędu i zostawia przycisk aktywny (`addMeal` zwraca wynik), zapis wagi cofa zmianę w pamięci i pokazuje błąd w modalu.
+6. **N2 domknięte (`RAPORT.md` N2):** Service Worker zapisuje w cache **tylko status 200** (błędy i odpowiedzi `opaque` nie), zapis w `event.waitUntil`. Haczyk: skrypty Lucide i Chart.js oraz style Google Fonts ładowały się bez `crossorigin`, więc były `opaque` (status 0, nieczytelny) i samo „tylko 200” wyłączyłoby je offline. Dodane `crossorigin`; sprawdzone `curl`em, że wszystkie trzy CDN (z przekierowaniem unpkg) wysyłają CORS. Wynik testu na buildzie: CDN i fonty zapisują się jako `200 cors`.
+7. **Literówki (`RAPORT.md` #26):** „Tłuste smaki, metaboliczna dyscyplina”, „Dla kogo jest aplikacja?” oraz odpowiedź FAQ („Dla każdego, kto… zdrowie, zgubić tkankę…”).
+8. **Weryfikacja:** baner na desktopie (prawdziwe `beforeinstallprompt`) i w trybie iOS (podmieniony user agent): oba tryby, modal, fokus, sessionStorage; karuzela na 390 / 900 / 1440 px (szerokość zdjęcia 140 / 140 / 221, oś lat widoczna tylko przy przewijaniu, kółko nie blokuje strony); 8 wariantów uszkodzonego profilu; „Skasuj dane” po symulowanej awarii Chart.js; błąd zapisu wagi i „Dodaj do dnia” przy zepsutym `setItem`; N2 na atrapie serwera zwracającej 200 / 404 / 500 / opaque (w cache tylko 200).
+9. **Błędy własne i wnioski z sesji:** (a) przy wstawianiu zdjęć zmieniłem kadr z 3:4 na 1:1 bez pytania i „rozjechałem” wygląd; przywrócone na prośbę autora (zasada: wstawiając treść, nie zmieniam formatu komponentu). (b) Test karuzeli w ukrytej karcie dawał fałszywy wynik: `visibilityState: hidden` wyłącza callbacki `IntersectionObserver`/`ResizeObserver`; trzeba wybudzić kartę zrzutem. (c) Test „nieistniejącego pliku” na `vite preview` jest nieszczelny: serwer odpowiada 200 (tryb SPA); prawdziwe 404 z GitHub Pages odtworzone atrapą serwera.
+10. **Wytłumaczone:** feature detection kontra user agent; `standalone`; odpowiedzi `opaque` kontra `cors`; `cqw`; trzy stany odczytu (brak / uszkodzone / ok) i po co oddzielać fakt (store) od polityki (serwis) i komunikatu (widok); dlaczego wyjątek w jednej funkcji zabiera listenery zdefiniowane niżej.
+11. **Otwarte po tej sesji:**
+    - **Zgoda na wizerunek** osób ze zdjęć grupowych 2018 i 2020 (art. 81 prawa autorskiego; to nie jest opinia prawnika): zgoda, rozmycie albo inne zdjęcia. Na grupowych nie widać też, która osoba to autor, a sekcja ma dowodzić jego formy.
+    - **Waga zdjęć:** 5 plików ≈ 775 KB przy ramkach 140–240 px; do zmniejszenia (np. WebP ~400 px, jak zrzuty w Steps).
+    - **N1, czego nie pokrywa:** `saveUser` w onboardingu (nieudany zapis przekierowuje na Dashboard, router odsyła z powrotem bez komunikatu; formularz nie ma miejsca na błąd), `createCustomRecipe`/`updateCustomRecipe` w kreatorze (nie sprawdzają wyniku zapisu), profil o poprawnym kształcie, ale z wartościami spoza sensownych zakresów.
+    - **Dwa zdjęcia z Unsplash** na `/` (kuchnia, walka) nie są cache'owane offline (`<img>` bez `crossorigin` = `opaque`); do czasu podmiany (#18).
+    - **Sprawdzić na telefonie:** położenie ikony Udostępnij i nazwę „Do ekranu początkowego” w polskim iOS (najlepiej zrzut od znajomego po wdrożeniu), czytelność osi lat przy 320–360 px.
+    - **Pytania sprawdzające bez odpowiedzi:** co zrobi baner po „Anuluj” w systemowym oknie na Androidzie; przebieg dodania posiłku przy uszkodzonym `keto_meals` (co trafi do kopii, ile razy toast); dlaczego samo `response.ok` w Service Workerze pogorszyłoby działanie offline.
+12. **Niezacommitowane:** `PLAN.md`, `RAPORT.md` i ten plik (zmiany sprzed sesji i dzisiejsze). `RAPORT.md` nadal oznacza N1/N2 jako otwarte. **Niczego nie wypchnięto** (`push` uruchamia wdrożenie na GitHub Pages).
+
+---
+
+### Sesja 2026-10-05: architektura bazy wiedzy (`/knowledge`) i start backendu
+
+Sesja decyzyjna i koncepcyjna, **bez zmian w kodzie**. Zmieniony tylko `PLAN.md` (sekcja `/knowledge`).
+
+1. **Stan wyjściowy:** dokumentacja miała tylko cel `/knowledge` (siatka, CTA do `/camp`, kłódka 80/20 ze `STRATEGY.md`, „mini-CMS”), bez architektury dodawania artykułów.
+2. **Wymagania autora:** artykuły dodaje tylko administrator, 1–2 tygodniowo. Główny kanał to **Stories na Instagramie i relacje na Facebooku z klikalną naklejką „Link”**, która ma prowadzić prosto do artykułu. Widok: siatka kart (duży tytuł, zdjęcie, krótki opis), a po kliknięciu pełny artykuł.
+3. **Decyzja autora: wariant C**, czyli pliki Markdown w repo, najpierw tłumaczenie Markdown → HTML w przeglądarce, później (gdy artykułów będzie kilkanaście) statyczne strony generowane przy buildzie. Uzasadnienie: liczą się Stories, czyli ludzie, a nie roboty. Odrzucone: artykuły w Supabase z panelem admina (przy tym tempie się nie zwraca; darmowy Supabase usypia po 7 dniach, więc link ze Story pokazałby błąd) oraz statyczne strony od razu (za dużo nowych mechanizmów naraz). Szczegóły i warunki: `PLAN.md` §4 `/knowledge`.
+4. **Znalezione w kodzie (do naprawy w etapie 1 artykułów, rozwiązanie po stronie autora):**
+    - Guard w `router.js` porównuje ścieżkę z listą **dokładnych napisów**, więc gość wchodzący na `/knowledge/<slug>` trafia na `/onboarding`. Linki z Instagrama i Facebooka otwierają się we wbudowanej przeglądarce z pustym `localStorage`, więc **każdy klikający w Story jest gościem**.
+    - `routes[path] || routes["/"]`: nieznana ścieżka cicho pokazuje stronę główną, więc użytkownik z profilem też nie zobaczy artykułu.
+    - Adres artykułu musi być **ścieżką, nie query**. GitHub Pages ignoruje query, więc przejście na statyczne strony wymagałoby zmiany adresów, a linki ze starych Stories przestałyby działać.
+    - Robot Facebooka nie uruchamia JS. Na deep-linku dostaje `404.html` (kod 404, tytuł „Przekierowanie...”), a `index.html` ma wspólne `og:title` i `og:image` dla całej strony.
+5. **Wytłumaczone (do nietłumaczenia od zera):** role a logowanie (ukryty przycisk to nie zabezpieczenie, strażnikiem jest RLS w bazie); Open Graph i roboty bez JS; brak klikalnych linków w opisach postów na Instagramie (tylko bio, naklejka w Stories, reklamy); frontmatter i treść w pliku `.md`; parser Markdown; tłumaczenie w przeglądarce a przy buildzie; statyczna strona samodzielna (B1) a przejmowana przez SPA, czyli hydratacja (B2); hashe plików z Vite; pełny przebieg deep-linku przez `404.html` i guard; podstawy relacyjnej bazy (tabela, wiersz, kolumna, typ, klucz główny i obcy, relacja jeden-do-wielu); Supabase sam trzyma hasła, a nasze tabele wskazują na identyfikator użytkownika.
+6. **Pytania sprawdzające bez odpowiedzi:** co mógłby zrobić użytkownik, gdyby jedyną ochroną dodawania artykułów było ukrycie przycisku; co zwróci `getCurrentPath()`, czy guard przepuści gościa i jaką trasę znajdzie router dla `/knowledge?a=ketoza`; dlaczego tabela posiłków potrzebuje kolumny „właściciel”, skoro każdy i tak widzi w aplikacji tylko swoje posiłki.
+7. **Niezacommitowane:** `PLAN.md`, `RAPORT.md`, ten plik. Niczego nie wypchnięto.
+
+---
+
+### ▶️ START NASTĘPNEJ SESJI: Supabase, etap 1 (model danych na papierze)
+
+Ustalone 2026-10-05: zaczynamy od rejestracji i logowania, czyli od punktu 5 niżej. Zadanie dla autora (szkic przynieść na review):
+1. Otworzyć `userService.js`, `mealService.js` i `customRecipeService.js` i sprawdzić **rzeczywisty kształt** każdego zapisywanego obiektu (pola, zagnieżdżenia).
+2. Dla każdej grupy danych do bazy (profil, historia wagi, dziennik posiłków, własne przepisy) zaproponować tabelę: nazwa, kolumny z typem, klucz główny, kolumna właściciela (wskazanie na użytkownika Supabase).
+3. Przemyśleć: historia wagi wewnątrz profilu czy osobna tabela (i czym się kierować); jak zapisać listę składników `{ productId, grams }` własnego przepisu w płaskich wierszach.
+
+Artykuły `/knowledge` (wariant C) czekają w kolejce. Ich pierwszy krok (router z parametrem ścieżki i poprawiony guard) można zrobić niezależnie od backendu.
+
+---
+
+### Do zrobienia: PIERWSZA KOLEJNOŚĆ (od 2026-10-02 cz. 2; stan na 2026-10-05)
+
+#### 🔴 A. Odporność i zaufanie (przed Supabase)
+1. ✅ **Zrobione 2026-10-04** (sesja 04.10 pkt 5; `617b386`). ~~**N1:** `store.js` odporny na błędy parsowania i zapisu; ochrona przed pustą `weightHistory`; podział `initDashboard()` tak, żeby „Skasuj dane” działało zawsze. Pytania otwarte do autora: dlaczego `throw` w `refreshDay()` blokuje listenery niżej? Co ma zwrócić `loadState` dla uszkodzonego wpisu?~~ Zostaje poza zakresem: onboarding i kreator (punkt 11 sesji 04.10).
+2. ✅ **Zrobione 2026-10-04** (sesja 04.10 pkt 6; `32cd71f`). ~~**N2:** Service Worker zapisuje w cache tylko poprawne odpowiedzi.~~
+3. **#17 + #18:** nieprawdziwe dane i stockowe zdjęcia na stronie głównej. 🟡 Częściowo 04.10: placeholdery „[ROK]” w karuzeli zastąpione prawdziwymi zdjęciami; reszta czeka na ostateczny copywriting (decyzja autora).
+4. ✅ **Zrobione 2026-10-04** (sesja 04.10 pkt 7; `2b7179c`). ~~**#26:** trzy literówki.~~
+
+#### 🔴 B. Backend Supabase: etapy z `PLAN.md` §1a
+5. **Etap 1, model danych na papierze. Zadanie domowe:** rozdzielić `keto_user`, historię wagi (sprawdzić, gdzie leży, w `userService.js`), `keto_meals`, `keto_custom_recipes`, `keto_meal_draft`, `productsData.js` i `recipesData.js` na koszyki baza / `src/data` / `localStorage`, z uzasadnieniem „bo…”.
+6. **Scenariusz scalania (merge) do przemyślenia:** dane z dwóch urządzeń przy logowaniu (posiłki z laptopa, który profil wygrywa).
+7. **Makieta UI kont** w stylu `DESIGN.md`: szuflada i sidebar w 3 stanach użytkownika + ekrany logowania/rejestracji (zaproponowana, czeka na start).
+8. Etapy 2–7: projekt Supabase (region UE, klucze), tabele + RLS, logowanie + trasa konta, serwisy na `async`, migracja danych z `localStorage`, RODO + zakup domeny i podpięcie.
+
+#### 🟡 C. Po A i B
+9. Etap 2 z `RAPORT.md` §5 (SEO + tytuł per trasa, `/recipes/<id>`, Dashboard → `/camp`, przechwyt e-maila, antyspam), potem Etap 3–4 (dostępność, design, testy Vitest, podział funkcji-kolosów).
+
+---
+
 ### Do zrobienia (stan na 2026-09-29)
 
 Lista przepisana od nowa: zostały tylko punkty **niedotknięte lub otwarte**; zrobione z poprzedniej listy (kalkulator, baza produktów, model posiłku, UI dodawania produktu, szablony własnych posiłków) usunięte. **Numeracja od nowa** — numery „pkt N" w starszych wpisach odnoszą się do poprzedniej listy. Pełny rejestr znalezisk nadal w `RAPORT.md` §7–8.
@@ -418,7 +521,7 @@ Lista przepisana od nowa: zostały tylko punkty **niedotknięte lub otwarte**; z
 13. Bug: aktywny tab w nawigacji nie aktualizuje się po kliknięciu CTA spoza tabbara (`RAPORT.md` #10) — dziś poprawiony tylko dla podstron (`/recipes/new`), nie dla CTA.
 14. ✅ **Zrobione 2026-10-02** (komunikat przy polu + zakres `WEIGHT_LIMITS`). Walidacja wagi na Dashboardzie nadal przez `alert()` — zastąpić komunikatem przy polu.
 15. ✅ **Zrobione 2026-10-02** (`getDaysSince()` w `utils/date.js`; `checkWeightReminder` usunięte razem z banerem). `checkWeightReminder` parsuje datę przez `new Date("RRRR-MM-DD")` (UTC) — ta sama klasa problemu co naprawiona data posiłków; można użyć wzorca z `formatDateKey`.
-16. **`initDashboard()` to jedna długa funkcja** — nieobsłużony wyjątek w jej wcześniejszej części cicho blokuje rejestrację listenerów zdefiniowanych dalej (z sesji 24.09).
+16. **`initDashboard()` to jedna długa funkcja** — nieobsłużony wyjątek w jej wcześniejszej części cicho blokuje rejestrację listenerów zdefiniowanych dalej (z sesji 24.09). 🟡 **Częściowo 2026-10-04:** „Skasuj dane” rejestrowane jako pierwsze (`initDeleteData`), więc awaria niżej go nie zabiera; sama funkcja nadal długa.
 
 #### 🟡 Otwarte z wcześniejszych sesji
 17. ✅ **Zrobione 2026-10-02** (stopka `#zastrzezenia` + blok w onboardingu + wiek 18 + FAQ — sesja 02.10 pkt 7). Zostaje: pokazać listę i mapowanie prowadzącemu kurs; przegląd pozostałych twierdzeń zdrowotnych to pkt 19. **Brak zastrzeżenia medycznego mimo twierdzeń zdrowotnych** (`RAPORT.md` #27). **Pilniejsze po 25.09:** kalkulator odwzorowuje teraz protokoły kliniczne. Uwaga: VLCKD (600–800 kcal) wymaga nadzoru lekarza i ma przeciwwskazania (m.in. cukrzyca typu 1, ciąża, niewydolność nerek i wątroby, zaburzenia odżywiania) — kalkulator nie schodzi w te rejony dzięki podłodze, ale copy musi to mówić.

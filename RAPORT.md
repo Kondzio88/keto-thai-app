@@ -1,4 +1,256 @@
-# RAPORT Z AUDYTU APLIKACJI KETO THAI — 14.09.2026
+# RAPORT Z AUDYTU APLIKACJI KETO THAI — AKTUALIZACJA 02.10.2026
+
+> **Zakres:** ten sam co 14.09 (architektura, build/deployment, design system, layout, UI/UX, dostępność, wydajność, SEO, copywriting vs strategia) + dwa nowe obszary, które przez ostatnie 3 tygodnie urosły od zera: **odporność i bezpieczeństwo danych** oraz **merytoryka żywieniowa**.
+> **Metoda:** (1) ponowna weryfikacja w kodzie **każdego z 30 znalezisk** z 14.09 — status z dowodem; (2) przegląd całego `src/`, `index.html`, `public/`, `dist/`, `package.json`, Service Workera i dokumentów; (3) **testy w prawdziwej przeglądarce** (Chrome): przemiatanie 8 tras przy 320 i 390 px w poszukiwaniu elementów poza ekranem, przejście wszystkich tras z nasłuchem błędów JS, test odporności na uszkodzony `localStorage`; (4) metryka liczona skryptami, nie szacowana.
+> **Ograniczenia:** brak fizycznego telefonu (szerokości mobilne symulowane w `iframe`), brak Lighthouse/Core Web Vitals, brak testu czytnikiem ekranu, brak weryfikacji treści dietetycznych przez specjalistę. `ROADMAP.md` i `MARKETING.md` nie były czytane w tej rundzie w całości — wnioski o strategii oparte na `STRATEGY.md`, `PLAN.md` i kodzie.
+> **Audyt z 14.09.2026 zostaje poniżej jako archiwum** — był pisany jako punkt odniesienia i dopiero razem z nim ta aktualizacja pokazuje różnicę.
+
+---
+
+## 0. METRYKA STANU — porównanie
+
+| Wskaźnik | 14.09.2026 | 02.10.2026 | Zmiana |
+|---|---|---|---|
+| Pliki JS w `src/` | 15 | **28** | +13 (serwisy, komponenty, kreator, dane) |
+| Pliki CSS w `src/styles/` | 16 | **20** | +4 |
+| Linie kodu JS + CSS (bez danych) | ~3 000 | **~8 360** (4 111 JS + 4 250 CSS) | ×2,8 |
+| Dane | 691 linii (30 przepisów) | **4 342 linie** (50 przepisów + 200 produktów USDA) | nowa baza produktów |
+| Build (`dist/assets`) | 96 KB JS + 43 KB CSS | **190 KB JS** (~45 KB gzip) + **60 KB CSS** | JS ×2 — w ~62% przez dane (118 KB) |
+| Trasy zadeklarowane / realne | 7 / 5 | **9 / 8** (`/knowledge` = uczciwy placeholder) | + kreator, edycja, kontakt |
+| Przepisy | 30 (28 szablonowych) | **50**, każdy z własnymi instrukcjami | |
+| Zdjęcia przepisów lokalnie | 0 / 30 | **50 / 50** | ✅ |
+| Obrazy w buildzie produkcyjnym | 0 (wszystkie 404) | **wszystkie** | ✅ |
+| Produkty w bazie | 0 | **200** (USDA SR Legacy, CC0), 86 z miarami domowymi | nowe |
+| Tokeny kolorów | 9 + 3 pochodne | 9 + 3 pochodne | bez zmian ✅ |
+| `box-shadow` | 0 | **0** | ✅ |
+| Hexy ad-hoc w CSS | 2 (gradient `.snap`) | 2 (ten sam) | bez zmian |
+| `rgba()` ad-hoc | 1 (`.streak-box`) | 1 (ten sam) | bez zmian |
+| `alert()` w interfejsie | 2 | **0** | ✅ |
+| Formularze realnie wysyłające | 0 / 2 | **2 / 2** (Web3Forms) | ✅ |
+| Zależności produkcyjne w `package.json` | 0 (Chart.js, Lucide z CDN) | 0 (to samo, wersje nieprzypięte) | bez zmian |
+| Testy automatyczne | 0 | **0** | bez zmian ⚠️ |
+| Linter / formatter | brak | brak | bez zmian |
+| Błędy JS przy przejściu wszystkich tras | nie mierzono | **0** | zmierzone |
+| Trasy z treścią poza ekranem (320 px) | nie mierzono | **1** (`/recipes`) | zmierzone |
+| Martwe pliki | nie mierzono | **`src/assets/` — 10 plików, 5,2 MB, zero odwołań** | nowe |
+| Commity od poprzedniego audytu | — | 16 (łącznie 64) | |
+
+### Ocena obszarowa (skala 1–10)
+
+| Obszar | 14.09 | 02.10 | Komentarz jednym zdaniem |
+|---|---|---|---|
+| Dyscyplina design systemu | 8 | **8** | Nowe elementy (toast, notki, blok zgody) weszły w system bez nowych tokenów i cieni; stare długi (#13–#16) nadal stoją. |
+| Architektura kodu | 6 | **6,5** | Pojawiły się prawdziwe „jedyne źródła prawdy" (netto, podłoga, zakres wagi, dni); ujemne punkty to kolosalne `init*()` i `store.js` bez obsługi błędów. |
+| Build / deployment | 2 | **8** | Obrazy, deep-linki, CI na GitHub Pages i wersjonowanie SW per commit działają; SW cache'uje też błędy (N2). |
+| Layout / responsywność | 7 | **7,5** | 7 z 8 tras czystych przy 320 px — zmierzone; `/recipes` przy 320 px nadal ucina karty. |
+| UI / UX | 6 | **7,5** | Kreator, miary domowe, toast, walidacja przy polu, przypomnienie w dzienniku; brak URL-a przepisu i małe filtry. |
+| Dostępność (a11y) | 4 | **6,5** | Klawiatura, modal, szuflada, akordeon, fokus po akcjach — naprawione; kontrast i stan tabbara — nie. |
+| Wydajność | 6 | **6** | Lazy-loading i lokalne obrazy +; JS ×2 przez dane ładowane na każdej trasie, Chart.js globalnie. |
+| SEO / dystrybucja | 2 | **4** | Description, OG, favicon, deep-linki +; brak `og:url`, `canonical`, `robots.txt`, `sitemap`, tytułu per trasa i URL-i przepisów. |
+| Copywriting vs strategia | 7 | **7,5** | Zastrzeżenie medyczne i FAQ o bezpieczeństwie domknięte; literówki, dane przykładowe i zero przechwytu leada zostają. |
+| **Odporność i bezpieczeństwo danych** (nowy) | — | **5** | `escapeHtml`/`textContent` na ścieżkach użytkownika; ale uszkodzony `localStorage` wysypuje Dashboard (N1). |
+| **Merytoryka żywieniowa** (nowy) | — | **7,5** | Źródła u źródła (USDA CC0, wytyczne VLCKD), netto, podłoga, masa referencyjna; otwarte: progi białka, mapowanie jaj, ignorowane pole `sport`. |
+| **Średnia** | **~5,5** | **~6,7** | Produkt przestał być makietą — teraz brakuje mu odporności, zasięgu i testów. |
+
+---
+
+## 1. PODSUMOWANIE WYKONAWCZE
+
+**Werdykt jednym zdaniem:** 14.09 aplikacja „nie działała jako biznes"; 02.10 **działa jako produkt** — przyjmuje zgłoszenia, wyświetla się poprawnie po zbudowaniu, liczy rzetelnie i mówi uczciwie o swoich granicach — ale jest **krucha na brzegach** (dane, cache), **niewidoczna na zewnątrz** (SEO, brak przechwytu leada, brak analityki) i **bez siatki bezpieczeństwa** (zero testów przy rosnącej logice liczbowej).
+
+Trzy rzeczy są prawdziwe naraz:
+
+1. **Wszystkie cztery 🔴 z 14.09 przestały blokować.** Zdjęcia w buildzie, wysyłka formularza (z rzetelną notką RODO: administrator, podstawa prawna, transfer poza UE, retencja), deep-linki — naprawione; SEO częściowo. To był dokładnie ten porządek, który zalecał poprzedni raport.
+2. **Rdzeń produktu urósł jakościowo, nie tylko ilościowo.** Kalkulator oparty na źródłach, baza 200 produktów z USDA z generatorem, który przerywa przy niejednoznaczności, węgle netto liczone w jednym miejscu, kreator z miarami domowymi, edycja przepisów, zastrzeżenie medyczne zacytowane z wytycznych. Każda z tych rzeczy ma udokumentowane warianty odrzucone i weryfikację liczbami.
+3. **Nowe ryzyka przesunęły się z „czy działa" na „co się stanie, gdy coś pójdzie nie tak".** Jeden uszkodzony wpis w `localStorage` wyłącza Dashboard **razem z przyciskiem, który mógłby to naprawić** (N1 — zweryfikowane w przeglądarce). Service Worker zapisuje w cache również odpowiedzi z błędem (N2). Wszystkie weryfikacje logiki (dziś: 364 140 profili kalkulatora) żyją w skryptach tymczasowych i znikają po sesji (N8).
+
+**Co to znaczy praktycznie:** kolejna faza nie powinna dokładać funkcji. Powinna **utwardzić to, co jest** (N1, N2, testy), **domknąć uczciwość strony głównej** (#17, #18 — to pierwsze, co widzi nowa osoba) i **otworzyć dystrybucję** (SEO, URL przepisów, przechwyt leada, ścieżka Dashboard → Camp).
+
+---
+
+## 2. STATUS 30 ZNALEZISK Z 14.09
+
+Legenda: ✅ naprawione · 🟡 częściowo · ❌ otwarte. Każdy status sprawdzony dziś w kodzie lub w przeglądarce.
+
+| # | Znalezisko (14.09) | Status | Dowód dziś |
+|---|---|---|---|
+| 1 | Build gubi lokalne zdjęcia | ✅ | Obrazy w `public/` → `dist/` zawiera `homePicture.jpg`, `images/recipes/` (50), `images/steps/` (3 × WebP, 175 KB). |
+| 2 | Formularz `/camp` nic nie wysyła + brak RODO | ✅ | `camp.js:541-554` i `contact.js:111-124` → Web3Forms. Notka RODO (`camp.js:434-460`): administrator, art. 6 ust. 1 lit. b, transfer do Indii na SCC, retencja 12 mies., prawa, UODO. Zostaje: brak antyspamu (→ N4). |
+| 3 | Brak meta description i Open Graph | 🟡 | Jest: `description`, `og:type/title/description/image`, favicon. Brak: `og:url`, `canonical`, Twitter Card, `robots.txt`, `sitemap.xml`; `<title>` nadal „Keto Thai App" (bez frazy, której ktoś szuka). |
+| 4 | Deep-linki gubią ścieżkę | ✅ | `404.html` zapisuje ścieżkę w `sessionStorage`, `router.js:67-72` ją odtwarza. Uwaga: baza wykrywana po `github.io` w nazwie hosta — do zmiany przy migracji na Hostinger. |
+| 5 | `/knowledge`, `/contact` to gołe `<h1>` | 🟡 | `/contact` — pełny formularz (160 linii). `/knowledge` — wariant B z 14.09: pieczątka „W opracowaniu" + zdanie (`routes.js:39-49`). |
+| 6 | Karty przepisów niedostępne z klawiatury | ✅ | `<button class="card__open">` w tytule + obrys całej karty przez `:has(:focus-visible)` (`card.css:93-99`). |
+| 7 | Szczegół przepisu bez URL-a | ❌ | Stan w domknięciu `initRecipes`, brak `pushState`. Przy 50 przepisach to **50 straconych stron wejścia** z Google i social mediów. |
+| 8 | 4 miejsca poniżej 4,5:1 + czerwień jako tekst | ❌ | `--ink-faint` nadal w: `home.css:44` (`.hero__tag`), `camp.css:124`, `camp.css:269`, `footer.css:184`. Czerwony tekst: `.btn-delete` (`layout.css:66`), hover linków w stopce (`footer.css:54,76,96`). |
+| 9 | Stan aktywny tabbara tylko kolorem | ❌ | `tabbar.css:50-57` — `:hover` i `--active` mają **identyczny** `color: var(--amber)`; brak kropki z `DESIGN.md` §6. |
+| 10 | Aktywny tab nie aktualizuje się po nawigacji | 🟡 | Podstrony (`/recipes/new` → „Przepisy") naprawione w `main.js:13-25`, ale `navigateTo()` (`router.js:61-64`) nadal nie woła `updateActiveTab` — CTA spoza tabbara zostawia stary tab. |
+| 11 | `IntersectionObserver` bez sprzątania | 🟡 | `unobserve()` po pojawieniu się elementu (`home.js:544`, `camp.js:527`), ale brak `disconnect()` przy zmianie trasy — nieobejrzane elementy zostają obserwowane. |
+| 12 | Treść startuje z `opacity: 0`, brak reduced-motion | 🟡 | `prefers-reduced-motion` jest w 2 plikach (toast, chevron stopki); `.reveal` (`home.css:946`) nadal `opacity: 0` zależne od JS, `scroll-behavior: smooth` (`reset.css:10`) bez wyjątku. |
+| 13 | 3 kickery nad nagłówkami na `/camp` | ❌ | `camp.js:119, 151, 184` — `.timeline__step-num` przed `<h3>`. |
+| 14 | `.faq__title` bez `font-family` | ❌ | `home.css:695-701`. |
+| 15 | Kicker Philosophy oderwany od nagłówka | ❌ | `home.css:133` (kicker `--spacing-xs`) vs `:139` (tytuł `--spacing-xl`). |
+| 16 | Podwójna elewacja | 🟡 | 9 → **7**: `.card`, `.modal__content`, `.hero__photo-card`, `.years-proof__photo-card`, `.camp-hero__badge`, `.camp-coach__photo`, `.support-card--video` (tło + obramowanie). `.reminder-banner` usunięty 02.10. |
+| 17 | Dane przykładowe podane jako fakt | ❌ | `home.js:73-124`: „ROZKŁAD MAKRO" (70%), „SERIA" (5/7 — funkcja **nie istnieje**), „METRYKA 2450 KCAL / −0,8 KG/TYDZ". Kalkulator dla profilu demo daje ok. 67/25/8 — pasek nie jest już nawet zgodny z logiką. |
+| 18 | Stock podpisany jak własna dokumentacja | 🟡 | Przepisy: 50/50 lokalnych zdjęć CC0 ✅. „O mnie": **FOTO 03 i 04 nadal z Unsplash** (`home.js:178, 187`, hotlink) w idiomie dziennika. Do tego FOTO 05–08 publicznie pokazują „[ROK] (do uzupełnienia)". |
+| 19 | Natywne `alert()` | ✅ | 0 wywołań; komunikaty przy polu z `aria-invalid` (02.10). |
+| 20 | Modal wagi bez mechaniki modala | ✅ | `role="dialog"`, `aria-modal`, `aria-labelledby`, `trapFocus` (Tab, Escape, powrót fokusu), klik w tło. |
+| 21 | Linki zamkniętej szuflady fokusowalne | ✅ | `topbar.css:79-80` — `visibility: hidden` z opóźnieniem po animacji. |
+| 22 | Akordeon FAQ bez `aria-expanded` | ✅ | `aria-expanded` + `aria-controls`, aktualizowane w `home.js:558`. |
+| 23 | Siatka przepisów ucięta przy 320 px | ❌ | **Zmierzone w Chrome:** `/recipes` @ 320 px — 202 elementy poza ekranem (karta min. 300 px w kontenerze 288 px, `layout.css:52`). |
+| 24 | Chart.js na każdej trasie, `lucide@latest` | ❌ | `index.html:214-215` bez zmian: obie biblioteki globalnie, obie bez przypiętej wersji, poza `package.json`. |
+| 25 | Fonty blokujące, obrazy bez wymiarów | 🟡 | Fonty bez zmian (kursywa Public Sans teraz realnie używana — 3×). Obrazy: `width/height` **3 / 10** (tylko Steps), `loading="lazy"` 8 / 10. |
+| 26 | Literówki i brak jednostek | 🟡 | Naprawione: „wagę", jednostki przy makrach (G/KCAL), „Dashboard" → „Dziś w dzienniku". Zostały: „Tluste smaki ,metaboliczna dyscyplina" (`recipes.js:50`), „Dla kogo jest aplikacja" bez „?" (`home.js:438`), „Dla każdego kto… zdrowie , zgubić tkanke" (`home.js:444`). |
+| 27 | Brak zastrzeżenia medycznego | ✅ | 02.10: sekcja `#zastrzezenia` w stopce (17 przeciwwskazań z Muscogiuri i in. 2021), wymagany checkbox w onboardingu, FAQ o bezpieczeństwie poprawione. |
+| 28 | Brak walidacji kalkulatora | ✅ | `min`/`max` na polach (wiek 18–99), `WEIGHT_LIMITS`, podłoga kaloryczna; przemiatanie 25.09: 0 przypadków ujemnego tłuszczu na 8,5 mln kombinacji. |
+| 29 | Brak przechwytu leada i analityki | ❌ | Zero pól e-mail poza formularzami Camp/Kontakt, zero analityki. |
+| 30 | `/dashboard` bez ścieżki do `/camp` | ❌ | `dashboard.js` — zero odwołań do `/camp`. |
+
+**Bilans:** ✅ **10** · 🟡 **9** · ❌ **11**. Wszystkie 🔴 z 14.09 zdjęte z listy blokerów. Otwarte ❌ to w większości design (#13–#15, #17), dostępność kontrastu (#8, #9) i dystrybucja (#7, #29, #30).
+
+---
+
+## 3. NOWE ZNALEZISKA
+
+### 🟠 N1 — Uszkodzony `localStorage` wyłącza Dashboard razem z wyjściem awaryjnym
+
+**Dowód (test w przeglądarce):** wpis `keto_meals = "{to nie jest json"` → wejście na `/dashboard` → `SyntaxError` w `loadState` (`store.js:8`, `JSON.parse` bez `try/catch`) → wyjątek wylatuje z `refreshDay()` w połowie `initDashboard()` → **bilans pusty, a wszystkie słuchacze podpinane niżej nie istnieją**: zapis wagi, „Dodaj pomiar" i **„Skasuj dane aplikacji"** — czyli jedyny przycisk, który mógłby naprawić sytuację.
+
+**Mechanizm:** to dokładnie ryzyko z `PROGRES.md` (#16 listy: „`initDashboard()` to jedna długa funkcja — wyjątek we wcześniejszej części cicho blokuje rejestrację listenerów"), dziś potwierdzone empirycznie. Trzy warstwy składają się na problem:
+- `store.js` ani nie łapie błędu parsowania, ani błędu zapisu (`setItem` rzuca przy przepełnieniu pamięci i w części trybów prywatnych);
+- dane nie mają wersji (`PROGRES.md` #10) — przy następnej zmianie kształtu danych stary wpis może wyglądać dla kodu jak „uszkodzony";
+- `getDaysSinceLastWeighIn` czyta ostatni element `weightHistory` bez sprawdzenia, czy tablica nie jest pusta (to było pytanie kontrolne nr 5 z 14.09 — wciąż bez odpowiedzi w kodzie).
+
+**Dlaczego 🟠, a nie 🟡:** dane żyją wyłącznie w przeglądarce użytkownika. Nie masz do nich dostępu, nie zobaczysz błędu, a użytkownik nie ma jak sam wyjść z pułapki.
+
+**Pytanie naprowadzające:** co powinien zwrócić `loadState`, gdy wpis jest nieczytelny — `null` (jak przy braku wpisu), czy coś, co pozwoli odróżnić „brak danych" od „uszkodzone dane"? Od odpowiedzi zależy, czy użytkownik straci dziennik po cichu, czy dostanie komunikat.
+
+### 🟠 N2 — Service Worker zapisuje w cache także odpowiedzi z błędem
+
+**Dowód:** `public/service-worker.js`, obsługa `fetch`: strategia cache-first, a każda odpowiedź z sieci trafia do `cache.put` **bez sprawdzenia `response.ok`**. Dotyczy też zasobów z innych domen (Unsplash, CDN Lucide i Chart.js).
+
+**Skutek:** chwilowy błąd (404 podczas wdrożenia, 500 z CDN, odpowiedź „opaque") zostaje zapamiętany i serwowany **do następnego wdrożenia** — na telefonie z zainstalowaną aplikacją może to oznaczać brak ikon albo wykresu przez dni. Wersjonowanie cache per commit (`stamp-sw.js`) działa dobrze, ale ogranicza tylko czas trwania problemu, nie sam problem.
+
+### 🟡 N3 — Gałąź przepisów trenera wstawia tytuł bez escape'owania
+
+**Dowód:** `recipes.js:125` (karta) i `:192` (`alt` w szczególe) — `${recipe.title}` bez `escapeHtml`. Gałąź jest wybierana przez `recipe.source === "user"` (`recipes.js:26`). Test 02.10: rekord bez pola `source` z tytułem `<img onerror=…>` **wykonał kod**.
+
+**Dziś bezpieczne** (przez interfejs nie da się utworzyć przepisu bez `source: "user"`), ale bezpieczeństwo zależy od jednego pola w danych, a nie od miejsca wyświetlania. To realizacja ryzyka C z §9 archiwum: dane użytkownika już płyną przez `innerHTML`, a `html` to `String.raw` — **nie escape'uje domyślnie**.
+
+### 🟡 N4 — Formularze bez ochrony antyspamowej, klucz zduplikowany
+
+**Dowód:** brak pola-pułapki (`botcheck`) i captchy w `camp.js` i `contact.js`; ten sam `WEB3FORMS_ACCESS_KEY` wpisany w dwóch plikach (`camp.js:541`, `contact.js:111`). Klucz Web3Forms jest z założenia publiczny (to nie wyciek), ale bez pułapki boty mogą zasypać skrzynkę, a dwie kopie rozjadą się przy zmianie klucza.
+
+### 🟡 N5 — Filtry przepisów: za małe i bez sygnału przewijania
+
+**Dowód:** `filters.css:57-71` — `padding: 8px 20px` przy tekście 11 px daje ok. 30 px wysokości (`DESIGN.md` §8: min. 44 px). Pasek jest przewijany w poziomie z **ukrytym** paskiem przewijania (`filters.css:47-55`) — w Chrome przy 390 px „Kolacja" jest ucięta poza krawędzią bez żadnej wskazówki, że można przewinąć. Ten sam wzorzec (ukryty scrollbar) ma pasek „Bez efektu jo-jo" na stronie głównej. Stan aktywnego filtra nie jest ogłaszany (`aria-pressed`).
+
+### 🟡 N6 — Funkcje-kolosy w widokach
+
+Heurystyka po liczbie linii: `initMealBuilder` **265**, `initDashboard` **218**, `initRecipes` 134. N1 jest bezpośrednią konsekwencją: w jednej funkcji z kilkunastoma odpowiedzialnościami jeden wyjątek zabiera wszystko, co jest niżej. Podział na mniejsze inicjalizacje (bilans, waga, dziennik, kasowanie danych) dałby izolację awarii za darmo.
+
+### 🟡 N7 — Martwe pliki: cały `src/assets/` (5,2 MB)
+
+**Dowód:** zero odwołań do `src/assets` w kodzie i `index.html`. Katalog zawiera 10 plików: stare makiety telefonu (`iphonMobile*.png`, zastąpione 01.10 przez zrzuty WebP), kopie zdjęć przeniesionych do `public/` i kandydatów na logo. Do tego `public/ketoThaiLogo.jpg` (383 KB) — nieużywany, ale **trafia do buildu produkcyjnego**. Nie psuje działania, ale myli przy pracy („które zdjęcie jest prawdziwe?") i puchnie repozytorium.
+
+### 🟡 N8 — Zero testów przy coraz większej logice liczbowej
+
+Od 14.09 przybyło: kalkulator z podłogą i masą referencyjną, netto, miary domowe, przeliczenia składników, liczenie dni. Każda z tych rzeczy była weryfikowana **skryptem tymczasowym poza repo** (25.09: 8,5 mln kombinacji; 29.09: 50 przepisów; 01.10: 18 asercji; 02.10: 364 140 profili). Wiedza o tym, że to działa, znika po sesji, a następna zmiana nie ma czym się sprawdzić. `calculatorService`, `productService` i `utils/date.js` to czyste funkcje — najtańszy możliwy kandydat do testów.
+
+### 🟡 N9 — `PLAN.md` opisuje inny produkt
+
+**Dowód:** `PLAN.md:22` (Edamam / Open Food Facts API — nieużywane), `:32-34` (design „Dark Fighter": złoto `#D4AF37`, zieleń `#2ECC71`, fonty Oswald/Inter — sprzeczne z `DESIGN.md`), `:73`, `:165` (trasa `/tracker`, wykres kołowy, moduł nawodnienia — nie istnieją). `CLAUDE.md` każe czytać `PLAN.md` na starcie każdej sesji — więc każda nowa sesja zaczyna od częściowo fałszywego obrazu projektu.
+
+### ⚪ N10 — Dane ładowane na każdej trasie
+
+200 produktów i 50 przepisów (118 KB surowego JS, ok. 62% bundla) ładuje się także na stronie głównej i `/camp`, gdzie nie są potrzebne. Po gzipie cały JS to ~45 KB — dziś akceptowalne; kierunek na później: dynamiczny `import()` danych w kreatorze i przepisach.
+
+### ⚪ N11 — Jeden tytuł dokumentu dla wszystkich tras
+
+`document.title` nie jest nigdzie ustawiany — karty przeglądarki, historia, zakładki i czytnik ekranu przy zmianie strony widzą zawsze „Keto Thai App" (WCAG 2.4.2 „Tytuł strony" wymaga tytułu opisującego **tę** stronę). To też brakujący element SEO z #3.
+
+---
+
+## 4. MOCNE STRONY (nowe i utrzymane — do ochrony)
+
+1. **Jedno źródło prawdy jako nawyk, nie przypadek.** `getNetCarbs()` (jedyne miejsce liczące netto), `FLOOR_LIMIT` + `TARGET_DEFICIT_PERCENT` (komunikat liczy się z mnożnika), `WEIGHT_LIMITS` (onboarding + Dashboard), `portionToGrams()`, `getDaysSince()`. Każde z nich powstało po nazwaniu ryzyka rozjazdu.
+2. **Dane z udokumentowanego źródła, generowane skryptem, który przerywa przy wątpliwości.** `build-products.js` nie zawiera ręcznie wpisanych gramów — wymaga dokładnie jednego pasującego wiersza z `food_portion.csv`. To wychwyciło zawyżenie wagi awokado o ~48%.
+3. **Kultura weryfikacji.** Przemiatania na setkach tysięcy profili, porównania z poprzednim commitem („0 różnic"), testy w prawdziwej przeglądarce z odtwarzaniem błędu w izolacji przed poprawką (fokus po ukryciu elementu, 02.10).
+4. **Uczciwość treści przeniesiona na warstwę medyczną.** Lista przeciwwskazań przeczytana u źródła, z adnotacją, że wytyczne dotyczą VLCKD; bez sugerowania kwalifikacji autora; checkbox zgody **niezapisywany**, bo to nie dana o zdrowiu do przechowywania.
+5. **Wzorce dostępności, które się rozprzestrzeniają.** `aria-disabled` zamiast `disabled` (nie gubi fokusu), regiony `role="status"`, fokus kierowany po każdej akcji usuwającej element, `aria-invalid` przy błędach.
+6. **Utrzymane z 14.09:** zero `box-shadow`, 9 tokenów bez wyjątków, różne kontenery zamiast identycznych kart, dokumentacja decyzji z wariantami odrzuconymi. Hook `impeccable` złapał 02.10 boczną kolorową belkę — i została zastąpiona perforacją, nie wyciszona.
+
+---
+
+## 5. REKOMENDOWANA KOLEJNOŚĆ (od 02.10)
+
+Zasada z 14.09 zostaje: *najpierw to, co blokuje, potem to, co widocznie zepsute, na końcu polish i wzrost.* Zmienia się tylko definicja „blokuje": dziś to **utrata danych i zaufania**, nie brak funkcji.
+
+**Etap 1 — odporność i zaufanie**
+1. **N1** — `store.js` odporny na błędy parsowania i zapisu, ochrona przed pustą historią wagi, podział `initDashboard` tak, żeby „Skasuj dane" działało zawsze.
+2. **N2** — Service Worker zapisuje w cache tylko poprawne odpowiedzi.
+3. **#17 + #18** — fałszywe dane i stockowe zdjęcia na stronie głównej (`PROGRES.md` ma to jako 🔴 od tygodni; to pierwsze, co widzi nowa osoba).
+4. **#26** — trzy literówki (kwadrans pracy, natychmiastowy zwrot w postrzeganej staranności).
+5. **Test na fizycznym telefonie** — lista kontrolna z sesji 02.10.
+
+**Etap 2 — widoczność i dystrybucja**
+6. **#3 + N11** — komplet SEO i tytuł dokumentu per trasa.
+7. **#7** — adres `/recipes/<id>` dla szczegółu przepisu (50 stron wejścia; rozwiązuje też gest „wstecz").
+8. **#30** — ścieżka z Dashboardu do `/camp` (działa na ruchu, który już masz).
+9. **#29 + N4** — przechwyt e-maila, analityka (najlepiej bez ciasteczek, żeby nie potrzebować banera zgody), pułapka antyspamowa w formularzach.
+
+**Etap 3 — dostępność i design**
+10. **#8 + #9** — kontrast `--ink-faint` i czerwonego tekstu, stan aktywny tabbara zgodny z `DESIGN.md` §6.
+11. **#23 + N5** — siatka przepisów przy 320 px, filtry 44 px z sygnałem przewijania i `aria-pressed`.
+12. **#10, #11, #12** — `navigateTo` aktualizuje tab, sprzątanie obserwatorów, `prefers-reduced-motion` globalnie.
+13. **#13–#16** — kickery `/camp`, font FAQ, odstęp kickera Philosophy, podwójne elewacje.
+
+**Etap 4 — fundamenty na dalszy rozwój**
+14. **N8** — testy (Vitest) dla `calculatorService`, `productService`, `utils/date.js` — przenieść tam dzisiejsze skrypty weryfikacyjne.
+15. **N6** — podział `initMealBuilder` / `initDashboard` / `initRecipes`.
+16. **N3** — escape'owanie domyślne (szablon, który escape'uje, chyba że jawnie powiesz inaczej).
+17. **#24, #25, N10** — przypięte wersje bibliotek w `package.json`, Chart.js tylko na Dashboardzie, wymiary obrazów, dane ładowane dynamicznie.
+18. **N7 + N9** — usunięcie `src/assets/` i `ketoThaiLogo.jpg`, aktualizacja `PLAN.md` do stanu faktycznego.
+
+---
+
+## 6. DŁUG ARCHITEKTONICZNY — status trzech pytań z 14.09
+
+**A. Router bez parametrów ścieżki — bez zmian, koszt rośnie.** Kreator i edycja dostały osobne trasy (`/recipes/new`, `/recipes/edit?id=`), co pokazuje, że wzorzec query stringa działa. Ale szczegół przepisu nadal żyje poza routerem, a przepisów jest już 50. `/knowledge` z artykułami trafi na ten sam mur.
+
+**B. `init()` nie zwraca funkcji sprzątającej — bez zmian.** `cleanup` nadal jest opcjonalnym eksportem (tylko `/dashboard`). N1 dokłada drugi wymiar: `init()` nie tylko nie sprząta, ale też **nie izoluje awarii** — jedna długa funkcja to jeden punkt awarii.
+
+**C. `innerHTML` z danymi użytkownika — ryzyko się zmaterializowało i jest częściowo opanowane.** Własne przepisy wprowadziły tekst od użytkownika do tej samej ścieżki (XSS w dzienniku znaleziony i naprawiony 25.09). Dziś: `escapeHtml` w 6 miejscach, toast przez `textContent`, ale `html` to `String.raw` — bezpieczeństwo zależy od pamiętania o escape w każdym nowym miejscu (N3 pokazuje, co się dzieje, gdy się nie pamięta).
+
+---
+
+## 7. PYTANIA KONTROLNE (do samodzielnej odpowiedzi)
+
+1. W N1 `JSON.parse` rzuca wyjątek wewnątrz `refreshDay()`, a przestają działać przyciski podpinane **kilkadziesiąt linii niżej**. Dlaczego wyjątek w jednym miejscu funkcji zatrzymuje wykonanie całej reszty — i jakie dwa różne sposoby (jeden w `store.js`, jeden w strukturze `initDashboard`) ograniczyłyby szkodę?
+2. W N2 Service Worker ma strategię cache-first. Dla jakich zasobów cache-first jest dobrym wyborem, a dla jakich lepszy byłby network-first? Do której grupy należy `index.html`, a do której ikona z CDN?
+3. Pytanie z 14.09 nr 5 wciąż czeka: w jakim scenariuszu `weightHistory` może być pustą tablicą, skoro onboarding zawsze wpisuje pierwszy pomiar? (Podpowiedź: kto jeszcze, poza Twoim kodem, może zmienić zawartość `localStorage`?)
+4. `html` w `utils/template.js` to `String.raw`. Co musiałby robić tag szablonu, żeby `html\`${title}\`` był bezpieczny domyślnie — i jak wtedy wstawić celowo fragment HTML (np. ikonę)?
+5. Ocena SEO wzrosła z 2 do 4, mimo że wszystkie meta tagi są statyczne w `index.html`. Co zobaczy robot Facebooka, który dostanie link do `/camp` — tytuł i opis strony głównej czy `/camp`? Dlaczego w SPA bez renderowania po stronie serwera to pytanie jest trudniejsze, niż wygląda?
+
+---
+
+## 8. ZAKRES I METODA
+
+**Objęte:** wszystkie pliki w `src/` (28 JS, 20 CSS, dane), `index.html`, `public/` (w tym `404.html`, `service-worker.js`, `manifest.webmanifest`), `dist/` po `npm run build`, `package.json`, `.gitignore`, `scripts/`, `PLAN.md`, `STRATEGY.md`, `PROGRES.md`, `DESIGN.md`, historia Git od 14.09.
+
+**Testy w przeglądarce (Chrome, 02.10):**
+- przemiatanie 8 tras × 2 szerokości (320, 390 px) w `iframe`: elementy wychodzące poza ekran (po wymuszeniu stanu `.reveal--visible`); paski przewijane celowo (`overflow-x: auto`) odnotowane jako N5, nie jako błąd układu;
+- przejście 12 nawigacji (trasy publiczne, z profilem, edycja nieistniejącego przepisu) z nasłuchem błędów — 0 błędów;
+- test odporności: uszkodzony `keto_meals` → N1;
+- testy funkcjonalne z sesji 02.10 (miary, toast, zastrzeżenie, podłoga, waga) — opisane w `PROGRES.md`.
+
+**Nieobjęte:** fizyczny telefon, Lighthouse/Core Web Vitals, czytnik ekranu (NVDA/VoiceOver), pełna lektura `ROADMAP.md` i `MARKETING.md`, merytoryczna recenzja treści dietetycznych (progi białka i mapowanie jaj czekają na prowadzącego kurs).
+
+*Aktualizacja wygenerowana 02.10.2026. Następny audyt warto zrobić po domknięciu Etapu 1 i 2 z §5.*
+
+---
+---
+
+# ARCHIWUM — RAPORT Z AUDYTU APLIKACJI KETO THAI — 14.09.2026
 
 > **Zakres:** architektura, build/deployment, design system, layout, UI/UX, dostępność, wydajność, SEO, copywriting vs strategia marketingowa.
 > **Metoda:** statyczna analiza całego `src/`, `index.html`, `dist/`, konfiguracji i dokumentów źródłowych (`DESIGN.md`, `STRATEGY.md`, `PRODUCT.md`, `PLAN.md`, `MARKETING.md`, `ROADMAP.md`, `PROGRES.md`).

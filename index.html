@@ -65,6 +65,8 @@
                 <a href="/knowledge" data-link>Wiedza</a>
                 <a href="/contact" data-link>Kontakt</a>
             </nav>
+            <!-- Pozycja konta: treść wstawia components/accountNav.js (3 stany). -->
+            <div class="drawer-account" id="drawer-account" hidden></div>
         </div>
 
         <!-- BOTTOM TAB BAR / DESKTOP SIDEBAR (PWA Navigation) -->
@@ -93,6 +95,21 @@
             <a class="tabbar__link tabbar__link--desktop-only" href="/contact" data-link>
                 <i data-lucide="mail" class="tabbar__icon"></i>
                 <span class="tabbar__label">Kontakt</span>
+            </a>
+            <!-- Konto (desktop, dół sidebara): href i etykietę ustawia components/accountNav.js. -->
+            <a
+                class="tabbar__link tabbar__link--desktop-only tabbar__account"
+                id="tabbar-account"
+                href="/konto"
+                data-link
+                data-active-for="/konto"
+                hidden
+            >
+                <span class="tabbar__account-icon">
+                    <i data-lucide="user" class="tabbar__icon"></i>
+                    <span class="tabbar__account-dot is-hidden" aria-hidden="true"></span>
+                </span>
+                <span class="tabbar__label">Zaloguj</span>
             </a>
         </nav>
 

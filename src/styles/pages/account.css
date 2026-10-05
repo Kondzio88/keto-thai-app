@@ -1,0 +1,355 @@
+/* ==========================================================================
+   KONTO — /konto, /konto/rejestracja i pozycja konta w nawigacji
+   Wygląd: makieta "Keto Thai – makieta kont" (DESIGN.md)
+   ========================================================================== */
+
+/* ---------- Strona konta ---------- */
+
+.account {
+    display: grid;
+    gap: var(--spacing-lg);
+    align-items: start;
+}
+
+.account__header {
+    margin-bottom: 0;
+}
+
+.account__return {
+    margin-top: var(--spacing-sm);
+    color: var(--bone-dim);
+}
+
+.account__loading {
+    color: var(--bone-dim);
+}
+
+.account__panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* .form ma własne max-width i padding pod osobną stronę formularza —
+   tu formularz jest częścią panelu, więc tylko układ pól. */
+.account__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.account__google {
+    width: 100%;
+    min-height: 48px;
+}
+
+.account__google-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* "albo e-mail" między dwiema liniami perforacji (DESIGN.md §5) */
+.account__or {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--bone-dim);
+}
+
+.account__or::before,
+.account__or::after {
+    content: "";
+    flex: 1;
+    border-top: 1px dashed var(--bone-faint);
+}
+
+.account__password {
+    position: relative;
+}
+
+.account__password .form__input {
+    width: 100%;
+    padding-right: 5.5rem;
+}
+
+.account__password-toggle {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    min-width: 44px;
+    padding: 0 var(--spacing-sm);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--bone);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.account__password-toggle:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: -2px;
+}
+
+.account__consent {
+    padding-top: var(--spacing-sm);
+}
+
+.account__switch {
+    font-size: 0.9rem;
+    color: var(--bone);
+}
+
+.account__switch a {
+    color: var(--amber);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* ---------- Karta zawodnika / "Przeniesiemy" ---------- */
+
+.account-card {
+    position: relative;
+    padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
+}
+
+.account-card__holes {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    display: flex;
+    gap: 8px;
+}
+
+.account-card__title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+    line-height: 1.05;
+    margin-bottom: var(--spacing-xs);
+    padding-right: 3rem; /* miejsce na dziurki */
+}
+
+.account-card__row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--ink-faint);
+    font-family: var(--font-mono);
+    font-size: 12px;
+}
+
+.account-card__row:last-child {
+    border-bottom: none;
+}
+
+.account-card__row dt {
+    font-size: var(--font-size-tag);
+    font-weight: 700;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+}
+
+.account-card__row dd {
+    margin: 0;
+    text-align: right;
+    overflow-wrap: anywhere; /* długi e-mail nie rozpycha karty */
+}
+
+/* ---------- Usunięcie konta ---------- */
+
+.account__danger {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding-top: var(--spacing-md);
+    border-top: 1px dashed var(--bone-faint);
+}
+
+.account__danger-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+    line-height: 1.05;
+}
+
+.account__danger-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--bone-dim);
+}
+
+/* --red tylko jako obramowanie, tekst zostaje --bone (DESIGN.md §3:
+   czerwień nie jako mały tekst — nie mieści się w progu kontrastu). */
+.account__delete {
+    padding: 12px 24px;
+    background-color: transparent;
+    color: var(--bone);
+    border: 2px solid var(--red);
+}
+
+.account__delete:hover {
+    background-color: var(--red);
+}
+
+/* Desktop: nagłówek po lewej, panel po prawej — jak na makiecie. */
+@media (min-width: 1024px) {
+    .account {
+        grid-template-columns: minmax(0, 1fr) 400px;
+        gap: var(--spacing-xl);
+        align-items: center;
+        min-height: 100dvh;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .account .page-header__title {
+        font-size: var(--font-size-hero);
+    }
+}
+
+/* ---------- Szuflada (mobile) ---------- */
+
+.drawer-account {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin: 0 var(--spacing-lg) var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px dashed var(--bone-faint);
+}
+
+/* [hidden] z HTML przegrywa z display: flex z klasy — wzmacniamy go. */
+.drawer-account[hidden],
+.tabbar__account[hidden] {
+    display: none;
+}
+
+.drawer-account__lead {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--bone-dim);
+}
+
+.drawer-account__signin {
+    align-self: flex-start;
+}
+
+.drawer-account__icon {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+.drawer-account__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+}
+
+.drawer-account__holes {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    display: flex;
+    gap: 8px;
+}
+
+.drawer-account__title {
+    padding-right: 3rem; /* miejsce na dziurki */
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+    line-height: 1.05;
+}
+
+.drawer-account__text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.drawer-account__link {
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.drawer-account__profile {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    min-height: 44px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--bone);
+    text-decoration: none;
+}
+
+.drawer-account__name {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.drawer-account__email {
+    font-size: var(--font-size-tag);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    color: var(--bone-dim);
+    overflow-wrap: anywhere;
+}
+
+.drawer-account a:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: 3px;
+}
+
+/* ---------- Sidebar (desktop) ---------- */
+
+.tabbar__account-icon {
+    position: relative;
+    display: flex;
+}
+
+/* Kropka "masz dane do zapisania" — element nietekstowy, więc --red wolno. */
+.tabbar__account-dot {
+    position: absolute;
+    top: -1px;
+    right: -3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--red);
+}
+
+@media (min-width: 768px) {
+    .tabbar__account {
+        position: absolute;
+        bottom: var(--spacing-lg);
+        left: 0;
+        padding-top: var(--spacing-md);
+        border-top: 1px dashed var(--bone-faint);
+    }
+}

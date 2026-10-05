@@ -83,8 +83,11 @@
         visibility 0s linear 0.25s;
 }
 
+/* Wysokość: cały ekran pod topbarem (3.75rem), z przewijaniem — karta konta
+   (stan "gość z profilem") nie mieści się w dawnym limicie 60vh. */
 .topbar.is-open + .topbar__drawer {
-    max-height: 60vh;
+    max-height: calc(100dvh - 3.75rem);
+    overflow-y: auto;
     visibility: visible;
     transition:
         max-height 0.25s ease,

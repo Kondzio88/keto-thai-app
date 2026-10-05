@@ -4,6 +4,8 @@ import { initInstallPromptCapture } from "./utils/installPrompt.js";
 import { initInstallBanner } from "./components/installBanner.js";
 import { onCorruptedData } from "./state/store.js";
 import { showToast } from "./components/toast.js";
+import { updateAccountNav } from "./components/accountNav.js";
+import { onAuthChange } from "./services/authService.js";
 
 // Rejestrujemy listener na `beforeinstallprompt` jak najwcześniej — event może
 // odpalić się zanim appka w ogóle zdąży wyrenderować pierwszą stronę.
@@ -29,7 +31,10 @@ const updateActiveTab = () => {
     const links = document.querySelectorAll(".tabbar__link");
 
     links.forEach((link) => {
-        const href = link.getAttribute("href");
+        // `data-active-for` — gdy href zmienia się w locie (pozycja konta:
+        // /konto?wroc=… albo /konto/rejestracja), a zakładka ma się zapalać
+        // dla całej sekcji. Query w href nie bierze udziału w porównaniu.
+        const href = link.dataset.activeFor ?? link.getAttribute("href").split("?")[0];
         // Podstrona też zapala swoją zakładkę (/recipes/new → "Przepisy").
         // "/" sprawdzamy dokładnie, bo każda ścieżka zaczyna się od "/".
         const isActive = href === "/" ? path === "/" : path === href || path.startsWith(`${href}/`);
@@ -93,23 +98,20 @@ const initDisclaimerLinks = () => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Router wysyła "route:rendered" po KAŻDYM renderze strony — także po
+    // navigateTo() z kodu (CTA, formularze), czego nie łapał dawny nasłuch
+    // kliknięć w tabbar (RAPORT.md #10). Rejestrujemy PRZED initRouter,
+    // bo pierwszy render dzieje się już w jego środku.
+    document.addEventListener("route:rendered", () => {
+        updateActiveTab();
+        updateAccountNav();
+    });
+    onAuthChange(updateAccountNav);
+
     initRouter();
     initTopbarDrawer();
     initDisclaimerLinks();
     initInstallBanner();
-
-    // Aktualizuj aktywną zakładkę po każdej nawigacji
-    updateActiveTab();
-    window.addEventListener("popstate", updateActiveTab);
-
-    // Nasłuchuj kliknięć w Tab Bar (router obsługuje nawigację, my odświeżamy aktywność)
-    const tabbar = document.getElementById("tabbar");
-    if (tabbar) {
-        tabbar.addEventListener("click", () => {
-            // Krótkie opóźnienie, by router zdążył zmienić URL
-            requestAnimationFrame(updateActiveTab);
-        });
-    }
 });
 
 if ("serviceWorker" in navigator && import.meta.env.PROD) {

@@ -13,6 +13,19 @@ const getPageAddress = () => getCurrentPath() + window.location.search;
 // od zmiany samej kotwicy.
 let renderedAddress = null;
 
+// Trasy dostępne bez profilu. Konto też: ktoś, kto loguje się na nowym
+// telefonie, nie ma jeszcze profilu i nie może zostać odesłany do onboardingu.
+const PUBLIC_PATHS = new Set([
+    "/",
+    "/onboarding",
+    "/recipes",
+    "/knowledge",
+    "/contact",
+    "/camp",
+    "/konto",
+    "/konto/rejestracja",
+]);
+
 const renderContent = () => {
     currentRoute?.cleanup?.();
 
@@ -20,15 +33,7 @@ const renderContent = () => {
 
     let path = getCurrentPath();
 
-    if (
-        !user &&
-        path !== "/onboarding" &&
-        path !== "/" &&
-        path !== "/recipes" &&
-        path !== "/knowledge" &&
-        path !== "/contact" &&
-        path !== "/camp"
-    ) {
+    if (!user && !PUBLIC_PATHS.has(path)) {
         path = "/onboarding";
         window.history.replaceState(null, null, getBase() + path);
     } else if (user && path === "/onboarding") {
@@ -56,6 +61,10 @@ const renderContent = () => {
     if (route.init) {
         route.init();
     }
+
+    // Sygnał dla elementów spoza #app (nawigacja), że strona się zmieniła —
+    // także po navigateTo() z kodu, nie tylko po kliknięciu w link.
+    document.dispatchEvent(new CustomEvent("route:rendered"));
 };
 
 export const navigateTo = (url) => {

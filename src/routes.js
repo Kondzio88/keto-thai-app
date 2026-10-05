@@ -5,6 +5,23 @@ import { renderOnboarding, initOnboarding } from "./pages/onboarding.js";
 import { renderDashboard, initDashboard, cleanupDashboard } from "./pages/dashboard.js";
 import { renderCamp, initCamp } from "./pages/camp.js";
 import { renderContact, initContact } from "./pages/contact.js";
+import { renderAccount, initAccount, renderRegister, initRegister } from "./pages/account.js";
+import { ACCOUNTS_ENABLED } from "./config.js";
+
+// Trasy kont istnieją tylko przy włączonej fladze (config.js). Bez niej
+// /konto trafia w fallback routera, jak każdy nieznany adres.
+const accountRoutes = ACCOUNTS_ENABLED
+    ? {
+          "/konto": {
+              render: renderAccount,
+              init: initAccount,
+          },
+          "/konto/rejestracja": {
+              render: renderRegister,
+              init: initRegister,
+          },
+      }
+    : {};
 
 export const routes = {
     "/": {
@@ -56,4 +73,5 @@ export const routes = {
         render: renderContact,
         init: initContact,
     },
+    ...accountRoutes,
 };
