@@ -20,7 +20,7 @@ Aplikacja Keto Thai to Vanilla JS SPA. Jedyne i ostateczne źródło prawdy dla 
 - **Model żywieniowy (w kodzie od 2026-09-25, decyzje z 18.09):** `calculatorService.js` liczy plan metodą **kotwic fizjologicznych**: 5 poziomów aktywności PAL z tabeli `ACTIVITY_LEVELS` (mnożnik + białko g/kg w jednym miejscu), cel kaloryczny jako **% TDEE** (redukcja −15%, masa +10%), podłoga 1200 K / 1500 M ograniczona przez TDEE, białko od **masy referencyjnej** (`min(waga, waga przy BMI 25)`), węgle **50 g netto** jako sufit, tłuszcz jako reszta. Kontrakt `generateDietPlan()`: `calories/protein/fats/netCarbs` (od 01.10 `netCarbs` zamiast `carbs`) + `floorLimit/deficitPercent` (od 02.10 — czy i jak podłoga zmieniła redukcję; Dashboard pokazuje to w notce pod bilansem). Pełne uzasadnienie: sesje 2026-09-18, 2026-09-25, 2026-10-02.
 - **Zastrzeżenie medyczne (od 2026-10-02):** jedno źródło treści — sekcja `<details id="zastrzezenia">` w stopce (`index.html`); linkują do niej onboarding (wymagany checkbox, niezapisywany), notka „zero deficytu" na Dashboardzie i FAQ. Lista przeciwwskazań z Muscogiuri i in. 2021 (Obesity Facts). Kalkulator od 18 lat.
 - **Baza wiedzy `/knowledge` (decyzja 2026-10-05, niewdrożone):** wariant C, czyli pliki `.md` w repo, najpierw parser w przeglądarce, później statyczne strony przy buildzie. Główny kanał to linki w Stories. Adres artykułu to ścieżka `/knowledge/<slug>`. Wymaga routera z parametrem i poprawionego guarda. Szczegóły: `PLAN.md` §4.
-- **Backend i domena (decyzja 2026-10-02, niewdrożone):** Supabase (konto później, e-mail + hasło + Google, „Konto” w szufladzie i sidebarze); domena z Hostingera wskazująca na GitHub Pages, podpinana po backendzie. Szczegóły: `PLAN.md` §1a.
+- **Backend i domena (decyzja 2026-10-02; w budowie od 2026-10-05):** Supabase, region UE. Schemat w `supabase/schema.sql` (5 tabel + RLS, uruchomiony). Konta tylko na `npm run dev` (flaga `ACCOUNTS_ENABLED` w `src/config.js`): trasy `/konto` i `/konto/rejestracja`, pozycja konta w szufladzie i sidebarze w 3 stanach, logowanie e-mail + hasło przez `authService.js` (interfejs `{ user, error }`), klient w `supabaseClient.js` ładowany dynamicznie. Google i synchronizacja danych jeszcze nie. Domena z Hostingera podpinana po backendzie. Szczegóły: `PLAN.md` §1a.
 - **Produkty i własne przepisy (od 2026-09-25) — trzy różne byty:** (1) **produkt** — tylko do odczytu, `src/data/productsData.js`, 200 pozycji z USDA SR Legacy (CC0), wartości na 100 g, opcjonalnie miary domowe `portions` (od 2026-10-02, wagi z `food_portion.csv`, do przepisu trafiają zawsze gramy); (2) **własny przepis** — `localStorage["keto_custom_recipes"]`, skład `{ productId, grams }` + sumy w kształcie `RECIPES_DATA`; (3) **wpis w dzienniku** — kopia makro (snapshot) w `keto_meals`, więc usunięcie przepisu nie rusza historii. Szkic kreatora: `keto_meal_draft` (z datą, wygasa następnego dnia). Żadnego zewnętrznego API w runtime.
 
 ---
@@ -456,14 +456,37 @@ Sesja decyzyjna i koncepcyjna, **bez zmian w kodzie**. Zmieniony tylko `PLAN.md`
 
 ---
 
-### ▶️ START NASTĘPNEJ SESJI: Supabase, etap 1 (model danych na papierze)
+### Sesja 2026-10-05 (cz. 2): konta (frontend), Supabase etapy 1–4
 
-Ustalone 2026-10-05: zaczynamy od rejestracji i logowania, czyli od punktu 5 niżej. Zadanie dla autora (szkic przynieść na review):
-1. Otworzyć `userService.js`, `mealService.js` i `customRecipeService.js` i sprawdzić **rzeczywisty kształt** każdego zapisywanego obiektu (pola, zagnieżdżenia).
-2. Dla każdej grupy danych do bazy (profil, historia wagi, dziennik posiłków, własne przepisy) zaproponować tabelę: nazwa, kolumny z typem, klucz główny, kolumna właściciela (wskazanie na użytkownika Supabase).
-3. Przemyśleć: historia wagi wewnątrz profilu czy osobna tabela (i czym się kierować); jak zapisać listę składników `{ productId, grams }` własnego przepisu w płaskich wierszach.
+Autor poprosił o tempo („ja nie piszę kodu”), kod powstał na komendę „Daj mi kod”. Frontend kont zacommitowany przez autora (`b65c310`), reszta w commicie tej sesji.
 
-Artykuły `/knowledge` (wariant C) czekają w kolejce. Ich pierwszy krok (router z parametrem ścieżki i poprawiony guard) można zrobić niezależnie od backendu.
+1. **Etap 1, model danych** (`PLAN.md` §1a): koszyki baza / `src/data` / `localStorage`; 5 tabel: `profiles` (1:1, `user_id` = PK, **bez** pola `weight`: bieżąca waga = najnowszy pomiar), `weight_entries` (osobna tabela, bo rośnie bez końca i zapisuje się niezależnie), `meals` (snapshot przepisu, `recipe_id` **bez FK**, bo wskazuje też `src/data`), `custom_recipes` (zapisane sumy, bo baza nie zna produktów), `custom_recipe_ingredients` (wiersz = składnik, `position`, dublet `user_id` dla prostego RLS). Odłożone na etap 6: przemapowanie starych id `user-…` na uuid, scalanie dwóch urządzeń.
+2. **Makieta kont** (Design canvas, 8 ekranów): https://claude.ai/artifact/Rh4QXR4hZGpMo97BMJEziW. Szuflada w 3 stanach, sidebar w 3 stanach, logowanie, rejestracja (karta „Przeniesiemy” + 2 zgody, w tym na dane o zdrowiu, art. 9 RODO), konto (karta zawodnika, wyloguj, usuń).
+3. **Frontend kont, wariant B** (udawany serwis, potem podmiana wnętrza):
+    - `src/config.js`: flaga `ACCOUNTS_ENABLED = import.meta.env.DEV` (na produkcji konta nie istnieją).
+    - `src/pages/account.js`: `/konto` (logowanie albo konto, widok wstawiany po asynchronicznym `getSession()`) i `/konto/rejestracja`; powrót przez `?wroc=` z ochroną przed open redirect (`//obcy.pl`); `runAction()` = blokada przycisku + „w toku” + komunikat błędu; zgody wymagane także przy Google.
+    - `src/components/accountNav.js`: `getAccountState()` (sesja → zalogowany, profil → gość z profilem, nic → gość); szuflada i pozycja na dole sidebara (`data-active-for="/konto"`, czerwona kropka + „Zapisz dane”).
+    - `router.js`: `PUBLIC_PATHS` jako `Set` (z `/konto`), zdarzenie `route:rendered` po każdym renderze. **Przy okazji naprawiony `RAPORT.md` #10** (aktywna zakładka po CTA i `navigateTo()`).
+    - Szuflada: `max-height: calc(100dvh - 3.75rem)` z przewijaniem.
+4. **Decyzja: zostajemy przy Supabase** (porównanie z Firebase). Za: model relacyjny z etapu 1, kaskada przy usuwaniu konta, `JOIN` + RLS dla trenera, stała cena. Plusy Firebase (offline, brak usypiania) słabsze u nas, bo aplikacja i tak działa lokalnie na `localStorage`.
+5. **Etap 2:** projekt Supabase założony; klucz w nowym formacie `sb_publishable_…`; wartości w `.env.local` (dodany do `.gitignore`); `@supabase/supabase-js` 2.117 (pierwsza zależność produkcyjna).
+6. **Etap 3:** `supabase/schema.sql` uruchomiony w SQL Editorze: 5 tabel, `CHECK` z granicami formularzy, `default auth.uid()`, `revoke … from anon`, RLS z regułą `for all` (`using` + `with check`) na każdej tabeli, dodatkowy warunek „przepis też jest Twój” dla składników, trigger `updated_at`, funkcja `delete_my_account()` (`security definer`, zamiast klucza secret). **Test:** `set role anon` + `select` → `42501` (brak uprawnień). Zasada: każda kolejna zmiana schematu = nowy plik `002_…sql`.
+7. **Etap 4 (e-mail + hasło):** `src/services/supabaseClient.js` (`getSupabase()`, dynamiczny import, więc paczka produkcyjna zostaje 198 kB zamiast 306 kB); `authService.js` na Supabase przy **niezmienionym interfejsie** `{ user, error }`; błędy po **kodzie** (`invalid_credentials`, `user_already_exists`…), listener `onAuthStateChange` odkładany przez `setTimeout` (ochrona przed zakleszczeniem). Google zwraca „wkrótce”.
+8. **Decyzja: potwierdzanie e-maila, wariant B:** wyłączone na czas budowy, ⚠️ **włączyć przed startem kont** razem z SMTP (zapisane w `PLAN.md` §1a jako warunek startu).
+9. **Wytłumaczone (do nietłumaczenia od zera):** klucz obcy (karteczka z numerem karnetu), `on delete cascade`; plik `.env.local` a wartości w paczce JS (`VITE_` = do przeglądarki); `publishable` vs `secret` (karta członkowska vs klucz generalny; secret omija RLS); RLS (`auth.uid()`, `using` vs `with check`); feature flag; interfejs serwisu niezależny od implementacji; `security definer`; fałszywe błędy w VS Code (rozszerzenie T-SQL czyta plik PostgreSQL).
+10. **Nieprzetestowane przez Claude'a:** realna rejestracja w Supabase (dane szłyby do zewnętrznego serwera) i widok desktop kont (okno bez zmiany rozmiaru). Test zostawiony autorowi.
+11. **Pytania sprawdzające bez odpowiedzi:** co zrobić z wpisem w `meals` po usunięciu własnego przepisu; `root?.isConnected` w `initAccount()`; który stan szuflady zobaczy właściciel konta na nowym telefonie; co zrobiłby obcy z kluczem secret w paczce; **Jan i `update` bez `with check`**.
+12. `npm audit`: 1 podatność „high” w `nanoid` (zależność Vite, tylko dev, nie trafia na stronę). Do sprawdzenia osobno.
+
+---
+
+### ▶️ START NASTĘPNEJ SESJI: test kont na Supabase, potem Google
+
+1. **Autor przed sesją:** Supabase → Authentication → Sign In / Providers → Email → odznaczyć „Confirm email”; `npm run dev` od nowa; na `/konto/rejestracja` założyć konto, sprawdzić Authentication → Users; wylogowanie, złe hasło, logowanie, „Usuń konto” (użytkownik znika z listy). Błędy przynieść z konsoli.
+2. Logowanie przez Google: Google Cloud Console (ekran zgody, klient OAuth), Supabase → Authentication → URL Configuration (adresy `localhost` i GitHub Pages), `signInWithOAuth` w `authService.js`.
+3. Etap 5: serwisy danych na `async` (zapis i odczyt z tabel dla zalogowanego), potem etap 6 (przeniesienie danych z `localStorage` i scalanie).
+
+Artykuły `/knowledge` (wariant C) czekają w kolejce. Ich pierwszy krok (router z parametrem ścieżki) można zrobić niezależnie od backendu.
 
 ---
 
@@ -476,10 +499,10 @@ Artykuły `/knowledge` (wariant C) czekają w kolejce. Ich pierwszy krok (router
 4. ✅ **Zrobione 2026-10-04** (sesja 04.10 pkt 7; `2b7179c`). ~~**#26:** trzy literówki.~~
 
 #### 🔴 B. Backend Supabase: etapy z `PLAN.md` §1a
-5. **Etap 1, model danych na papierze. Zadanie domowe:** rozdzielić `keto_user`, historię wagi (sprawdzić, gdzie leży, w `userService.js`), `keto_meals`, `keto_custom_recipes`, `keto_meal_draft`, `productsData.js` i `recipesData.js` na koszyki baza / `src/data` / `localStorage`, z uzasadnieniem „bo…”.
-6. **Scenariusz scalania (merge) do przemyślenia:** dane z dwóch urządzeń przy logowaniu (posiłki z laptopa, który profil wygrywa).
-7. **Makieta UI kont** w stylu `DESIGN.md`: szuflada i sidebar w 3 stanach użytkownika + ekrany logowania/rejestracji (zaproponowana, czeka na start).
-8. Etapy 2–7: projekt Supabase (region UE, klucze), tabele + RLS, logowanie + trasa konta, serwisy na `async`, migracja danych z `localStorage`, RODO + zakup domeny i podpięcie.
+5. ✅ **Zrobione 2026-10-05 cz. 2** (pkt 1 sesji). ~~Etap 1, model danych na papierze.~~
+6. **Scenariusz scalania (merge) do przemyślenia:** dane z dwóch urządzeń przy logowaniu (posiłki z laptopa, który profil wygrywa). Do tego: co z danymi lokalnymi po wylogowaniu (zostają → karta „tylko na tym telefonie”; czyścimy → samo „Zaloguj się”).
+7. ✅ **Zrobione 2026-10-05 cz. 2** (pkt 2–3 sesji). ~~Makieta UI kont + frontend.~~
+8. Etapy 2–3 ✅, etap 4 🟡 (brak Google i testu autora), dalej: serwisy na `async` (5), migracja danych z `localStorage` (6), RODO + **włączenie „Confirm email” i SMTP** + zakup domeny (7). Zmienne `VITE_SUPABASE_*` w GitHub → Settings → Secrets and variables → Actions przy wdrożeniu kont.
 
 #### 🟡 C. Po A i B
 9. Etap 2 z `RAPORT.md` §5 (SEO + tytuł per trasa, `/recipes/<id>`, Dashboard → `/camp`, przechwyt e-maila, antyspam), potem Etap 3–4 (dostępność, design, testy Vitest, podział funkcji-kolosów).

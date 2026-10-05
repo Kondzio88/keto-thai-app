@@ -6,6 +6,7 @@ dist/
 
 # Environment variables (na przyszłość)
 .env
+.env.local
 
 # System files
 .DS_Store

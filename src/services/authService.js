@@ -1,125 +1,139 @@
-import { saveState, readState, removeState } from "../state/store.js";
-import { getDateKey } from "../utils/date.js";
+import { getSupabase } from "./supabaseClient.js";
 
-// ⚠️ UDAWANY serwis logowania (mock) — do czasu Supabase (PLAN.md §1a, etap 4).
+// Logowanie przez Supabase Auth (PLAN.md §1a, etap 4).
 //
-// Ustalamy tu INTERFEJS, z którego korzystają widoki: te same nazwy funkcji,
-// te same argumenty, te same kształty wyników. Przy Supabase zmienia się tylko
-// wnętrze tego pliku; account.js i nawigacja zostają bez zmian.
-//
-// Kształt wyniku każdej akcji: { user, error }
+// INTERFEJS bez zmian względem mocka z wariantu B — widoki (account.js,
+// accountNav.js) nie wiedzą, że pod spodem jest teraz sieć:
+//   akcje zwracają { user, error }
 //   user  — { id, email, provider: "email" | "google", createdAt: "RRRR-MM-DD" } albo null
 //   error — gotowy komunikat po polsku albo null
 //
-// Mock NIE przechowuje haseł: logowanie przepuszcza każde hasło do istniejącego
-// konta. Prawdziwe hasła trzyma wyłącznie Supabase (zahashowane, po stronie serwera).
-// Dane z localStorage (profil, dziennik) zostają tam, gdzie są — przeniesienie
-// do bazy to etap 6.
-
-const SESSION_KEY = "keto_fake_session";
-const ACCOUNTS_KEY = "keto_fake_accounts";
-
-// Sieć nigdy nie odpowiada natychmiast. Opóźnienie wymusza na widokach
-// obsługę stanu "ładowanie" już teraz, a nie dopiero przy Supabase.
-const FAKE_DELAY_MS = 600;
-const wait = () => new Promise((resolve) => setTimeout(resolve, FAKE_DELAY_MS));
+// Supabase sam trzyma sesję w localStorage (klucz sb-<projekt>-auth-token)
+// i odświeża jej token w tle.
 
 export const PASSWORD_MIN_LENGTH = 8;
 
-const normalizeEmail = (email) => email.trim().toLowerCase();
-
-const getAccounts = () => readState(ACCOUNTS_KEY).data ?? {};
-
-const startSession = (user) => {
-    saveState(SESSION_KEY, user);
-    notify(user);
-    return { user, error: null };
+const NOT_CONFIGURED = {
+    user: null,
+    error: "Logowanie jest niedostępne: brak konfiguracji Supabase w .env.local.",
 };
 
-// ---------- Nasłuch zmian (odpowiednik onAuthStateChange z Supabase) ----------
+// Obiekt użytkownika Supabase → nasz mały, stały kształt. Jedno miejsce
+// tłumaczenia: gdy Supabase zmieni swoje pola, poprawiamy tylko tutaj.
+const toAppUser = (user) =>
+    user
+        ? {
+              id: user.id,
+              email: user.email,
+              provider: user.app_metadata?.provider === "google" ? "google" : "email",
+              createdAt: user.created_at.slice(0, 10),
+          }
+        : null;
 
-const listeners = new Set();
+// Kody błędów Supabase Auth → komunikaty dla człowieka. Rozpoznajemy po
+// KODZIE, nie po treści: treść bywa zmieniana, kod nie.
+const ERROR_MESSAGES = {
+    invalid_credentials: "Nieprawidłowy e-mail lub hasło.",
+    user_already_exists: "Konto z tym adresem już istnieje. Zaloguj się.",
+    email_exists: "Konto z tym adresem już istnieje. Zaloguj się.",
+    weak_password: `Hasło jest za słabe. Użyj co najmniej ${PASSWORD_MIN_LENGTH} znaków.`,
+    email_address_invalid: "Ten adres e-mail wygląda na niepoprawny.",
+    email_not_confirmed: "Najpierw potwierdź adres e-mail linkiem z wiadomości.",
+    over_request_rate_limit: "Za dużo prób w krótkim czasie. Odczekaj chwilę i spróbuj ponownie.",
+    over_email_send_rate_limit: "Za dużo prób w krótkim czasie. Odczekaj chwilę i spróbuj ponownie.",
+};
 
-const notify = (user) => listeners.forEach((listener) => listener(user));
+const toMessage = (error) => {
+    // Brak sieci albo uśpiony projekt (plan darmowy) — status 0 / błąd fetch.
+    if (!error.status || error.name === "AuthRetryableFetchError") {
+        return "Nie udało się połączyć z serwerem. Sprawdź internet i spróbuj ponownie.";
+    }
+    console.error("Supabase Auth:", error);
+    return ERROR_MESSAGES[error.code] ?? "Coś poszło nie tak. Spróbuj ponownie za chwilę.";
+};
 
-// Zwraca funkcję wypisującą — ten sam wzorzec co removeEventListener.
+// ---------- Nasłuch zmian ----------
+
+// Supabase ostrzega: wywołanie innej funkcji Supabase WEWNĄTRZ callbacku
+// onAuthStateChange może się zakleszczyć (deadlock). Nasz listener woła
+// getSession(), więc odkładamy go na następny obieg pętli zdarzeń.
+// Klient ładuje się asynchronicznie, a funkcja wypisująca musi być zwrócona
+// od razu — dlatego zapamiętujemy, czy ktoś zdążył się wypisać przed startem.
 export const onAuthChange = (listener) => {
-    listeners.add(listener);
-    return () => listeners.delete(listener);
+    let subscription = null;
+    let cancelled = false;
+
+    getSupabase().then((supabase) => {
+        if (!supabase || cancelled) return;
+        ({ subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+            setTimeout(() => listener(toAppUser(session?.user)), 0);
+        }).data);
+    });
+
+    return () => {
+        cancelled = true;
+        subscription?.unsubscribe();
+    };
 };
 
 // ---------- Odczyt ----------
 
-// async, choć localStorage jest synchroniczny: Supabase odpowiada przez sieć,
-// więc wywołujący już teraz muszą czekać (await) na wynik.
 export const getSession = async () => {
-    const { data } = readState(SESSION_KEY);
-    return data?.email ? data : null;
+    const supabase = await getSupabase();
+    if (!supabase) return null;
+    const { data } = await supabase.auth.getSession();
+    return toAppUser(data.session?.user);
 };
 
 // ---------- Akcje ----------
 
 export const signUp = async ({ email, password }) => {
-    await wait();
-    const address = normalizeEmail(email);
+    const supabase = await getSupabase();
+    if (!supabase) return NOT_CONFIGURED;
+    const { data, error } = await supabase.auth.signUp({ email: email.trim(), password });
+    if (error) return { user: null, error: toMessage(error) };
 
-    if (password.length < PASSWORD_MIN_LENGTH) {
-        return { user: null, error: `Hasło musi mieć co najmniej ${PASSWORD_MIN_LENGTH} znaków.` };
+    // Bez sesji = Supabase czeka na kliknięcie linku z maila („Confirm email”
+    // włączone). Dziś wyłączone (PLAN.md §1a, wariant B); przed startem
+    // to miejsce dostanie własny ekran „Sprawdź skrzynkę”.
+    if (!data.session) {
+        return { user: null, error: "Sprawdź skrzynkę: wysłaliśmy link potwierdzający adres e-mail." };
     }
-
-    const accounts = getAccounts();
-    if (accounts[address]) {
-        return { user: null, error: "Konto z tym adresem już istnieje. Zaloguj się." };
-    }
-
-    const user = { id: crypto.randomUUID(), email: address, provider: "email", createdAt: getDateKey() };
-    saveState(ACCOUNTS_KEY, { ...accounts, [address]: user });
-    return startSession(user);
+    return { user: toAppUser(data.user), error: null };
 };
 
-export const signIn = async ({ email }) => {
-    await wait();
-    const user = getAccounts()[normalizeEmail(email)];
-
-    // Jeden komunikat dla złego e-maila i złego hasła — tak robi Supabase.
-    // Osobne komunikaty zdradzałyby, czy dany adres ma u nas konto.
-    if (!user) return { user: null, error: "Nieprawidłowy e-mail lub hasło." };
-
-    return startSession(user);
+export const signIn = async ({ email, password }) => {
+    const supabase = await getSupabase();
+    if (!supabase) return NOT_CONFIGURED;
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (error) return { user: null, error: toMessage(error) };
+    return { user: toAppUser(data.user), error: null };
 };
 
-// Prawdziwy Google przekieruje na swoją stronę i wróci do aplikacji.
-// Mock od razu "wraca" ze stałym kontem testowym.
-export const signInWithGoogle = async () => {
-    await wait();
-    const address = "konto.google@przyklad.pl";
-    const accounts = getAccounts();
-    const user = accounts[address] ?? {
-        id: crypto.randomUUID(),
-        email: address,
-        provider: "google",
-        createdAt: getDateKey(),
-    };
-
-    saveState(ACCOUNTS_KEY, { ...accounts, [address]: user });
-    return startSession(user);
-};
+// TODO (osobna sesja): supabase.auth.signInWithOAuth({ provider: "google" })
+// po konfiguracji w Google Cloud Console i Authentication → URL Configuration.
+export const signInWithGoogle = async () => ({
+    user: null,
+    error: "Logowanie przez Google będzie dostępne wkrótce. Użyj e-maila i hasła.",
+});
 
 export const signOut = async () => {
-    await wait();
-    removeState(SESSION_KEY);
-    notify(null);
+    const supabase = await getSupabase();
+    if (!supabase) return NOT_CONFIGURED;
+    const { error } = await supabase.auth.signOut();
+    if (error) return { user: null, error: toMessage(error) };
     return { user: null, error: null };
 };
 
+// Funkcja delete_my_account() w bazie (supabase/schema.sql, część 5) usuwa
+// konto wywołującego; kaskada kasuje jego dane. Potem czyścimy sesję lokalnie
+// — konto już nie istnieje, więc wylogowanie na serwerze nie ma czego unieważniać.
 export const deleteAccount = async () => {
-    await wait();
-    const session = await getSession();
-    if (!session) return { user: null, error: "Nie jesteś zalogowany." };
+    const supabase = await getSupabase();
+    if (!supabase) return NOT_CONFIGURED;
+    const { error } = await supabase.rpc("delete_my_account");
+    if (error) return { user: null, error: toMessage(error) };
 
-    const { [session.email]: _removed, ...rest } = getAccounts();
-    saveState(ACCOUNTS_KEY, rest);
-    removeState(SESSION_KEY);
-    notify(null);
+    await supabase.auth.signOut({ scope: "local" });
     return { user: null, error: null };
 };

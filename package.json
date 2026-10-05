@@ -22,5 +22,8 @@
   "homepage": "https://github.com/Kondzio88/keto-thai-app#readme",
   "devDependencies": {
     "vite": "^8.1.5"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.2"
   }
 }

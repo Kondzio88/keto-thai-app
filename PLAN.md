@@ -38,16 +38,17 @@ Aplikacja „Keto Thai” to **SPA (Single Page Application)** w czystym JavaScr
 - **Rejestracja, wariant B (konto później):** aplikacja działa w pełni bez konta (strona obiecuje „bez rejestracji”: `home.js`, `onboarding.js`). Zaproszenie do konta pada, gdy użytkownik ma już dane do stracenia: **po dodaniu pierwszego posiłku**, **po 5 dniach** używania i jako **stałe miejsce w dzienniku** na Dashboardzie. Po rejestracji dane z `localStorage` są przenoszone do bazy.
 - **Trzy stany użytkownika:** gość bez profilu → gość z profilem (dane lokalne) → zalogowany (dane w Supabase). Nawigacja i zaproszenia zależą od stanu.
 - **Metoda logowania:** e-mail + hasło **oraz** „Zaloguj przez Google”. Ekrany: logowanie, rejestracja, „nie pamiętam hasła”, ustawienie nowego hasła, strona konta (wyloguj, **usuń konto**, wymóg RODO). Google wymaga konfiguracji w Google Cloud (adresy przekierowań dla `localhost` i domeny, ekran zgody). Wbudowana poczta Supabase ma bardzo niski limit wysyłek, więc przed startem trzeba podpiąć własny serwer SMTP.
+- **Potwierdzanie e-maila, wariant B (decyzja 2026-10-05):** na czas budowy **wyłączone** (Supabase → Authentication → Sign In / Providers → Email → „Confirm email”), więc rejestracja loguje od razu. ⚠️ **WARUNEK STARTU:** zanim konta zobaczą użytkownicy (flaga `ACCOUNTS_ENABLED` w `src/config.js`), włączyć „Confirm email” z powrotem razem z własnym SMTP (etap 7) i dodać w UI ekran „Sprawdź skrzynkę”. Odrzucone: A (włączone od razu, limit maili blokuje testy), C (wyłączone na stałe, konto na cudzy e-mail).
 - **Wejście w nawigacji:** link „Konto” w szufladzie hamburgera (mobile) i na dole lewego sidebara (desktop). Jedna trasa konta (formularz dla gościa / strona konta dla zalogowanego); zaproszenia prowadzą na nią z informacją, dokąd wrócić.
 - **Co trafia do bazy:** dane należące do użytkownika i zmieniające się (profil, historia wagi, dziennik, własne przepisy). **Zostają w plikach `src/data`:** 200 produktów USDA i 50 przepisów trenera (wspólne dla wszystkich, tylko do odczytu). Szkice kreatora mogą zostać w `localStorage`.
 - **Konsekwencja w kodzie:** serwisy przechodzą z synchronicznych na asynchroniczne (`async/await`); widoki dostają stany „ładowanie” i „błąd”.
 - **Konsekwencja we wdrażaniu:** kod publikuje się sam (`git push`), schemat bazy i reguły RLS zmienia się osobno w Supabase. Zasada: **najpierw baza, potem kod.**
 
 **Etapy (każdy implementuje autor, krok po kroku):**
-1. Model danych na papierze (co do bazy, jakie tabele i relacje).
-2. Konto i projekt w Supabase, region UE, klucze (publiczny `anon` vs tajny `service_role`, który nigdy nie trafia do frontendu).
-3. Tabele i reguły RLS („każdy widzi tylko swoje wiersze”).
-4. Logowanie (e-mail + hasło, Google) i trasa konta.
+1. ✅ Model danych na papierze (co do bazy, jakie tabele i relacje). Wynik: `supabase/schema.sql`.
+2. ✅ Konto i projekt w Supabase, region UE, klucze (publiczny `publishable` vs tajny `secret`, który nigdy nie trafia do frontendu). Wartości w `.env.local` (ignorowany przez git).
+3. ✅ Tabele i reguły RLS („każdy widzi tylko swoje wiersze”): `supabase/schema.sql` uruchomiony 2026-10-05, test roli `anon` → 42501.
+4. 🟡 Logowanie (e-mail + hasło, Google) i trasa konta. Frontend + e-mail i hasło: 2026-10-05. **Google: osobna sesja** (Google Cloud Console + Authentication → URL Configuration).
 5. Serwisy na `async`, po jednym; obsługa błędów sieci (poprzedzone naprawą `RAPORT.md` N1).
 6. Przeniesienie danych z `localStorage` przy pierwszym logowaniu, w tym **scalanie** danych z dwóch urządzeń (decyzja otwarta).
 7. RODO (polityka prywatności, dane o wadze), zakup domeny w Hostingerze i podpięcie.
