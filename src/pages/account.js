@@ -48,12 +48,30 @@ const getReturnQuery = () => {
     return returnPath ? `?wroc=${encodeURIComponent(returnPath)}` : "";
 };
 
-// Bez ?wroc= — Tracker, jeśli jest profil; inaczej strona główna.
-const goAfterSignIn = () => navigateTo(getReturnPath() ?? (getUser() ? "/dashboard" : "/"));
+// Bez ?wroc= — Tracker, jeśli jest profil; inaczej strona główna. Na kalkulator
+// po zalogowaniu nie wracamy: profil jest w bazie, a jeśli nie, guard routera
+// sam odeśle z /dashboard na /onboarding.
+const goAfterSignIn = (options) => {
+    const returnPath = getReturnPath();
+    const target = returnPath === "/onboarding" ? "/dashboard" : (returnPath ?? (getUser() ? "/dashboard" : "/"));
+    navigateTo(target, options);
+};
 
-// Po Google wracamy na /konto (z tym samym ?wroc=). Pełny adres z domeną, bo
+// Znacznik w adresie powrotu od Google. Odróżnia „właśnie zalogowałem się
+// przez Google” od zwykłego wejścia na /konto?wroc=… (np. z szuflady),
+// bo tylko po Google przekierowujemy dalej sami (PLAN.md §1a, luka nr 8).
+const GOOGLE_RETURN_PARAM = "google";
+
+// Po Google wracamy na /konto z ?wroc= i znacznikiem. Pełny adres z domeną, bo
 // wraca do nas serwer Google/Supabase, a nie nasz router.
-const getGoogleRedirect = () => `${window.location.origin}${getBase()}/konto${getReturnQuery()}`;
+const getGoogleRedirect = () => {
+    const params = new URLSearchParams({ [GOOGLE_RETURN_PARAM]: "1" });
+    const returnPath = getReturnPath();
+    if (returnPath) params.set("wroc", returnPath);
+    return `${window.location.origin}${getBase()}/konto?${params}`;
+};
+
+const isBackFromGoogle = () => new URLSearchParams(window.location.search).has(GOOGLE_RETURN_PARAM);
 const continueWithGoogle = () => signInWithGoogle({ redirectTo: getGoogleRedirect() });
 
 const getReturnNoteHTML = () => {
@@ -295,6 +313,14 @@ export const initAccount = async () => {
     // Użytkownik mógł w międzyczasie przejść na inną stronę — wtedy `root`
     // nie jest już w dokumencie i nie wolno go wypełniać.
     if (!root?.isConnected) return;
+
+    // Powrót od Google: sesja już jest, więc idziemy tam, skąd ktoś przyszedł.
+    // replace, a nie push — inaczej „Wstecz” wracałoby na ten adres
+    // ze znacznikiem i przekierowywało w kółko.
+    if (session && isBackFromGoogle()) {
+        goAfterSignIn({ replace: true });
+        return;
+    }
 
     root.innerHTML = session ? renderSignedInView(session) : renderSignInView();
     root.removeAttribute("aria-busy");

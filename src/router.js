@@ -72,8 +72,12 @@ const renderContent = () => {
 // profilu wylądował na /onboarding, a po pobraniu profilu trafi na /dashboard.
 export const refreshCurrentRoute = () => renderContent();
 
-export const navigateTo = (url) => {
-    window.history.pushState(null, null, getBase() + url);
+// replace: true podmienia bieżący wpis historii zamiast dokładać nowy —
+// dla przekierowań, do których „Wstecz” nie powinno wracać.
+export const navigateTo = (url, { replace = false } = {}) => {
+    const fullUrl = getBase() + url;
+    if (replace) window.history.replaceState(null, null, fullUrl);
+    else window.history.pushState(null, null, fullUrl);
     renderContent();
 };
 
