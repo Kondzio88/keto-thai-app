@@ -1,7 +1,7 @@
 import { saveState, readState, removeState, quarantineCorrupted } from "../state/store.js";
 import { getDateKey } from "../utils/date.js";
 import { getNetCarbs } from "./productService.js";
-import { getSignedInClient, SAVE_FAILED } from "./supabaseClient.js";
+import { getSignedInClient, isUuid, SAVE_FAILED } from "./supabaseClient.js";
 
 const MEALS_STORAGE_KEY = "keto_meals";
 
@@ -39,10 +39,6 @@ const snapshotRecipe = (recipe) => ({
 const LOCAL_SAVE_FAILED = "Pamięć przeglądarki jest pełna albo zablokowana (np. tryb prywatny).";
 
 const formatTime = (date) => date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-// Baza przyjmuje tylko uuid. Stare wpisy (id z Date.now()) żyją wyłącznie
-// lokalnie — ich przeniesienie do bazy to etap 6.
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // Kopia przepisu w kształcie wiersza tabeli meals (nazwy kolumn z supabase/schema.sql).
 const toSnapshotRow = (snapshot) => ({
@@ -126,7 +122,7 @@ export const getTodayMeal = () => {
 
 export const removeMeal = async (mealId) => {
     const account = await getSignedInClient();
-    if (account && UUID_PATTERN.test(mealId)) {
+    if (account && isUuid(mealId)) {
         const { error } = await account.supabase.from("meals").delete().eq("id", mealId);
         if (error) {
             console.error("Supabase meals:", error);

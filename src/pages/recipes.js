@@ -8,6 +8,7 @@ import { getProductById, calculateIngredientMacros, getNetCarbs } from "../servi
 import { formatDateKey } from "../utils/date.js";
 import { getCustomRecipes, deleteCustomRecipe } from "../services/customRecipeService.js";
 import { showConfirmModal } from "../components/confirmModal.js";
+import { showToast } from "../components/toast.js";
 
 // `getValue` zamiast samego klucza: węgle pokazujemy netto (ta sama wielkość,
 // co limit na Dashboardzie), a w przepisie zapisane są całkowite + błonnik.
@@ -315,8 +316,12 @@ export const initRecipes = () => {
                 message: `„${escapeHtml(recipeToDelete.title)}" zniknie z listy przepisów. Posiłki już zapisane w dzienniku zostaną.`,
                 confirmLabel: "Usuń",
                 cancelLabel: "Anuluj",
-                onConfirm: () => {
-                    deleteCustomRecipe(recipeToDelete.id);
+                onConfirm: async () => {
+                    const { error } = await deleteCustomRecipe(recipeToDelete.id);
+                    if (error) {
+                        showToast({ stamp: "Uwaga", title: "Nie udało się usunąć przepisu", note: error });
+                        return;
+                    }
                     currentRecipe = null;
                     resetFilters();
                     updateGrid(getAllRecipes());

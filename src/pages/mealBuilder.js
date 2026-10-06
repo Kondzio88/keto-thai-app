@@ -512,7 +512,9 @@ export const initMealBuilder = () => {
         });
     };
 
-    document.getElementById("builder-create").addEventListener("click", () => {
+    const createButton = document.getElementById("builder-create");
+    createButton.addEventListener("click", async () => {
+        if (createButton.disabled) return;
         const title = state.title.trim();
 
         // Przycisk zostaje aktywny, a brak danych nazywamy wprost —
@@ -530,14 +532,28 @@ export const initMealBuilder = () => {
 
         const formData = { title, category: state.category, ingredients: state.ingredients };
 
+        // Zalogowany czeka na bazę — blokada chroni przed dwoma przepisami z dwóch kliknięć.
+        const idleLabel = createButton.textContent;
+        createButton.disabled = true;
+        createButton.textContent = "Zapisuję…";
+        const { recipe, error } = isEdit
+            ? await updateCustomRecipe(editId, formData)
+            : await createCustomRecipe(formData);
+        createButton.disabled = false;
+        createButton.textContent = idleLabel;
+
+        // Szkic zostaje przy błędzie — nic z wpisanego składu nie przepada.
+        if (error) {
+            showError(error);
+            return;
+        }
+
         if (!isEdit) {
-            const recipe = createCustomRecipe(formData);
             clearMealDraft();
             showSuccess(recipe);
             return;
         }
 
-        const recipe = updateCustomRecipe(editId, formData);
         if (!recipe) {
             // Przepis zniknął w międzyczasie (np. usunięty w innej karcie) — nie udajemy sukcesu.
             showError("Tego przepisu już nie ma — mógł zostać usunięty. Wróć do przepisów.");
