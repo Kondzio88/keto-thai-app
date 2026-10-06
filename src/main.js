@@ -9,6 +9,7 @@ import { onCorruptedData } from "./state/store.js";
 import { showToast } from "./components/toast.js";
 import { updateAccountNav } from "./components/accountNav.js";
 import { onAuthChange } from "./services/authService.js";
+import { clearLocalData } from "./services/localDataService.js";
 
 // Rejestrujemy listener na `beforeinstallprompt` jak najwcześniej — event może
 // odpalić się zanim appka w ogóle zdąży wyrenderować pierwszą stronę.
@@ -113,6 +114,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // pobierz dane z bazy do lokalnej kopii, a jeśli się zmieniły, przerysuj stronę.
     onAuthChange(async (user, event) => {
         updateAccountNav();
+
+        // Sesja skończyła się bez przycisku "Wyloguj" na tym urządzeniu, np. po
+        // "Wyloguj" na telefonie (scope: "global") — laptop dowiaduje się o tym
+        // przy odświeżeniu biletu sesji (PLAN.md §1a, luka nr 9). Sprawdzamy
+        // nazwę zdarzenia, a NIE `!user`: gość też nie ma użytkownika, a jego
+        // dane istnieją tylko lokalnie. Po "Wyloguj" tutaj czyścimy drugi raz —
+        // bez szkody, usunięcie nieistniejącego klucza nic nie robi.
+        if (event === "SIGNED_OUT") {
+            clearLocalData();
+            refreshCurrentRoute(); // zdejmuje dane z ekranu, guard odeśle z Trackera
+            return;
+        }
+
         if (!user || (event !== "INITIAL_SESSION" && event !== "SIGNED_IN")) return;
         const changed = await Promise.all([
             pullUserFromServer(),
