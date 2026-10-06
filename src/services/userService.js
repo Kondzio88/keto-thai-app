@@ -1,7 +1,7 @@
 import { saveState, readState, removeState, quarantineCorrupted } from "../state/store.js";
 import { isKnownActivity, isKnownGoal } from "./calculatorService.js";
 import { getDateKey } from "../utils/date.js";
-import { getSupabase } from "./supabaseClient.js";
+import { getSignedInClient, SAVE_FAILED } from "./supabaseClient.js";
 
 const USER_STORAGE_KEY = "keto_user";
 
@@ -73,16 +73,6 @@ export const clearUser = () => removeState(USER_STORAGE_KEY);
 // Gość (bez sesji) zapisuje jak dawniej, tylko lokalnie.
 //
 // Akcje zwracają { error }: null albo gotowy komunikat po polsku.
-
-const SAVE_FAILED = "Nie udało się zapisać. Sprawdź internet i spróbuj ponownie.";
-
-// Klient tylko wtedy, gdy ktoś jest zalogowany — inaczej null (tryb gościa).
-const getSignedInClient = async () => {
-    const supabase = await getSupabase();
-    if (!supabase) return null;
-    const { data } = await supabase.auth.getSession();
-    return data.session ? { supabase, userId: data.session.user.id } : null;
-};
 
 // Lokalny kształt profilu → wiersz tabeli profiles. Waga nie ma tu kolumny:
 // bieżąca waga to najnowszy wiersz w weight_entries.

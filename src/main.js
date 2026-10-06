@@ -1,5 +1,6 @@
 import { initRouter, refreshCurrentRoute } from "./router.js";
 import { pullUserFromServer } from "./services/userService.js";
+import { pullMealsFromServer } from "./services/mealService.js";
 import { getCurrentPath , getBase} from "./utils/env.js";
 import { initInstallPromptCapture } from "./utils/installPrompt.js";
 import { initInstallBanner } from "./components/installBanner.js";
@@ -112,7 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
     onAuthChange(async (user, event) => {
         updateAccountNav();
         if (!user || (event !== "INITIAL_SESSION" && event !== "SIGNED_IN")) return;
-        if (await pullUserFromServer()) refreshCurrentRoute();
+        const changed = await Promise.all([pullUserFromServer(), pullMealsFromServer()]);
+        if (changed.some(Boolean)) refreshCurrentRoute();
     });
 
     initRouter();

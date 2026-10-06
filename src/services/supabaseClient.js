@@ -24,3 +24,15 @@ export const getSupabase = () => {
     );
     return clientPromise;
 };
+
+// Dla serwisów danych (etap 5): klient + id użytkownika, gdy ktoś jest
+// zalogowany, a null dla gościa — wtedy serwis zapisuje tylko lokalnie.
+export const getSignedInClient = async () => {
+    const supabase = await getSupabase();
+    if (!supabase) return null;
+    const { data } = await supabase.auth.getSession();
+    return data.session ? { supabase, userId: data.session.user.id } : null;
+};
+
+// Wspólny komunikat nieudanego zapisu do bazy (szczegóły idą do konsoli).
+export const SAVE_FAILED = "Nie udało się zapisać. Sprawdź internet i spróbuj ponownie.";

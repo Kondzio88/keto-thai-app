@@ -503,10 +503,11 @@ export const initMealBuilder = () => {
             message: `Ten posiłek jest dziś w dzienniku${todayCount > 1 ? ` (${todayCount}×)` : ""} ze starymi wartościami. Wcześniejsze dni zostaną bez zmian.`,
             confirmLabel: "Popraw wpis",
             cancelLabel: "Zostaw",
-            onConfirm: () => {
-                updateTodayMealsFromRecipe(recipe);
-                document.getElementById("builder-success-text").textContent =
-                    "Zmiany zapisane w przepisie i w dzisiejszym dzienniku.";
+            onConfirm: async () => {
+                const { error } = await updateTodayMealsFromRecipe(recipe);
+                document.getElementById("builder-success-text").textContent = error
+                    ? `Przepis zapisany, ale dzisiejszego wpisu nie udało się poprawić. ${error}`
+                    : "Zmiany zapisane w przepisie i w dzisiejszym dzienniku.";
             },
         });
     };

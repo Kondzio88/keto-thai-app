@@ -311,11 +311,17 @@ export const initDashboard = () => {
     refreshDay();
 
     // Delegacja zdarzeń: lista jest przerysowywana, kontener zostaje ten sam.
-    mealLog.addEventListener("click", (event) => {
+    mealLog.addEventListener("click", async (event) => {
         const removeButton = event.target.closest(".meal-log__remove");
-        if (!removeButton) return;
+        if (!removeButton || removeButton.disabled) return;
 
-        removeMeal(removeButton.dataset.mealId);
+        removeButton.disabled = true; // zalogowany czeka na bazę — bez podwójnego kliknięcia
+        const { error } = await removeMeal(removeButton.dataset.mealId);
+        if (error) {
+            removeButton.disabled = false;
+            showToast({ stamp: "Uwaga", title: "Nie udało się usunąć posiłku", note: error });
+            return;
+        }
         refreshDay();
     });
 
