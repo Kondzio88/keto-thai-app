@@ -14,10 +14,12 @@
 
 .modal__content {
     width: 100%;
-    max-width: 320px;
+    max-width: 400px;
     background-color: var(--ground2);
     border: 1px solid var(--bone-faint);
-    padding: var(--spacing-xl);
+    /* Nie --spacing-xl: rośnie z szerokością ekranu (6vw), a okno ma stały
+       limit — na desktopie zjadało ~180 px z 320 i ściskało tekst w kolumnę. */
+    padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -73,8 +75,11 @@
     width: 100%;
 }
 
+/* Dwa przyciski dzielą jeden rząd — domyślne 24 px z boków łamało
+   „Usuń konto” na dwie linie. */
 .modal__actions .btn {
     flex: 1;
+    padding-inline: 12px;
 }
 
 /* Potwierdzenie wysyłki formularza (camp.js, contact.js) — ta sama powłoka

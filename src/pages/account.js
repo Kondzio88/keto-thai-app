@@ -1,6 +1,7 @@
 import { html } from "../utils/template.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
 import { navigateTo } from "../router.js";
+import { getBase } from "../utils/env.js";
 import { showToast } from "../components/toast.js";
 import { showConfirmModal } from "../components/confirmModal.js";
 import {
@@ -48,6 +49,11 @@ const getReturnQuery = () => {
 
 // Bez ?wroc= — Tracker, jeśli jest profil; inaczej strona główna.
 const goAfterSignIn = () => navigateTo(getReturnPath() ?? (getUser() ? "/dashboard" : "/"));
+
+// Po Google wracamy na /konto (z tym samym ?wroc=). Pełny adres z domeną, bo
+// wraca do nas serwer Google/Supabase, a nie nasz router.
+const getGoogleRedirect = () => `${window.location.origin}${getBase()}/konto${getReturnQuery()}`;
+const continueWithGoogle = () => signInWithGoogle({ redirectTo: getGoogleRedirect() });
 
 const getReturnNoteHTML = () => {
     const label = RETURN_LABELS[getReturnPath()?.split("?")[0]];
@@ -222,9 +228,9 @@ const initSignInView = (root) => {
             button: event.currentTarget,
             busyLabel: "Łączę z Google…",
             errorBox,
-            action: signInWithGoogle,
+            action: continueWithGoogle,
         });
-        if (!result.error) goAfterSignIn();
+        if (!result.error && !result.redirecting) goAfterSignIn();
     });
 
     form.addEventListener("submit", async (event) => {
@@ -388,7 +394,7 @@ export const initRegister = async () => {
     bindPasswordToggle(root);
 
     const finish = (result) => {
-        if (result.error) return;
+        if (result.error || result.redirecting) return;
         showToast({ stamp: "Gotowe", title: "Konto założone" });
         goAfterSignIn();
     };
@@ -408,7 +414,7 @@ export const initRegister = async () => {
                 button: event.currentTarget,
                 busyLabel: "Łączę z Google…",
                 errorBox,
-                action: signInWithGoogle,
+                action: continueWithGoogle,
             }),
         );
     });

@@ -39,6 +39,9 @@ const ERROR_MESSAGES = {
     weak_password: `Hasło jest za słabe. Użyj co najmniej ${PASSWORD_MIN_LENGTH} znaków.`,
     email_address_invalid: "Ten adres e-mail wygląda na niepoprawny.",
     email_not_confirmed: "Najpierw potwierdź adres e-mail linkiem z wiadomości.",
+    // Wyłączone w panelu Supabase — ponowna próba nic nie da, więc bez „spróbuj za chwilę”.
+    signup_disabled: "Zakładanie nowych kont jest chwilowo wyłączone.",
+    email_provider_disabled: "Logowanie e-mailem jest chwilowo wyłączone.",
     over_request_rate_limit: "Za dużo prób w krótkim czasie. Odczekaj chwilę i spróbuj ponownie.",
     over_email_send_rate_limit: "Za dużo prób w krótkim czasie. Odczekaj chwilę i spróbuj ponownie.",
 };
@@ -110,12 +113,21 @@ export const signIn = async ({ email, password }) => {
     return { user: toAppUser(data.user), error: null };
 };
 
-// TODO (osobna sesja): supabase.auth.signInWithOAuth({ provider: "google" })
-// po konfiguracji w Google Cloud Console i Authentication → URL Configuration.
-export const signInWithGoogle = async () => ({
-    user: null,
-    error: "Logowanie przez Google będzie dostępne wkrótce. Użyj e-maila i hasła.",
-});
+// Google to PRZEKIEROWANIE, nie odpowiedź: przeglądarka opuszcza aplikację,
+// a wraca na `redirectTo` z ?code=, który klient Supabase sam wymienia na
+// sesję przy starcie. Dlatego tu nie ma jeszcze użytkownika — zamiast niego
+// `redirecting: true`, żeby widok nie nawigował w tle, gdy strona już odchodzi.
+// `redirectTo` musi być na liście Redirect URLs w Supabase (URL Configuration).
+export const signInWithGoogle = async ({ redirectTo }) => {
+    const supabase = await getSupabase();
+    if (!supabase) return NOT_CONFIGURED;
+    const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo },
+    });
+    if (error) return { user: null, error: toMessage(error) };
+    return { user: null, error: null, redirecting: true };
+};
 
 export const signOut = async () => {
     const supabase = await getSupabase();

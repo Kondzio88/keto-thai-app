@@ -16,8 +16,11 @@ let clientPromise = null;
 export const getSupabase = () => {
     if (!ACCOUNTS_ENABLED || !url || !publishableKey) return Promise.resolve(null);
 
+    // PKCE zamiast domyślnego "implicit": po powrocie od Google adres niesie
+    // jednorazowy ?code= (wymieniany na sesję), a nie same tokeny w #hash.
+    // Query string przeżywa też przekierowanie przez 404.html na GitHub Pages.
     clientPromise ??= import("@supabase/supabase-js").then(({ createClient }) =>
-        createClient(url, publishableKey),
+        createClient(url, publishableKey, { auth: { flowType: "pkce" } }),
     );
     return clientPromise;
 };
