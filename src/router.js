@@ -67,6 +67,11 @@ const renderContent = () => {
     document.dispatchEvent(new CustomEvent("route:rendered"));
 };
 
+// Przerysowanie bieżącej strony po zmianie danych spoza niej (np. profil
+// pobrany z bazy po zalogowaniu). Guard działa ponownie: nowy telefon bez
+// profilu wylądował na /onboarding, a po pobraniu profilu trafi na /dashboard.
+export const refreshCurrentRoute = () => renderContent();
+
 export const navigateTo = (url) => {
     window.history.pushState(null, null, getBase() + url);
     renderContent();

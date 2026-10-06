@@ -1,5 +1,6 @@
 import { html } from "../utils/template.js";
-import { saveUser, WEIGHT_LIMITS } from "../services/userService.js";
+import { createProfile, WEIGHT_LIMITS } from "../services/userService.js";
+import { showToast } from "../components/toast.js";
 import { generateDietPlan } from "../services/calculatorService.js";
 import { navigateTo } from "../router.js";
 import { getDateKey } from "../utils/date.js";
@@ -143,10 +144,11 @@ export const renderOnboarding = () => {
     </div>`;
 };
 
-export const handleOnboardingSubmit = (event) => {
+export const handleOnboardingSubmit = async (event) => {
     event.preventDefault();
 
     const formElement = event.target;
+    const submitButton = formElement.querySelector('button[type="submit"]');
 
     const formData = new FormData(formElement);
 
@@ -163,7 +165,21 @@ export const handleOnboardingSubmit = (event) => {
         sport: formData.get("sport"),
     };
 
-    saveUser(userProfile);
+    // Zalogowany zapisuje do bazy, więc to może chwilę potrwać — blokada
+    // przycisku chroni przed podwójnym profilem z dwóch kliknięć.
+    const idleLabel = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = "Zapisuję…";
+
+    const { error } = await createProfile(userProfile);
+
+    submitButton.disabled = false;
+    submitButton.textContent = idleLabel;
+
+    if (error) {
+        showToast({ stamp: "Błąd", title: "Profil niezapisany", note: error });
+        return;
+    }
 
     navigateTo("/dashboard");
 };

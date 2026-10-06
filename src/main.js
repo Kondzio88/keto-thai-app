@@ -1,4 +1,5 @@
-import { initRouter } from "./router.js";
+import { initRouter, refreshCurrentRoute } from "./router.js";
+import { pullUserFromServer } from "./services/userService.js";
 import { getCurrentPath , getBase} from "./utils/env.js";
 import { initInstallPromptCapture } from "./utils/installPrompt.js";
 import { initInstallBanner } from "./components/installBanner.js";
@@ -106,7 +107,13 @@ document.addEventListener("DOMContentLoaded", () => {
         updateActiveTab();
         updateAccountNav();
     });
-    onAuthChange(updateAccountNav);
+    // Start aplikacji u zalogowanego i każde logowanie (e-mail, Google):
+    // pobierz dane z bazy do lokalnej kopii, a jeśli się zmieniły, przerysuj stronę.
+    onAuthChange(async (user, event) => {
+        updateAccountNav();
+        if (!user || (event !== "INITIAL_SESSION" && event !== "SIGNED_IN")) return;
+        if (await pullUserFromServer()) refreshCurrentRoute();
+    });
 
     initRouter();
     initTopbarDrawer();

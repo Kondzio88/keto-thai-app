@@ -1,11 +1,11 @@
 import { html } from "../utils/template.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
-import { getUser, clearUser, saveUser, WEIGHT_LIMITS } from "../services/userService.js";
+import { getUser, clearUser, addWeightEntry, WEIGHT_LIMITS } from "../services/userService.js";
 import { generateDietPlan, FLOOR_LIMIT, TARGET_DEFICIT_PERCENT } from "../services/calculatorService.js";
 import { getTodayMeal, removeMeal, sumMacros, clearMeals } from "../services/mealService.js";
 import { getNetCarbs } from "../services/productService.js";
 import { clearCustomRecipes, clearAllMealDrafts } from "../services/customRecipeService.js";
-import { getDateKey, getDaysSince } from "../utils/date.js";
+import { getDaysSince } from "../utils/date.js";
 import { navigateTo } from "../router.js";
 import { trapFocus } from "../utils/focusTrap.js";
 import { showConfirmModal } from "../components/confirmModal.js";
@@ -387,7 +387,7 @@ export const initDashboard = () => {
 
     // Jeden zapis wagi dla banera i modala (wcześniej ta logika była skopiowana dwa razy).
     // Wcześniej sprawdzało tylko pusty wpis — 0 albo 500 kg trafiało do profilu i kalkulatora.
-    const recordWeight = (input, errorBox) => {
+    const recordWeight = async (input, errorBox) => {
         const error = getWeightError(input.value);
         if (error) {
             showWeightError(input, errorBox, error);
@@ -396,22 +396,19 @@ export const initDashboard = () => {
         clearWeightError(input, errorBox);
 
         const newWeight = Number(input.value);
-        const today = getDateKey();
-        const previousWeight = userProfile.weight;
 
-        userProfile.weightHistory.push({ date: today, weight: newWeight });
-        userProfile.weight = newWeight;
-
-        // Zapis może się nie udać (pełna pamięć, tryb prywatny). Cofamy zmianę w pamięci,
-        // żeby wykres i bilans nie pokazywały pomiaru, którego po odświeżeniu nie będzie.
-        if (!saveUser(userProfile)) {
-            userProfile.weightHistory.pop();
-            userProfile.weight = previousWeight;
-            errorBox.textContent = "Nie udało się zapisać pomiaru — pamięć przeglądarki jest pełna albo zablokowana.";
+        // Serwis zwraca NOWY profil i niczego nie zmienia przy błędzie (brak sieci,
+        // pełna pamięć), więc wykres i bilans nie pokażą pomiaru, którego nie zapisano.
+        const result = await addWeightEntry(userProfile, newWeight);
+        if (result.error) {
+            errorBox.textContent = result.error;
             errorBox.classList.remove("is-hidden");
             return false;
         }
+        // Ten sam obiekt, nowa treść — refreshDay() i reszta initDashboard trzymają referencję.
+        Object.assign(userProfile, result.user);
 
+        const today = userProfile.weightHistory[userProfile.weightHistory.length - 1].date;
         weightChartInstance.data.labels.push(today);
         weightChartInstance.data.datasets[0].data.push(newWeight);
         weightChartInstance.update();
@@ -466,8 +463,16 @@ export const initDashboard = () => {
         if (event.target === modalOverlay) closeWeightModal?.();
     });
 
-    document.getElementById("btn-save-weight").addEventListener("click", () => {
-        if (!recordWeight(modalInput, modalError)) return;
+    const saveWeightButton = document.getElementById("btn-save-weight");
+    saveWeightButton.addEventListener("click", async () => {
+        // Zalogowany czeka na bazę — blokada chroni przed podwójnym pomiarem.
+        const idleLabel = saveWeightButton.textContent;
+        saveWeightButton.disabled = true;
+        saveWeightButton.textContent = "Zapisuję…";
+        const saved = await recordWeight(modalInput, modalError);
+        saveWeightButton.disabled = false;
+        saveWeightButton.textContent = idleLabel;
+        if (!saved) return;
 
         const savedWeight = userProfile.weight;
         closeWeightModal?.();

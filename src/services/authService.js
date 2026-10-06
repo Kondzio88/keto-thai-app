@@ -68,8 +68,9 @@ export const onAuthChange = (listener) => {
 
     getSupabase().then((supabase) => {
         if (!supabase || cancelled) return;
-        ({ subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-            setTimeout(() => listener(toAppUser(session?.user)), 0);
+        // event: "INITIAL_SESSION" (start), "SIGNED_IN", "SIGNED_OUT", "TOKEN_REFRESHED"…
+        ({ subscription } = supabase.auth.onAuthStateChange((event, session) => {
+            setTimeout(() => listener(toAppUser(session?.user), event), 0);
         }).data);
     });
 

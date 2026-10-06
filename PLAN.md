@@ -50,7 +50,10 @@ Aplikacja „Keto Thai” to **SPA (Single Page Application)** w czystym JavaScr
 2. ✅ Konto i projekt w Supabase, region UE, klucze (publiczny `publishable` vs tajny `secret`, który nigdy nie trafia do frontendu). Wartości w `.env.local` (ignorowany przez git).
 3. ✅ Tabele i reguły RLS („każdy widzi tylko swoje wiersze”): `supabase/schema.sql` uruchomiony 2026-10-05, test roli `anon` → 42501.
 4. ✅ Logowanie (e-mail + hasło, Google) i trasa konta. Frontend + e-mail i hasło: 2026-10-05, Google: 2026-10-06 (`signInWithOAuth`, przepływ PKCE, powrót na `/konto?wroc=…`). Klient OAuth w Google Cloud w trybie „Testowanie” (logują się tylko użytkownicy testowi). Redirect URLs w Supabase: `localhost:5173`, `localhost:5299`, `kondzio88.github.io` (`/keto-thai-app/**`). Przetestowane w przeglądarce: rejestracja, wylogowanie, złe hasło, logowanie, usunięcie konta, logowanie Google.
-5. Serwisy na `async`, po jednym; obsługa błędów sieci (poprzedzone naprawą `RAPORT.md` N1).
+5. 🟡 Serwisy na `async`, po jednym; obsługa błędów sieci. **Wariant C (decyzja 2026-10-06):** odczyty synchroniczne z `localStorage` (lokalna kopia), zapis zalogowanego najpierw do bazy, lokalnie po potwierdzeniu; pobranie danych z bazy przy starcie i każdym logowaniu (`main.js` → `onAuthChange` → `pull…FromServer()` → `refreshCurrentRoute()` tylko przy zmianie). Odrzucone: A (wszystko async, 33 wywołania w 9 plikach + guard), B (local-first z kolejką: offline niepotrzebny, autor zakłada stały internet).
+    - ✅ `userService` (2026-10-06): `createProfile()` (onboarding), `addWeightEntry()` (Dashboard), `pullUserFromServer()`. Przetestowane: onboarding → wiersze w `profiles` i `weight_entries`, pomiar → wiersz, „nowe urządzenie” (bez lokalnego profilu) → profil wraca z bazy.
+    - 📋 `mealService`, potem `customRecipeService` (+ składniki).
+    - ⚠️ Znane luki do etapu 6: wylogowanie zostawia lokalne dane; „Skasuj dane aplikacji” u zalogowanego czyści tylko lokalną kopię (wraca przy następnym pobraniu); konto bez profilu w bazie zachowuje lokalny profil, ale nie wysyła go do bazy. `signOut()` ma domyślny `scope: "global"` (wylogowuje wszystkie urządzenia): do decyzji.
 6. Przeniesienie danych z `localStorage` przy pierwszym logowaniu, w tym **scalanie** danych z dwóch urządzeń (decyzja otwarta).
 7. RODO (polityka prywatności, dane o wadze), zakup domeny w Hostingerze i podpięcie, **weryfikacja marki w Google** (patrz „Ekran zgody Google” wyżej).
 
@@ -81,7 +84,7 @@ Natywne technologie webowe, bez frameworka.
 
 - ❌ **Porzucony kierunek „Dark Fighter”** (złoto `#D4AF37`, zieleń `#2ECC71`, Oswald/Inter, tokeny `--font-size-*`) i „Stealth Minimalism”. Nie stosować.
 - **Wzorce UX wdrożone (✅):** bottom tab bar (mobile) / sidebar po lewej (desktop ≥768 px) + topbar z szufladą hamburgera; toast z pieczątką (`components/toast.js`, `role="status"`, pauza przy hover/fokusie); dostępne modale (`confirmModal.js`, `submitSuccessModal.js`, modal wagi; `utils/focusTrap.js`); natywne `<details>` (zastrzeżenia w stopce); ghost buttons; płynne przewijanie do kotwic.
-- 📋 Nie wdrożone: skeleton loaders (staną się potrzebne razem z ładowaniem danych z Supabase).
+- 📋 **Stan ładowania (do rozważenia, wstępny wybór 2026-10-06):** wariant 3, czyli bez szkieletu, jedna pieczątka `.stamp-off` „Wczytuję dziennik…” w miejscu treści. Odrzucony shimmer z Instagrama/Facebooka (przesuwająca się poświata łamie `DESIGN.md` §3 „zero glow”). Alternatywa na stole: szkielet „niewypełniona kartka” (przerywane linie na `--paper`, powolne pulsowanie przezroczystości, statyczny przy `prefers-reduced-motion`). W wariancie C etapu 5 ładowanie występuje rzadko: odczyty idą z `localStorage`, a pusty ekran widzi tylko ktoś logujący się pierwszy raz na nowym urządzeniu. Poniżej ~0,3 s nie pokazywać niczego (mignięcie wygląda gorzej niż brak). Zapisy: przycisk „Zapisuję…” (`runAction()`).
 
 ## 4. Funkcjonalności i trasy
 
