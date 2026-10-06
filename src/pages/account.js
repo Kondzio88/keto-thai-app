@@ -48,12 +48,15 @@ const getReturnQuery = () => {
     return returnPath ? `?wroc=${encodeURIComponent(returnPath)}` : "";
 };
 
-// Bez ?wroc= — Tracker, jeśli jest profil; inaczej strona główna. Na kalkulator
-// po zalogowaniu nie wracamy: profil jest w bazie, a jeśli nie, guard routera
-// sam odeśle z /dashboard na /onboarding.
+// Zalogowany przychodzi po dziennik, więc domyślnie Tracker — także zamiast
+// strony głównej i kalkulatora. Inne strony (przepisy, Camp…) zostają, żeby
+// nie gubić miejsca, z którego ktoś się logował. Konto bez profilu guard
+// routera sam odeśle z /dashboard na /onboarding.
+const DASHBOARD_INSTEAD_OF = new Set(["/", "/onboarding"]);
+
 const goAfterSignIn = (options) => {
     const returnPath = getReturnPath();
-    const target = returnPath === "/onboarding" ? "/dashboard" : (returnPath ?? (getUser() ? "/dashboard" : "/"));
+    const target = !returnPath || DASHBOARD_INSTEAD_OF.has(returnPath) ? "/dashboard" : returnPath;
     navigateTo(target, options);
 };
 
@@ -282,7 +285,15 @@ const initSignedInView = (root) => {
                 return signOut();
             },
         });
-        if (!result.error) navigateTo("/konto");
+        if (result.error) return;
+        navigateTo("/konto");
+        // Pusta aplikacja po wylogowaniu wygląda jak utrata danych — mówimy wprost,
+        // że są na koncie (PLAN.md §1a, wylogowanie czyści dane lokalne).
+        showToast({
+            stamp: "Wylogowano",
+            title: "Twoje dane zostały na koncie",
+            note: "Zaloguj się, żeby znowu zobaczyć dziennik i pomiary.",
+        });
     });
 
     root.querySelector("#account-delete").addEventListener("click", (event) => {

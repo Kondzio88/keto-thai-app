@@ -4,6 +4,8 @@ import { showToast } from "../components/toast.js";
 import { generateDietPlan } from "../services/calculatorService.js";
 import { navigateTo } from "../router.js";
 import { getDateKey } from "../utils/date.js";
+import { ACCOUNTS_ENABLED } from "../config.js";
+import { getSession } from "../services/authService.js";
 
 // Teksty poziomów aktywności — liczby (PAL, białko) są w calculatorService.js,
 // tu tylko to, co widzi użytkownik. Przedziały rozłączne: kto trenuje 3×,
@@ -44,6 +46,11 @@ export const renderOnboarding = () => {
         <header class="page-header">
             <h1 class="page-header__title">Kalkulator Keto</h1>
             <p class="page-header__desc">30 sekund, zero rejestracji — wynik od razu.</p>
+            ${ACCOUNTS_ENABLED
+                ? html`<p class="account__switch" id="onboarding-sign-in">
+                      Masz już konto? <a href="/konto?wroc=%2Fdashboard" data-link>Zaloguj się</a>, żeby wrócić do swoich danych.
+                  </p>`
+                : ""}
         </header>
 
         <form class="form" id="onboarding-form">
@@ -189,6 +196,15 @@ export const initOnboarding = () => {
 
     if (formElement) {
         formElement.addEventListener("submit", handleOnboardingSubmit);
+    }
+
+    // Zalogowany bez profilu (świeże konto) już jest na koncie — link
+    // „Zaloguj się” by go tylko zmylił.
+    const signInNote = document.getElementById("onboarding-sign-in");
+    if (signInNote) {
+        getSession().then((session) => {
+            if (session) signInNote.remove();
+        });
     }
 
     // Opis pod polem pokazuje, co dokładnie oznacza wybrany poziom —
