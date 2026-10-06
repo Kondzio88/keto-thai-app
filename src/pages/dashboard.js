@@ -1,10 +1,10 @@
 import { html } from "../utils/template.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
-import { getUser, clearUser, addWeightEntry, WEIGHT_LIMITS } from "../services/userService.js";
+import { getUser, addWeightEntry, WEIGHT_LIMITS } from "../services/userService.js";
 import { generateDietPlan, FLOOR_LIMIT, TARGET_DEFICIT_PERCENT } from "../services/calculatorService.js";
-import { getTodayMeal, removeMeal, sumMacros, clearMeals } from "../services/mealService.js";
+import { getTodayMeal, removeMeal, sumMacros } from "../services/mealService.js";
 import { getNetCarbs } from "../services/productService.js";
-import { clearCustomRecipes, clearAllMealDrafts } from "../services/customRecipeService.js";
+import { clearLocalData } from "../services/localDataService.js";
 import { getDaysSince } from "../utils/date.js";
 import { navigateTo } from "../router.js";
 import { trapFocus } from "../utils/focusTrap.js";
@@ -264,10 +264,7 @@ const initDeleteData = () => {
             confirmLabel: "Skasuj",
             cancelLabel: "Anuluj",
             onConfirm: () => {
-                clearUser();
-                clearMeals();
-                clearCustomRecipes();
-                clearAllMealDrafts();
+                clearLocalData();
                 navigateTo("/");
             },
         });

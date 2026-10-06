@@ -16,6 +16,7 @@ import {
 import { getUser } from "../services/userService.js";
 import { getAllMeals } from "../services/mealService.js";
 import { getCustomRecipes } from "../services/customRecipeService.js";
+import { clearLocalData } from "../services/localDataService.js";
 
 // Trasy /konto (logowanie gościa albo strona konta) i /konto/rejestracja.
 // Wygląd: makieta "Keto Thai – makieta kont" (DESIGN.md).
@@ -255,7 +256,13 @@ const initSignedInView = (root) => {
             button: event.currentTarget,
             busyLabel: "Wylogowuję…",
             errorBox,
-            action: signOut,
+            // Najpierw czyścimy, potem wylogowanie: dane o zdrowiu znikają
+            // z tej przeglądarki nawet wtedy, gdy signOut() się nie uda
+            // (brak sieci) albo rzuci wyjątek. Oryginał zostaje w bazie.
+            action: () => {
+                clearLocalData();
+                return signOut();
+            },
         });
         if (!result.error) navigateTo("/konto");
     });
@@ -271,6 +278,9 @@ const initSignedInView = (root) => {
             onConfirm: async () => {
                 const result = await runAction({ button, busyLabel: "Usuwam…", errorBox, action: deleteAccount });
                 if (result.error) return;
+                // Dopiero po sukcesie: przy błędzie konto dalej istnieje,
+                // a pusty ekran sugerowałby, że dane zniknęły.
+                clearLocalData();
                 navigateTo("/");
                 showToast({ stamp: "Usunięte", title: "Konto zostało usunięte" });
             },
