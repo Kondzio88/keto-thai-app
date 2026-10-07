@@ -5,6 +5,7 @@ import { generateDietPlan, FLOOR_LIMIT, TARGET_DEFICIT_PERCENT } from "../servic
 import { getTodayMeal, removeMeal, sumMacros } from "../services/mealService.js";
 import { getNetCarbs } from "../services/productService.js";
 import { clearLocalData } from "../services/localDataService.js";
+import { getSession } from "../services/authService.js";
 import { getDaysSince } from "../utils/date.js";
 import { navigateTo } from "../router.js";
 import { trapFocus } from "../utils/focusTrap.js";
@@ -269,6 +270,18 @@ const initDeleteData = () => {
             },
         });
     });
+
+    // Zalogowany nie dostaje tego przycisku (PLAN.md §1a, luka nr 4): kasuje on tylko
+    // kopię w przeglądarce, a dane wracają z bazy przy następnym starcie — obietnica
+    // "nie można cofnąć" byłaby fałszywa. Dla niego jest "Usuń konto i dane" w /konto,
+    // a wyjściem z zepsutych danych lokalnych jest "Wyloguj" (też czyści localStorage).
+    // Sesję znamy dopiero asynchronicznie, więc przycisk renderuje się zawsze i znika
+    // po potwierdzeniu sesji — gość i appka bez Supabase mają go bez wyjątku.
+    getSession()
+        .then((session) => {
+            if (session) document.getElementById("btn-delete")?.closest(".page-actions")?.remove();
+        })
+        .catch(() => {}); // brak sieci / klienta: zostawiamy przycisk, tak jak u gościa
 };
 
 export const initDashboard = () => {
