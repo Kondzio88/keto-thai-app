@@ -131,10 +131,13 @@
     margin-top: var(--spacing-sm);
 }
 
-/* Blok z ikoną w miejscu zdjęcia — przepis użytkownika nie ma fotografii.
+/* Blok z ikoną w miejscu zdjęcia — przepis użytkownika nie ma fotografii
+   (--no-photo: przepis trenera, któremu zdjęcia jeszcze nie dobrano).
    Tło --ground (ciemniejsze niż karta --ground2), więc czyta się jako osobne pole. */
 .card__image-container--user,
-.recipe__image-container--user {
+.recipe__image-container--user,
+.card__image-container--no-photo,
+.recipe__image-container--no-photo {
     display: grid;
     place-items: center;
     background-color: var(--ground);

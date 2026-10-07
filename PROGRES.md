@@ -525,6 +525,16 @@ Kod na komendę „Daj mi kod”, testy w Chrome robi Claude (logowanie klika au
 
 ---
 
+### Sesja 2026-10-07 (krótka): wyszukiwarka, aria-current, +50 przepisów
+
+1. **Wyszukiwarka produktów** (`0a68c92`): ranga trafienia w `searchProducts()`, trafienia w środku słowa odpadają (pkt 8 listy niżej).
+2. **`aria-current="page"`** na aktywnej zakładce; sam bug aktywnego taba (RAPORT #10) był naprawiony wcześniej przez `route:rendered` (pkt 13).
+3. **+50 przepisów (r51–r100):** 17 śniadań / 17 obiadów / 16 kolacji. Dania wybrane z przeglądu stron (keto klasyka, tajskie: tom kha gai, larb, pad thai z cukinii, pad krapow, yam neua, tom yum, satay; polskie: bigos, gulasz, kotlety mielone, gołąbki bez ryżu, ogórkowa). Skład, gramatury i opisy napisane od nowa, nie kopiowane; makra z `sumIngredients()` na bazie USDA. Kryterium wyznaczone z r1–r50 (wybór autora „jak obecne”): netto ≤ 12 g, tłuszcz ≥ 55% kcal; wynik: netto 1–11 g, tłuszcz 56–83%. Skrypt sprawdził też duplikaty tytułów.
+4. **Brak zdjęć r51–r100:** `imageUrl: null`, nowa funkcja `generateRecipeImageHTML()` w `recipes.js` pokazuje ikonę zastępczą (modyfikator `--no-photo`, ten sam wygląd co przy przepisie użytkownika). Zdjęcia CC0 — osobna sesja (decyzja autora).
+5. **Do sprawdzenia przez autora:** treść przepisów (gramatury, nazwy), szczególnie tatar (surowa wołowina i żółtko) i chlebek z kubka (proszek do pieczenia poza bazą, nieliczony).
+
+---
+
 ### ▶️ START NASTĘPNEJ SESJI: etap 6 — przeniesienie danych gościa do konta
 
 1. **Decyzja na start (wyjaśnić, potem wybór autora):** wzorzec scalania (koszyk / pytanie / konto anonimowe, `PLAN.md` §1a etap 6); zamiana starych id (`Date.now()`, `user-…`) na uuid razem z aktualizacją `recipeId` we wpisach dziennika.

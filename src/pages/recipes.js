@@ -91,6 +91,19 @@ const generateUserImageHTML = (recipe, containerClass) => html`
     </div>
 `;
 
+// Zdjęcie przepisu trenera. r51–r100 nie mają jeszcze fotografii (imageUrl: null) —
+// wtedy to samo pole z ikoną co przy przepisie użytkownika, zamiast pękniętego <img>.
+// Klasa bazowa przychodzi z zewnątrz (karta / szczegóły), modyfikator dokładamy do niej.
+const generateRecipeImageHTML = (recipe, baseClass, imageClass, alt) => html`
+    <div class="${baseClass}${recipe.imageUrl ? "" : ` ${baseClass}--no-photo`}">
+        ${recipe.imageUrl
+            ? html`<img src="${getBase()}${recipe.imageUrl}" alt="${alt}" class="${imageClass}" loading="lazy" />`
+            : html`<i data-lucide="utensils" class="card__placeholder-icon" aria-hidden="true"></i>`}
+        <span class="card__badge">${recipe.calories} kcal</span>
+        <span class="card__time">${recipe.time}</span>
+    </div>
+`;
+
 const generateUserCardHTML = (recipe) => html`<article class="card card--user" data-id="${recipe.id}">
     ${generateUserImageHTML(recipe, "card__image-container card__image-container--user")}
 
@@ -114,11 +127,7 @@ const generateCardsHTML = (recepiesArray) => {
             isUserRecipe(recipe)
                 ? generateUserCardHTML(recipe)
                 : html`<article class="card" data-id="${recipe.id}">
-                      <div class="card__image-container">
-                          <img src="${getBase()}${recipe.imageUrl}" alt="" class="card__image" loading="lazy" />
-                          <span class="card__badge">${recipe.calories} kcal</span>
-                          <span class="card__time">${recipe.time}</span>
-                      </div>
+                      ${generateRecipeImageHTML(recipe, "card__image-container", "card__image", "")}
 
                       <div class="card__content">
                           <h3 class="card__title">
@@ -189,11 +198,7 @@ const genrateRecipeDetailHTML = (recipe) => {
 
             ${isOwn
                 ? generateUserImageHTML(recipe, "recipe__image-container recipe__image-container--user")
-                : html`<div class="recipe__image-container">
-                      <img src="${getBase()}${recipe.imageUrl}" alt="${recipe.title}" class="recipe__image" loading="lazy" />
-                      <span class="card__badge">${recipe.calories} kcal</span>
-                      <span class="card__time">${recipe.time}</span>
-                  </div>`}
+                : generateRecipeImageHTML(recipe, "recipe__image-container", "recipe__image", recipe.title)}
 
             <header class="recipe__header">
                 <h2 class="recipe__title">${escapeHtml(recipe.title)}</h2>
