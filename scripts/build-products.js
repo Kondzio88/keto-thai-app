@@ -450,6 +450,130 @@ const PRODUCTS = [
     { fdcId: 172231, name: "Kurkuma mielona", category: "Dodatki", portions: [TSP, TBSP] },
     { fdcId: 170931, name: "Pieprz czarny", category: "Dodatki", portions: [{ label: "łyżeczka (mielony)", usda: "tsp, ground" }] },
     { fdcId: 174272, name: "Tempeh", category: "Dodatki" },
+
+    // ---- Partia 2 (2026-10-07): +100 produktów ----
+    // Kryterium keto jak w partii 1: mięso, ryby, jaja, nabiał i tłuszcze bez ograniczeń;
+    // warzywa, owoce i orzechy do ok. 12 g netto / 100 g; przyprawy i dodatki wyżej,
+    // bo używa się ich w gramach (jak cynamon czy pieprz wyżej). Odrzucone mimo popularności:
+    // pistacje (16,6 g netto), nerkowce (26,9), masło słonecznikowe (17,6), szalotka (13,6).
+
+    // Mięso i wędliny
+    { fdcId: 171474, name: "Pierś z kurczaka ze skórą", category: "Mięso" },
+    { fdcId: 171456, name: "Żołądki drobiowe", category: "Mięso" },
+    { fdcId: 171458, name: "Serca drobiowe", category: "Mięso" },
+    { fdcId: 172408, name: "Kaczka ze skórą", category: "Mięso" },
+    { fdcId: 174470, name: "Gęś ze skórą", category: "Mięso" },
+    { fdcId: 171533, name: "Udo z indyka ze skórą", category: "Mięso" },
+    { fdcId: 171495, name: "Skrzydło z indyka ze skórą", category: "Mięso" },
+    { fdcId: 168668, name: "Łopatka wołowa", category: "Mięso" },
+    { fdcId: 168609, name: "Łata wołowa (flank)", category: "Mięso" },
+    { fdcId: 167849, name: "Karkówka wieprzowa", category: "Mięso" },
+    { fdcId: 168222, name: "Szynka wieprzowa surowa (udziec)", category: "Mięso" },
+    { fdcId: 174370, name: "Jagnięcina mielona", category: "Mięso" },
+    { fdcId: 172534, name: "Wątróbka cielęca", category: "Mięso" },
+    { fdcId: 168277, name: "Bekon (boczek wędzony) surowy", category: "Mięso" },
+    { fdcId: 172938, name: "Salami wieprzowe dojrzewające", category: "Mięso" },
+    { fdcId: 174575, name: "Pepperoni", category: "Mięso" },
+    { fdcId: 172954, name: "Kiełbasa wędzona wieprzowo-wołowa", category: "Mięso" },
+    { fdcId: 167872, name: "Szynka gotowana (ok. 11% tłuszczu)", category: "Mięso" },
+
+    // Ryby i owoce morza
+    { fdcId: 171964, name: "Łupacz (plamiak)", category: "Ryby i owoce morza" },
+    { fdcId: 171965, name: "Halibut grenlandzki", category: "Ryby i owoce morza" },
+    { fdcId: 173703, name: "Miecznik", category: "Ryby i owoce morza" },
+    { fdcId: 173710, name: "Turbot", category: "Ryby i owoce morza" },
+    { fdcId: 173676, name: "Żabnica", category: "Ryby i owoce morza" },
+    { fdcId: 173668, name: "Śledź wędzony", category: "Ryby i owoce morza" },
+    { fdcId: 168149, name: "Makrela solona", category: "Ryby i owoce morza" },
+    { fdcId: 173708, name: "Tuńczyk w oleju (odsączony)", category: "Ryby i owoce morza" },
+    { fdcId: 173693, name: "Łosoś sockeye z puszki (odsączony)", category: "Ryby i owoce morza" },
+    { fdcId: 174208, name: "Homar", category: "Ryby i owoce morza" },
+    { fdcId: 174206, name: "Raki", category: "Ryby i owoce morza" },
+    { fdcId: 174215, name: "Mątwa", category: "Ryby i owoce morza" },
+    { fdcId: 174188, name: "Kawior", category: "Ryby i owoce morza" },
+
+    // Jaja
+    { fdcId: 172190, name: "Jajo gęsie", category: "Jaja" },
+    { fdcId: 172192, name: "Jajo indycze", category: "Jaja" },
+
+    // Nabiał
+    { fdcId: 170852, name: "Ser tylżycki", category: "Nabiał" },
+    { fdcId: 171242, name: "Ser gruyère", category: "Nabiał" },
+    { fdcId: 170843, name: "Ser fontina", category: "Nabiał" },
+    { fdcId: 171250, name: "Ser roquefort", category: "Nabiał" },
+    { fdcId: 171245, name: "Ser munster", category: "Nabiał" },
+    { fdcId: 171249, name: "Ser pecorino romano", category: "Nabiał" },
+    { fdcId: 173433, name: "Ser kozi półtwardy", category: "Nabiał" },
+    { fdcId: 170846, name: "Mozzarella do pizzy (twarda, pełnotłusta)", category: "Nabiał" },
+    { fdcId: 170849, name: "Ser port salut", category: "Nabiał" },
+    { fdcId: 170844, name: "Ser monterey jack", category: "Nabiał" },
+    { fdcId: 170857, name: "Śmietanka ok. 18%", category: "Nabiał" },
+    { fdcId: 172225, name: "Maślanka pełnotłusta", category: "Nabiał" },
+
+    // Tłuszcze
+    { fdcId: 172336, name: "Olej rzepakowy", category: "Tłuszcze" },
+    { fdcId: 171031, name: "Olej migdałowy", category: "Tłuszcze" },
+    { fdcId: 171421, name: "Masło kakaowe", category: "Tłuszcze" },
+    { fdcId: 173572, name: "Smalec gęsi", category: "Tłuszcze" },
+    { fdcId: 173564, name: "Tłuszcz drobiowy", category: "Tłuszcze" },
+    { fdcId: 168324, name: "Tłuszcz z boczku (wytopiony)", category: "Tłuszcze" },
+    { fdcId: 170580, name: "Śmietanka kokosowa", category: "Tłuszcze" },
+
+    // Warzywa i grzyby
+    { fdcId: 168412, name: "Endywia", category: "Warzywa" },
+    { fdcId: 168564, name: "Radicchio", category: "Warzywa" },
+    { fdcId: 170068, name: "Rukiew wodna", category: "Warzywa" },
+    { fdcId: 169385, name: "Koper włoski (fenkuł)", category: "Warzywa" },
+    { fdcId: 169260, name: "Okra", category: "Warzywa" },
+    { fdcId: 169205, name: "Karczoch", category: "Warzywa" },
+    { fdcId: 170465, name: "Rzepa", category: "Warzywa" },
+    { fdcId: 168451, name: "Rzodkiew biała (daikon)", category: "Warzywa" },
+    { fdcId: 169298, name: "Dynia makaronowa (spaghetti)", category: "Warzywa" },
+    { fdcId: 168448, name: "Dynia", category: "Warzywa" },
+    { fdcId: 170375, name: "Liście buraka (botwina)", category: "Warzywa" },
+    { fdcId: 169226, name: "Liście mniszka", category: "Warzywa" },
+    { fdcId: 168569, name: "Serca palmowe (z puszki)", category: "Warzywa" },
+    { fdcId: 168431, name: "Sałata czerwona liściasta", category: "Warzywa" },
+    { fdcId: 169249, name: "Sałata zielona liściasta", category: "Warzywa" },
+    { fdcId: 169994, name: "Szczypiorek", category: "Warzywa" },
+    { fdcId: 168422, name: "Kurki", category: "Warzywa" },
+    { fdcId: 168423, name: "Smardze", category: "Warzywa" },
+    { fdcId: 169382, name: "Grzyby enoki", category: "Warzywa" },
+    { fdcId: 169383, name: "Papryka żółta", category: "Warzywa" },
+    { fdcId: 169404, name: "Brokuł chiński (gai lan)", category: "Warzywa" },
+    { fdcId: 170076, name: "Szczaw", category: "Warzywa" },
+    { fdcId: 168546, name: "Papryka czerwona konserwowa", category: "Warzywa" },
+    { fdcId: 169379, name: "Ogórek kiszony", category: "Warzywa" },
+    { fdcId: 169287, name: "Szpinak mrożony", category: "Warzywa" },
+    { fdcId: 169289, name: "Patison", category: "Warzywa" },
+
+    // Orzechy i nasiona
+    { fdcId: 171330, name: "Mak", category: "Orzechy i nasiona" },
+
+    // Owoce
+    { fdcId: 173030, name: "Agrest", category: "Owoce" },
+    { fdcId: 169913, name: "Morwa", category: "Owoce" },
+
+    // Dodatki i przyprawy
+    { fdcId: 172449, name: "Tofu miękkie (jedwabiste)", category: "Dodatki" },
+    { fdcId: 173180, name: "Odżywka białkowa serwatkowa", category: "Dodatki" },
+    { fdcId: 173472, name: "Chrzan tarty", category: "Dodatki" },
+    { fdcId: 171580, name: "Pesto bazyliowe", category: "Dodatki" },
+    { fdcId: 172240, name: "Ocet z czerwonego wina", category: "Dodatki" },
+    { fdcId: 172237, name: "Ocet spirytusowy", category: "Dodatki" },
+    { fdcId: 171328, name: "Oregano suszone", category: "Dodatki" },
+    { fdcId: 171329, name: "Papryka słodka mielona", category: "Dodatki" },
+    { fdcId: 170923, name: "Kumin (kmin rzymski)", category: "Dodatki" },
+    { fdcId: 171319, name: "Chili w proszku", category: "Dodatki" },
+    { fdcId: 170924, name: "Curry w proszku", category: "Dodatki" },
+    { fdcId: 171326, name: "Gałka muszkatołowa", category: "Dodatki" },
+    { fdcId: 171325, name: "Czosnek granulowany", category: "Dodatki" },
+    { fdcId: 170926, name: "Imbir mielony", category: "Dodatki" },
+    { fdcId: 170928, name: "Majeranek suszony", category: "Dodatki" },
+    { fdcId: 170938, name: "Tymianek suszony", category: "Dodatki" },
+    { fdcId: 171333, name: "Rozmaryn suszony", category: "Dodatki" },
+    { fdcId: 171315, name: "Ziele angielskie mielone", category: "Dodatki" },
+    { fdcId: 170918, name: "Kminek", category: "Dodatki" },
 ];
 
 // CSV z USDA ma pola w cudzysłowach, a w opisach bywają przecinki —

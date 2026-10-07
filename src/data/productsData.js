@@ -3324,5 +3324,1305 @@ export const PRODUCTS_DATA = [
             "carbs": 7.6,
             "fiber": null
         }
+    },
+    {
+        "id": "usda-171474",
+        "fdcId": 171474,
+        "name": "Pierś z kurczaka ze skórą",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 172,
+            "protein": 20.9,
+            "fats": 9.3,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171456",
+        "fdcId": 171456,
+        "name": "Żołądki drobiowe",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 94,
+            "protein": 17.7,
+            "fats": 2.1,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171458",
+        "fdcId": 171458,
+        "name": "Serca drobiowe",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 153,
+            "protein": 15.6,
+            "fats": 9.3,
+            "carbs": 0.7,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-172408",
+        "fdcId": 172408,
+        "name": "Kaczka ze skórą",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 404,
+            "protein": 11.5,
+            "fats": 39.3,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-174470",
+        "fdcId": 174470,
+        "name": "Gęś ze skórą",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 371,
+            "protein": 15.9,
+            "fats": 33.6,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171533",
+        "fdcId": 171533,
+        "name": "Udo z indyka ze skórą",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 161,
+            "protein": 19.5,
+            "fats": 9.2,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171495",
+        "fdcId": 171495,
+        "name": "Skrzydło z indyka ze skórą",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 197,
+            "protein": 20.2,
+            "fats": 12.3,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-168668",
+        "fdcId": 168668,
+        "name": "Łopatka wołowa",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 249,
+            "protein": 19.1,
+            "fats": 18.6,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-168609",
+        "fdcId": 168609,
+        "name": "Łata wołowa (flank)",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 149,
+            "protein": 21.7,
+            "fats": 6.3,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-167849",
+        "fdcId": 167849,
+        "name": "Karkówka wieprzowa",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 186,
+            "protein": 17.4,
+            "fats": 12.4,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-168222",
+        "fdcId": 168222,
+        "name": "Szynka wieprzowa surowa (udziec)",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 245,
+            "protein": 17.4,
+            "fats": 18.9,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-174370",
+        "fdcId": 174370,
+        "name": "Jagnięcina mielona",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 282,
+            "protein": 16.6,
+            "fats": 23.4,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-172534",
+        "fdcId": 172534,
+        "name": "Wątróbka cielęca",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 140,
+            "protein": 19.9,
+            "fats": 4.9,
+            "carbs": 2.9,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-168277",
+        "fdcId": 168277,
+        "name": "Bekon (boczek wędzony) surowy",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 393,
+            "protein": 13.7,
+            "fats": 37.1,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-172938",
+        "fdcId": 172938,
+        "name": "Salami wieprzowe dojrzewające",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 407,
+            "protein": 22.6,
+            "fats": 33.7,
+            "carbs": 1.6,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-174575",
+        "fdcId": 174575,
+        "name": "Pepperoni",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 504,
+            "protein": 19.3,
+            "fats": 46.3,
+            "carbs": 1.2,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-172954",
+        "fdcId": 172954,
+        "name": "Kiełbasa wędzona wieprzowo-wołowa",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 301,
+            "protein": 12.1,
+            "fats": 26.6,
+            "carbs": 2,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-167872",
+        "fdcId": 167872,
+        "name": "Szynka gotowana (ok. 11% tłuszczu)",
+        "category": "Mięso",
+        "per100g": {
+            "calories": 178,
+            "protein": 22.6,
+            "fats": 9,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171964",
+        "fdcId": 171964,
+        "name": "Łupacz (plamiak)",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 74,
+            "protein": 16.3,
+            "fats": 0.5,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171965",
+        "fdcId": 171965,
+        "name": "Halibut grenlandzki",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 186,
+            "protein": 14.4,
+            "fats": 13.8,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-173703",
+        "fdcId": 173703,
+        "name": "Miecznik",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 144,
+            "protein": 19.7,
+            "fats": 6.7,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-173710",
+        "fdcId": 173710,
+        "name": "Turbot",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 95,
+            "protein": 16.1,
+            "fats": 3,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-173676",
+        "fdcId": 173676,
+        "name": "Żabnica",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 76,
+            "protein": 14.5,
+            "fats": 1.5,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-173668",
+        "fdcId": 173668,
+        "name": "Śledź wędzony",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 217,
+            "protein": 24.6,
+            "fats": 12.4,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-168149",
+        "fdcId": 168149,
+        "name": "Makrela solona",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 305,
+            "protein": 18.5,
+            "fats": 25.1,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-173708",
+        "fdcId": 173708,
+        "name": "Tuńczyk w oleju (odsączony)",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 198,
+            "protein": 29.1,
+            "fats": 8.2,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-173693",
+        "fdcId": 173693,
+        "name": "Łosoś sockeye z puszki (odsączony)",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 167,
+            "protein": 23.6,
+            "fats": 7.4,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-174208",
+        "fdcId": 174208,
+        "name": "Homar",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 77,
+            "protein": 16.5,
+            "fats": 0.8,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-174206",
+        "fdcId": 174206,
+        "name": "Raki",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 77,
+            "protein": 16,
+            "fats": 1,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-174215",
+        "fdcId": 174215,
+        "name": "Mątwa",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 79,
+            "protein": 16.2,
+            "fats": 0.7,
+            "carbs": 0.8,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-174188",
+        "fdcId": 174188,
+        "name": "Kawior",
+        "category": "Ryby i owoce morza",
+        "per100g": {
+            "calories": 264,
+            "protein": 24.6,
+            "fats": 17.9,
+            "carbs": 4,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-172190",
+        "fdcId": 172190,
+        "name": "Jajo gęsie",
+        "category": "Jaja",
+        "per100g": {
+            "calories": 185,
+            "protein": 13.9,
+            "fats": 13.3,
+            "carbs": 1.4,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-172192",
+        "fdcId": 172192,
+        "name": "Jajo indycze",
+        "category": "Jaja",
+        "per100g": {
+            "calories": 171,
+            "protein": 13.7,
+            "fats": 11.9,
+            "carbs": 1.2,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-170852",
+        "fdcId": 170852,
+        "name": "Ser tylżycki",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 340,
+            "protein": 24.4,
+            "fats": 26,
+            "carbs": 1.9,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171242",
+        "fdcId": 171242,
+        "name": "Ser gruyère",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 413,
+            "protein": 29.8,
+            "fats": 32.3,
+            "carbs": 0.4,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-170843",
+        "fdcId": 170843,
+        "name": "Ser fontina",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 389,
+            "protein": 25.6,
+            "fats": 31.1,
+            "carbs": 1.6,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171250",
+        "fdcId": 171250,
+        "name": "Ser roquefort",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 369,
+            "protein": 21.5,
+            "fats": 30.6,
+            "carbs": 2,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171245",
+        "fdcId": 171245,
+        "name": "Ser munster",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 368,
+            "protein": 23.4,
+            "fats": 30,
+            "carbs": 1.1,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171249",
+        "fdcId": 171249,
+        "name": "Ser pecorino romano",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 387,
+            "protein": 31.8,
+            "fats": 26.9,
+            "carbs": 3.6,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-173433",
+        "fdcId": 173433,
+        "name": "Ser kozi półtwardy",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 364,
+            "protein": 21.6,
+            "fats": 29.8,
+            "carbs": 0.1,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-170846",
+        "fdcId": 170846,
+        "name": "Mozzarella do pizzy (twarda, pełnotłusta)",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 318,
+            "protein": 21.6,
+            "fats": 24.6,
+            "carbs": 2.5,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-170849",
+        "fdcId": 170849,
+        "name": "Ser port salut",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 352,
+            "protein": 23.8,
+            "fats": 28.2,
+            "carbs": 0.6,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-170844",
+        "fdcId": 170844,
+        "name": "Ser monterey jack",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 373,
+            "protein": 24.5,
+            "fats": 30.3,
+            "carbs": 0.7,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-170857",
+        "fdcId": 170857,
+        "name": "Śmietanka ok. 18%",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 195,
+            "protein": 3,
+            "fats": 19.1,
+            "carbs": 3.7,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-172225",
+        "fdcId": 172225,
+        "name": "Maślanka pełnotłusta",
+        "category": "Nabiał",
+        "per100g": {
+            "calories": 62,
+            "protein": 3.2,
+            "fats": 3.3,
+            "carbs": 4.9,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-172336",
+        "fdcId": 172336,
+        "name": "Olej rzepakowy",
+        "category": "Tłuszcze",
+        "per100g": {
+            "calories": 884,
+            "protein": 0,
+            "fats": 100,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171031",
+        "fdcId": 171031,
+        "name": "Olej migdałowy",
+        "category": "Tłuszcze",
+        "per100g": {
+            "calories": 884,
+            "protein": 0,
+            "fats": 100,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171421",
+        "fdcId": 171421,
+        "name": "Masło kakaowe",
+        "category": "Tłuszcze",
+        "per100g": {
+            "calories": 884,
+            "protein": 0,
+            "fats": 100,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-173572",
+        "fdcId": 173572,
+        "name": "Smalec gęsi",
+        "category": "Tłuszcze",
+        "per100g": {
+            "calories": 900,
+            "protein": 0,
+            "fats": 99.8,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-173564",
+        "fdcId": 173564,
+        "name": "Tłuszcz drobiowy",
+        "category": "Tłuszcze",
+        "per100g": {
+            "calories": 900,
+            "protein": 0,
+            "fats": 99.8,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-168324",
+        "fdcId": 168324,
+        "name": "Tłuszcz z boczku (wytopiony)",
+        "category": "Tłuszcze",
+        "per100g": {
+            "calories": 898,
+            "protein": 0.1,
+            "fats": 99.5,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-170580",
+        "fdcId": 170580,
+        "name": "Śmietanka kokosowa",
+        "category": "Tłuszcze",
+        "per100g": {
+            "calories": 330,
+            "protein": 3.6,
+            "fats": 34.7,
+            "carbs": 6.7,
+            "fiber": 2.2
+        }
+    },
+    {
+        "id": "usda-168412",
+        "fdcId": 168412,
+        "name": "Endywia",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 17,
+            "protein": 1.3,
+            "fats": 0.2,
+            "carbs": 3.4,
+            "fiber": 3.1
+        }
+    },
+    {
+        "id": "usda-168564",
+        "fdcId": 168564,
+        "name": "Radicchio",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 23,
+            "protein": 1.4,
+            "fats": 0.3,
+            "carbs": 4.5,
+            "fiber": 0.9
+        }
+    },
+    {
+        "id": "usda-170068",
+        "fdcId": 170068,
+        "name": "Rukiew wodna",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 11,
+            "protein": 2.3,
+            "fats": 0.1,
+            "carbs": 1.3,
+            "fiber": 0.5
+        }
+    },
+    {
+        "id": "usda-169385",
+        "fdcId": 169385,
+        "name": "Koper włoski (fenkuł)",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 31,
+            "protein": 1.2,
+            "fats": 0.2,
+            "carbs": 7.3,
+            "fiber": 3.1
+        }
+    },
+    {
+        "id": "usda-169260",
+        "fdcId": 169260,
+        "name": "Okra",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 33,
+            "protein": 1.9,
+            "fats": 0.2,
+            "carbs": 7.5,
+            "fiber": 3.2
+        }
+    },
+    {
+        "id": "usda-169205",
+        "fdcId": 169205,
+        "name": "Karczoch",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 47,
+            "protein": 3.3,
+            "fats": 0.2,
+            "carbs": 10.5,
+            "fiber": 5.4
+        }
+    },
+    {
+        "id": "usda-170465",
+        "fdcId": 170465,
+        "name": "Rzepa",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 28,
+            "protein": 0.9,
+            "fats": 0.1,
+            "carbs": 6.4,
+            "fiber": 1.8
+        }
+    },
+    {
+        "id": "usda-168451",
+        "fdcId": 168451,
+        "name": "Rzodkiew biała (daikon)",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 18,
+            "protein": 0.6,
+            "fats": 0.1,
+            "carbs": 4.1,
+            "fiber": 1.6
+        }
+    },
+    {
+        "id": "usda-169298",
+        "fdcId": 169298,
+        "name": "Dynia makaronowa (spaghetti)",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 31,
+            "protein": 0.6,
+            "fats": 0.6,
+            "carbs": 6.9,
+            "fiber": 1.5
+        }
+    },
+    {
+        "id": "usda-168448",
+        "fdcId": 168448,
+        "name": "Dynia",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 26,
+            "protein": 1,
+            "fats": 0.1,
+            "carbs": 6.5,
+            "fiber": 0.5
+        }
+    },
+    {
+        "id": "usda-170375",
+        "fdcId": 170375,
+        "name": "Liście buraka (botwina)",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 22,
+            "protein": 2.2,
+            "fats": 0.1,
+            "carbs": 4.3,
+            "fiber": 3.7
+        }
+    },
+    {
+        "id": "usda-169226",
+        "fdcId": 169226,
+        "name": "Liście mniszka",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 45,
+            "protein": 2.7,
+            "fats": 0.7,
+            "carbs": 9.2,
+            "fiber": 3.5
+        }
+    },
+    {
+        "id": "usda-168569",
+        "fdcId": 168569,
+        "name": "Serca palmowe (z puszki)",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 28,
+            "protein": 2.5,
+            "fats": 0.6,
+            "carbs": 4.6,
+            "fiber": 2.4
+        }
+    },
+    {
+        "id": "usda-168431",
+        "fdcId": 168431,
+        "name": "Sałata czerwona liściasta",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 13,
+            "protein": 1.3,
+            "fats": 0.2,
+            "carbs": 2.3,
+            "fiber": 0.9
+        }
+    },
+    {
+        "id": "usda-169249",
+        "fdcId": 169249,
+        "name": "Sałata zielona liściasta",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 15,
+            "protein": 1.4,
+            "fats": 0.2,
+            "carbs": 2.9,
+            "fiber": 1.3
+        }
+    },
+    {
+        "id": "usda-169994",
+        "fdcId": 169994,
+        "name": "Szczypiorek",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 30,
+            "protein": 3.3,
+            "fats": 0.7,
+            "carbs": 4.4,
+            "fiber": 2.5
+        }
+    },
+    {
+        "id": "usda-168422",
+        "fdcId": 168422,
+        "name": "Kurki",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 32,
+            "protein": 1.5,
+            "fats": 0.5,
+            "carbs": 6.9,
+            "fiber": 3.8
+        }
+    },
+    {
+        "id": "usda-168423",
+        "fdcId": 168423,
+        "name": "Smardze",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 31,
+            "protein": 3.1,
+            "fats": 0.6,
+            "carbs": 5.1,
+            "fiber": 2.8
+        }
+    },
+    {
+        "id": "usda-169382",
+        "fdcId": 169382,
+        "name": "Grzyby enoki",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 37,
+            "protein": 2.7,
+            "fats": 0.3,
+            "carbs": 7.8,
+            "fiber": 2.7
+        }
+    },
+    {
+        "id": "usda-169383",
+        "fdcId": 169383,
+        "name": "Papryka żółta",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 27,
+            "protein": 1,
+            "fats": 0.2,
+            "carbs": 6.3,
+            "fiber": 0.9
+        }
+    },
+    {
+        "id": "usda-169404",
+        "fdcId": 169404,
+        "name": "Brokuł chiński (gai lan)",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 26,
+            "protein": 1.2,
+            "fats": 0.8,
+            "carbs": 4.7,
+            "fiber": 2.6
+        }
+    },
+    {
+        "id": "usda-170076",
+        "fdcId": 170076,
+        "name": "Szczaw",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 22,
+            "protein": 2,
+            "fats": 0.7,
+            "carbs": 3.2,
+            "fiber": 2.9
+        }
+    },
+    {
+        "id": "usda-168546",
+        "fdcId": 168546,
+        "name": "Papryka czerwona konserwowa",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 18,
+            "protein": 0.8,
+            "fats": 0.3,
+            "carbs": 3.9,
+            "fiber": 1.2
+        }
+    },
+    {
+        "id": "usda-169379",
+        "fdcId": 169379,
+        "name": "Ogórek kiszony",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 11,
+            "protein": 0.3,
+            "fats": 0.2,
+            "carbs": 2.3,
+            "fiber": 1.2
+        }
+    },
+    {
+        "id": "usda-169287",
+        "fdcId": 169287,
+        "name": "Szpinak mrożony",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 29,
+            "protein": 3.6,
+            "fats": 0.6,
+            "carbs": 4.2,
+            "fiber": 2.9
+        }
+    },
+    {
+        "id": "usda-169289",
+        "fdcId": 169289,
+        "name": "Patison",
+        "category": "Warzywa",
+        "per100g": {
+            "calories": 18,
+            "protein": 1.2,
+            "fats": 0.2,
+            "carbs": 3.8,
+            "fiber": 1.2
+        }
+    },
+    {
+        "id": "usda-171330",
+        "fdcId": 171330,
+        "name": "Mak",
+        "category": "Orzechy i nasiona",
+        "per100g": {
+            "calories": 525,
+            "protein": 18,
+            "fats": 41.6,
+            "carbs": 28.1,
+            "fiber": 19.5
+        }
+    },
+    {
+        "id": "usda-173030",
+        "fdcId": 173030,
+        "name": "Agrest",
+        "category": "Owoce",
+        "per100g": {
+            "calories": 44,
+            "protein": 0.9,
+            "fats": 0.6,
+            "carbs": 10.2,
+            "fiber": 4.3
+        }
+    },
+    {
+        "id": "usda-169913",
+        "fdcId": 169913,
+        "name": "Morwa",
+        "category": "Owoce",
+        "per100g": {
+            "calories": 43,
+            "protein": 1.4,
+            "fats": 0.4,
+            "carbs": 9.8,
+            "fiber": 1.7
+        }
+    },
+    {
+        "id": "usda-172449",
+        "fdcId": 172449,
+        "name": "Tofu miękkie (jedwabiste)",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 61,
+            "protein": 7.2,
+            "fats": 3.7,
+            "carbs": 1.2,
+            "fiber": 0.2
+        }
+    },
+    {
+        "id": "usda-173180",
+        "fdcId": 173180,
+        "name": "Odżywka białkowa serwatkowa",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 352,
+            "protein": 78.1,
+            "fats": 1.6,
+            "carbs": 6.3,
+            "fiber": 3.1
+        }
+    },
+    {
+        "id": "usda-173472",
+        "fdcId": 173472,
+        "name": "Chrzan tarty",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 48,
+            "protein": 1.2,
+            "fats": 0.7,
+            "carbs": 11.3,
+            "fiber": 3.3
+        }
+    },
+    {
+        "id": "usda-171580",
+        "fdcId": 171580,
+        "name": "Pesto bazyliowe",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 426,
+            "protein": 5,
+            "fats": 42.4,
+            "carbs": 6.1,
+            "fiber": 1.7
+        }
+    },
+    {
+        "id": "usda-172240",
+        "fdcId": 172240,
+        "name": "Ocet z czerwonego wina",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 19,
+            "protein": 0,
+            "fats": 0,
+            "carbs": 0.3,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-172237",
+        "fdcId": 172237,
+        "name": "Ocet spirytusowy",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 18,
+            "protein": 0,
+            "fats": 0,
+            "carbs": 0,
+            "fiber": 0
+        }
+    },
+    {
+        "id": "usda-171328",
+        "fdcId": 171328,
+        "name": "Oregano suszone",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 265,
+            "protein": 9,
+            "fats": 4.3,
+            "carbs": 68.9,
+            "fiber": 42.5
+        }
+    },
+    {
+        "id": "usda-171329",
+        "fdcId": 171329,
+        "name": "Papryka słodka mielona",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 282,
+            "protein": 14.1,
+            "fats": 12.9,
+            "carbs": 54,
+            "fiber": 34.9
+        }
+    },
+    {
+        "id": "usda-170923",
+        "fdcId": 170923,
+        "name": "Kumin (kmin rzymski)",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 375,
+            "protein": 17.8,
+            "fats": 22.3,
+            "carbs": 44.2,
+            "fiber": 10.5
+        }
+    },
+    {
+        "id": "usda-171319",
+        "fdcId": 171319,
+        "name": "Chili w proszku",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 282,
+            "protein": 13.5,
+            "fats": 14.3,
+            "carbs": 49.7,
+            "fiber": 34.8
+        }
+    },
+    {
+        "id": "usda-170924",
+        "fdcId": 170924,
+        "name": "Curry w proszku",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 325,
+            "protein": 14.3,
+            "fats": 14,
+            "carbs": 55.8,
+            "fiber": 53.2
+        }
+    },
+    {
+        "id": "usda-171326",
+        "fdcId": 171326,
+        "name": "Gałka muszkatołowa",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 525,
+            "protein": 5.8,
+            "fats": 36.3,
+            "carbs": 49.3,
+            "fiber": 20.8
+        }
+    },
+    {
+        "id": "usda-171325",
+        "fdcId": 171325,
+        "name": "Czosnek granulowany",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 331,
+            "protein": 16.6,
+            "fats": 0.7,
+            "carbs": 72.7,
+            "fiber": 9
+        }
+    },
+    {
+        "id": "usda-170926",
+        "fdcId": 170926,
+        "name": "Imbir mielony",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 335,
+            "protein": 9,
+            "fats": 4.2,
+            "carbs": 71.6,
+            "fiber": 14.1
+        }
+    },
+    {
+        "id": "usda-170928",
+        "fdcId": 170928,
+        "name": "Majeranek suszony",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 271,
+            "protein": 12.7,
+            "fats": 7,
+            "carbs": 60.6,
+            "fiber": 40.3
+        }
+    },
+    {
+        "id": "usda-170938",
+        "fdcId": 170938,
+        "name": "Tymianek suszony",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 276,
+            "protein": 9.1,
+            "fats": 7.4,
+            "carbs": 63.9,
+            "fiber": 37
+        }
+    },
+    {
+        "id": "usda-171333",
+        "fdcId": 171333,
+        "name": "Rozmaryn suszony",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 331,
+            "protein": 4.9,
+            "fats": 15.2,
+            "carbs": 64.1,
+            "fiber": 42.6
+        }
+    },
+    {
+        "id": "usda-171315",
+        "fdcId": 171315,
+        "name": "Ziele angielskie mielone",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 263,
+            "protein": 6.1,
+            "fats": 8.7,
+            "carbs": 72.1,
+            "fiber": 21.6
+        }
+    },
+    {
+        "id": "usda-170918",
+        "fdcId": 170918,
+        "name": "Kminek",
+        "category": "Dodatki",
+        "per100g": {
+            "calories": 333,
+            "protein": 19.8,
+            "fats": 14.6,
+            "carbs": 49.9,
+            "fiber": 38
+        }
     }
 ];
