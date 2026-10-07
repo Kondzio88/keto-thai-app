@@ -44,6 +44,10 @@ const updateActiveTab = () => {
         const isActive = href === "/" ? path === "/" : path === href || path.startsWith(`${href}/`);
 
         link.classList.toggle("tabbar__link--active", isActive);
+        // Sama klasa jest tylko wizualna — czytnik ekranu dowiaduje się o
+        // bieżącej stronie z aria-current.
+        if (isActive) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
     });
 };
 

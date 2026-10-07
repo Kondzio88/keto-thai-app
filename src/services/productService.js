@@ -21,15 +21,42 @@ const SEARCH_INDEX = PRODUCTS_DATA.map((product) => ({
     haystack: normalizeText(`${product.name} ${product.category}`),
 }));
 
+// Zapytanie trafia do RegExp — kropka czy nawias wpisane przez użytkownika
+// mają znaczyć siebie, a nie "dowolny znak" czy grupę.
+const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Po normalizeText() litery są już łacińskie bez ogonków, więc granica
+// słowa to po prostu "nie litera i nie cyfra" (wbudowane \b nie zna polskich liter,
+// ale tu ich już nie ma — mimo to jawny zapis jest czytelniejszy).
+const NOT_WORD = "[^a-z0-9]";
+
+// Im niższa ranga, tym wyżej na liście; null = produkt nie pasuje.
+// Trafienie w środku słowa odpada: "ser" nie znajdzie "Ogórka konserwowego".
+// Kategoria jest ostatnia: "orzech" ma najpierw pokazać "Masło orzechowe",
+// a dopiero potem migdały, które łapią się tylko przez "Orzechy i nasiona".
+const getMatchRank = ({ name, haystack }, query) => {
+    const escaped = escapeRegExp(query);
+    const startsWord = new RegExp(`(^|${NOT_WORD})${escaped}`);
+    if (!startsWord.test(haystack)) return null;
+
+    const wholeWord = new RegExp(`(^|${NOT_WORD})${escaped}($|${NOT_WORD})`).test(name);
+    const startsName = name.startsWith(query);
+
+    if (wholeWord && startsName) return 0; // "ser" → "Ser feta"
+    if (wholeWord) return 1; //               "ser" → "Żółty ser"
+    if (startsName) return 2; //              "ser" → "Serek wiejski", "Serce wołowe"
+    if (startsWord.test(name)) return 3; //   "orzech" → "Masło orzechowe"
+    return 4; //                              "orzech" → "Migdały" (z kategorii)
+};
+
 export const searchProducts = (query) => {
     const normalizedQuery = normalizeText(query);
     if (normalizedQuery.length < MIN_QUERY_LENGTH) return [];
 
-    // Nazwa zaczynająca się od zapytania wygrywa: "awokado" → najpierw
-    // "Awokado", potem "Olej z awokado". sort() jest stabilny, więc w obrębie
-    // tej samej grupy zostaje kolejność z bazy.
-    return SEARCH_INDEX.filter(({ haystack }) => haystack.includes(normalizedQuery))
-        .sort((a, b) => Number(!a.name.startsWith(normalizedQuery)) - Number(!b.name.startsWith(normalizedQuery)))
+    // sort() jest stabilny, więc w obrębie tej samej rangi zostaje kolejność z bazy.
+    return SEARCH_INDEX.map((entry) => ({ ...entry, rank: getMatchRank(entry, normalizedQuery) }))
+        .filter(({ rank }) => rank !== null)
+        .sort((a, b) => a.rank - b.rank)
         .slice(0, MAX_RESULTS)
         .map(({ product }) => product);
 };
