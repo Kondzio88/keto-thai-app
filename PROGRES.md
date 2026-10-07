@@ -525,7 +525,7 @@ Kod na komendę „Daj mi kod”, testy w Chrome robi Claude (logowanie klika au
 
 ---
 
-### Sesja 2026-10-07 (krótka): wyszukiwarka, aria-current, +50 przepisów
+### Sesja 2026-10-07: wyszukiwarka, aria-current, +50 przepisów, +100 produktów, luka nr 4
 
 1. **Wyszukiwarka produktów** (`0a68c92`): ranga trafienia w `searchProducts()`, trafienia w środku słowa odpadają (pkt 8 listy niżej).
 2. **`aria-current="page"`** na aktywnej zakładce; sam bug aktywnego taba (RAPORT #10) był naprawiony wcześniej przez `route:rendered` (pkt 13).
@@ -533,6 +533,11 @@ Kod na komendę „Daj mi kod”, testy w Chrome robi Claude (logowanie klika au
 4. **Brak zdjęć r51–r100:** `imageUrl: null`, nowa funkcja `generateRecipeImageHTML()` w `recipes.js` pokazuje ikonę zastępczą (modyfikator `--no-photo`, ten sam wygląd co przy przepisie użytkownika). Zdjęcia CC0 — osobna sesja (decyzja autora).
 5. **Do sprawdzenia przez autora:** treść przepisów (gramatury, nazwy), szczególnie tatar (surowa wołowina i żółtko) i chlebek z kubka (proszek do pieczenia poza bazą, nieliczony).
 6. **Baza produktów 200 → 300:** 100 nowych rekordów z tego samego źródła (USDA SR Legacy 2018-04, CSV z wcześniejszej sesji), dopisanych do listy w `scripts/build-products.js` i wygenerowanych skryptem; stare 200 bez zmian (diff tylko dodaje). Mięso i wędliny 18 (m.in. karkówka, bekon, salami, kiełbasa, szynka, gęś, podroby), ryby 13, jaja 2, nabiał 12 (m.in. tylżycki, gruyère, roquefort, śmietanka 18%), tłuszcze 7 (m.in. olej rzepakowy, smalec gęsi), warzywa i grzyby 26 (m.in. kurki, szczaw, daikon, dynia, ogórek kiszony), mak, agrest, morwa, przyprawy i dodatki 19. Odrzucone za wysokie netto: pistacje, nerkowce, masło słonecznikowe, szalotka. **Miary domowe dla 39 z nich** (osobny commit): łyżka/łyżeczka dla tłuszczów, octów, chrzanu, maku, śmietanek, kawioru i 13 przypraw; sztuki dla jaj gęsich/indyczych, serc drobiowych, karczocha, rzepy, papryki żółtej, fenkułu, serc palmowych, liścia radicchio, ogórka kiszonego, filetu śledzia, plastra salami i pepperoni. Wg zasady z partii 1 pominięte: oz/lb/cup, plastry sera i bekonu (waga USA), puszka tuńczyka; oregano ma tylko łyżeczkę (USDA nie podaje łyżki), gai lan nie ma żadnej miary. Uwaga: „ser” zwraca teraz 20+ trafień i limit `MAX_RESULTS` ucina serki — do rozważenia.
+7. **Luka nr 4 — „Skasuj dane aplikacji” u zalogowanego (wariant C, `3b9487e`):** przycisk znika po potwierdzeniu sesji (`getSession()` w `initDeleteData()`), gość ma go bez zmian. Diagnoza przed decyzją: u zalogowanego kasował tylko `localStorage`, onboarding robił `upsert` nowego profilu na stary, a stare posiłki i waga wracały z bazy — mieszanka danych, a okno obiecywało „nie można cofnąć”. Odrzucone: A (sam tekst — nie usuwa mieszanki), B (kasowanie w bazie — prawdziwa funkcja, odłożona). **„Zacznij od nowa” dla zalogowanego zapisane jako luka funkcjonalności w `PLAN.md` §1a pkt 4.** Test w Chrome tylko ścieżki gościa.
+8. **Architektura bez zmian, przypomnienie z rozmowy:** przepisy trenera i produkty żyją w `src/data` (bundle), nie w Supabase; z bazą łączy je tylko `recipe_id` + kopia makro we wpisie dziennika (`snapshotRecipe()`).
+9. **Wszystko wypchnięte na GitHub** (deploy przez Actions).
+
+**Pytania sprawdzające bez odpowiedzi:** czy „Serek wiejski” czy „Serce wołowe” wyżej w wynikach (ta sama ranga — od czego zależy?); skąd 11 g netto w Tom Kha Gai zamiast typowych 5–6; ile kcal pokaże wczorajszy wpis po zmianie przepisu (snapshot); `portionToGrams()` i zaokrąglenie do 0,1 g.
 
 ---
 
@@ -541,7 +546,9 @@ Kod na komendę „Daj mi kod”, testy w Chrome robi Claude (logowanie klika au
 1. **Decyzja na start (wyjaśnić, potem wybór autora):** wzorzec scalania (koszyk / pytanie / konto anonimowe, `PLAN.md` §1a etap 6); zamiana starych id (`Date.now()`, `user-…`) na uuid razem z aktualizacją `recipeId` we wpisach dziennika.
 2. Kod etapu 6 i test w Chrome (scenariusze: gość z danymi zakłada konto; gość z danymi loguje się na konto z danymi; wylogowanie po przeniesieniu).
 3. Testy autora do zrobienia: logowanie Google z `/recipes` (powrót na `/recipes`), wylogowanie globalne (okno zwykłe + incognito), „Usuń konto” na koncie `+kttest`.
-4. Do rozważenia przy okazji: „Skasuj dane aplikacji” u zalogowanego (luka nr 4), stan ładowania „Wczytuję dziennik…”, baner PWA zasłaniający Dashboard.
+4. **Test autora z 07.10:** zalogowany nie widzi „Skasuj dane aplikacji” na Dashboardzie (możliwe mignięcie przy wejściu); kreator z nowymi produktami i miarami (np. „2 × ogórek średni”); przegląd treści r51–r100 (tatar, chlebek z kubka).
+5. **Z 07.10 do zrobienia:** zdjęcia CC0 dla r51–r100; limit 20 wyników ucina serki przy „ser” (`MAX_RESULTS`).
+6. Do rozważenia przy okazji: stan ładowania „Wczytuję dziennik…”, baner PWA zasłaniający Dashboard.
 
 Artykuły `/knowledge` (wariant C) i chatbot keto (`PLAN.md` §6) czekają w kolejce. Pierwszy krok artykułów (router z parametrem ścieżki) można zrobić niezależnie od backendu.
 
