@@ -133,6 +133,32 @@ export const addWeightEntry = async (user, weight) => {
     return { user: updated, error: null };
 };
 
+// Etap 6: dane gościa → konto. Profil wysyłamy tylko wtedy, gdy konto go nie ma
+// (decyzję podejmuje accountMergeService), a `ignoreDuplicates` = "on conflict
+// do nothing": nawet przy wyścigu profil z konta wygrywa, nie zostaje nadpisany.
+// Pomiary jednym insertem = jedna instrukcja SQL, więc wchodzą wszystkie albo żaden.
+// Zwraca true, gdy baza przyjęła wszystko.
+export const pushGuestUserToServer = async ({ supabase, userId }, { profile, weights }) => {
+    if (profile) {
+        const { error } = await supabase
+            .from("profiles")
+            .upsert(toProfileRow(profile, userId), { ignoreDuplicates: true });
+        if (error) {
+            console.error("Supabase profiles (przeniesienie):", error);
+            return false;
+        }
+    }
+
+    if (weights.length > 0) {
+        const { error } = await supabase.from("weight_entries").insert(weights.map(toWeightRow));
+        if (error) {
+            console.error("Supabase weight_entries (przeniesienie):", error);
+            return false;
+        }
+    }
+    return true;
+};
+
 // Pobiera profil i pomiary zalogowanego z bazy do localStorage.
 // Zwraca true, gdy lokalna kopia się zmieniła (wtedy main.js przerysowuje stronę).
 // Błąd sieci = zostajemy przy lokalnej kopii, bez komunikatu: odczyt i tak działa.
@@ -151,8 +177,8 @@ export const pullUserFromServer = async () => {
         return false;
     }
 
-    // Brak profilu w bazie (konto bez onboardingu albo dane tylko lokalne):
-    // NIE kasujemy lokalnej kopii. Przeniesienie jej do bazy to etap 6.
+    // Brak profilu w bazie (konto bez onboardingu): NIE kasujemy lokalnej kopii.
+    // Dane gościa trafiają do bazy wcześniej, w accountMergeService (etap 6).
     const profile = profileResult.data;
     const weights = weightsResult.data;
     if (!profile || weights.length === 0) return false;

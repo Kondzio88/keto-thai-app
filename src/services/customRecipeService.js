@@ -24,6 +24,8 @@ export const getCustomRecipes = () => {
 
 export const getCustomRecipeById = (recipeId) => getCustomRecipes().find((recipe) => recipe.id === recipeId);
 
+export const saveCustomRecipes = (recipes) => saveState(RECIPES_STORAGE_KEY, recipes);
+
 // ---------- Zapis (PLAN.md §1a, etap 5, wariant C; transakcja: wariant A) ----------
 // Zalogowany: najpierw baza, lokalnie dopiero po potwierdzeniu. Gość: tylko lokalnie.
 // Akcje zwracają { error } (null albo komunikat po polsku), zapisujące też { recipe }.
@@ -112,6 +114,17 @@ export const deleteCustomRecipe = async (recipeId) => {
     return saveState(RECIPES_STORAGE_KEY, remaining) ? { error: null } : { error: LOCAL_SAVE_FAILED };
 };
 
+// Etap 6: przepisy gościa → konto, każdy przez save_custom_recipe() (upsert),
+// więc ponowna próba po przerwanym przenoszeniu niczego nie zdubluje.
+// Po kolei, nie równolegle: przy błędzie przerywamy od razu.
+// Zwraca true, gdy baza przyjęła wszystkie.
+export const pushGuestRecipesToServer = async ({ supabase }, recipes) => {
+    for (const recipe of recipes) {
+        if (!(await saveRecipeToServer(supabase, recipe))) return false;
+    }
+    return true;
+};
+
 // Pobiera własne przepisy zalogowanego (razem ze składnikami) do localStorage.
 // Zwraca true, gdy lokalna kopia się zmieniła. Błąd sieci = zostajemy przy lokalnej.
 export const pullCustomRecipesFromServer = async () => {
@@ -132,8 +145,8 @@ export const pullCustomRecipesFromServer = async () => {
         return false;
     }
 
-    // Pusta baza przy niepustej lokalnej liście = przepisy sprzed konta.
-    // Nie kasujemy ich — przeniesienie do bazy to etap 6.
+    // Pusta baza: nie kasujemy lokalnej listy. Przepisy gościa trafiają do bazy
+    // wcześniej, w accountMergeService (etap 6).
     if (data.length === 0) return false;
 
     const serverRecipes = data.map((row) => ({

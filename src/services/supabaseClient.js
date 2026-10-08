@@ -35,7 +35,7 @@ export const getSignedInClient = async () => {
 };
 
 // Baza przyjmuje tylko uuid. Stare wpisy (id z Date.now(), przepisy "user-…")
-// żyją wyłącznie lokalnie — ich przeniesienie do bazy to etap 6.
+// dostają nowe uuid przy przenoszeniu na konto (accountMergeService, etap 6).
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export const isUuid = (id) => UUID_PATTERN.test(id);
 

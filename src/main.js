@@ -1,7 +1,6 @@
 import { initRouter, refreshCurrentRoute } from "./router.js";
-import { pullUserFromServer } from "./services/userService.js";
-import { pullMealsFromServer } from "./services/mealService.js";
-import { pullCustomRecipesFromServer } from "./services/customRecipeService.js";
+import { syncWithAccountData } from "./services/accountMergeService.js";
+import { showConfirmModal } from "./components/confirmModal.js";
 import { getCurrentPath , getBase} from "./utils/env.js";
 import { initInstallPromptCapture } from "./utils/installPrompt.js";
 import { initInstallBanner } from "./components/installBanner.js";
@@ -105,6 +104,51 @@ const initDisclaimerLinks = () => {
     }
 };
 
+// ---------- Etap 6: dane gościa przy logowaniu (PLAN.md §1a) ----------
+
+// Okno dla S2 (konto ma już dane). Bez odmiany "3 posiłki / 5 posiłków"
+// — forma "posiłki: 3" działa dla każdej liczby.
+const askToMergeGuestData = ({ meals, weights, recipes, profile }) =>
+    new Promise((resolve) => {
+        const lines = [
+            meals > 0 && `posiłki w dzienniku: ${meals}`,
+            weights > 0 && `pomiary wagi: ${weights}`,
+            recipes > 0 && `własne przepisy: ${recipes}`,
+            profile && "profil z kalkulatora (konto jeszcze go nie ma)",
+        ].filter(Boolean);
+
+        showConfirmModal({
+            title: "Dodać dane z tego urządzenia do konta?",
+            message: `Na tym urządzeniu są dane zapisane bez logowania: ${lines.join(" · ")}. Jeśli to nie Twoje dane, wybierz „Odrzuć”: usuniemy je z tego urządzenia, a konto zostanie bez zmian.`,
+            confirmLabel: "Dodaj do konta",
+            cancelLabel: "Odrzuć",
+            onConfirm: () => resolve("merge"),
+            onCancel: () => resolve("discard"),
+            onDismiss: () => resolve("later"),
+            // "Odrzuć" kasuje dane nieodwracalnie, więc Enter nie może w nie trafić.
+            initialFocus: "confirm",
+        });
+    });
+
+const MERGE_MESSAGES = {
+    merged: { stamp: "Konto", title: "Dane z tego urządzenia są na koncie" },
+    discarded: { stamp: "Konto", title: "Odrzucono dane z tego urządzenia", note: "Konto zostało bez zmian." },
+    later: {
+        stamp: "Konto",
+        title: "Dane z tego urządzenia czekają",
+        note: "Zapytamy ponownie przy następnym uruchomieniu aplikacji.",
+    },
+    error: {
+        stamp: "Uwaga",
+        title: "Nie udało się przenieść danych na konto",
+        note: "Dane zostają na tym urządzeniu. Spróbujemy ponownie przy następnym uruchomieniu.",
+    },
+};
+
+const showMergeResult = (result) => {
+    if (MERGE_MESSAGES[result]) showToast(MERGE_MESSAGES[result]);
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     // Router wysyła "route:rendered" po KAŻDYM renderze strony — także po
     // navigateTo() z kodu (CTA, formularze), czego nie łapał dawny nasłuch
@@ -115,7 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
         updateAccountNav();
     });
     // Start aplikacji u zalogowanego i każde logowanie (e-mail, Google):
-    // pobierz dane z bazy do lokalnej kopii, a jeśli się zmieniły, przerysuj stronę.
+    // przejmij dane gościa, pobierz dane z bazy do lokalnej kopii, a jeśli się
+    // zmieniły, przerysuj stronę.
     onAuthChange(async (user, event) => {
         updateAccountNav();
 
@@ -132,12 +177,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (!user || (event !== "INITIAL_SESSION" && event !== "SIGNED_IN")) return;
-        const changed = await Promise.all([
-            pullUserFromServer(),
-            pullMealsFromServer(),
-            pullCustomRecipesFromServer(),
-        ]);
-        if (changed.some(Boolean)) refreshCurrentRoute();
+        // Etap 6: najpierw dane gościa z tego urządzenia (przeniesienie albo
+        // pytanie), dopiero potem pobranie z bazy — kolejność pilnuje serwis.
+        const { changed, result } = await syncWithAccountData(askToMergeGuestData);
+        if (changed) refreshCurrentRoute();
+        showMergeResult(result);
     });
 
     initRouter();

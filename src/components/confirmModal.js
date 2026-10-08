@@ -6,6 +6,13 @@ export const showConfirmModal = ({
     confirmLabel = "Potwierdź",
     cancelLabel = "Anuluj",
     onConfirm,
+    // Opcjonalne — dla okien, w których "Anuluj" to osobna decyzja (np. "Odrzuć"),
+    // a zamknięcie bez wyboru (Esc, klik w tło) znaczy co innego.
+    onCancel,
+    onDismiss,
+    // "cancel" dla akcji niszczących (domyślnie); "confirm", gdy to przycisk
+    // anulowania niszczy dane.
+    initialFocus = "cancel",
 }) => {
     const overlay = document.createElement("div");
     overlay.className = "modal-overlay";
@@ -28,23 +35,31 @@ export const showConfirmModal = ({
     const confirmBtn = overlay.querySelector(".confirm-modal__confirm");
 
     // Pułapkę zakładamy PRZED przeniesieniem fokusu, żeby zapamiętała element sprzed otwarcia.
-    const releaseFocus = trapFocus(dialog, { onEscape: () => closeModal() });
+    const releaseFocus = trapFocus(dialog, { onEscape: () => dismiss() });
 
     const closeModal = () => {
         overlay.remove();
         releaseFocus();
     };
 
+    const dismiss = () => {
+        closeModal();
+        onDismiss?.();
+    };
+
     overlay.addEventListener("click", (event) => {
-        if (event.target === overlay) closeModal();
+        if (event.target === overlay) dismiss();
     });
 
-    cancelBtn.addEventListener("click", closeModal);
+    cancelBtn.addEventListener("click", () => {
+        closeModal();
+        onCancel?.();
+    });
     confirmBtn.addEventListener("click", () => {
         closeModal();
         onConfirm?.();
     });
 
     // Fokus domyślnie na bezpiecznej opcji — akcja jest niszcząca i nieodwracalna.
-    cancelBtn.focus();
+    (initialFocus === "confirm" ? confirmBtn : cancelBtn).focus();
 };

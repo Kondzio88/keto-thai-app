@@ -137,6 +137,38 @@ export const removeMeal = async (mealId) => {
     return saveMeals(meals) ? { error: null } : { error: LOCAL_SAVE_FAILED };
 };
 
+// Godzina wpisu gościa ("14:05") + dzień → znacznik czasu dla kolumny eaten_at.
+// Konstruktor z liczbami liczy w czasie LOKALNYM (new Date("RRRR-MM-DD") byłby UTC).
+// Wpis bez czytelnej godziny dostaje południe — kolejność w obrębie dnia jest
+// wtedy przybliżona, ale dzień (eaten_on) zostaje dokładny.
+const toEatenAt = (dateKey, time) => {
+    const [year, month, day] = dateKey.split("-").map(Number);
+    const match = /^(\d{1,2}):(\d{2})/.exec(time ?? "");
+    const [hours, minutes] = match ? [Number(match[1]), Number(match[2])] : [12, 0];
+    return new Date(year, month - 1, day, hours, minutes).toISOString();
+};
+
+// Etap 6: wpisy gościa → konto. Wymaga id w formacie uuid (accountMergeService
+// zamienia stare id wcześniej). `ignoreDuplicates` po id: ponowna próba po
+// przerwanym przenoszeniu nie zdubluje wpisów, które już weszły.
+// `entries` = [{ date: "RRRR-MM-DD", meal }]. Zwraca true, gdy baza przyjęła wszystko.
+export const pushGuestMealsToServer = async ({ supabase }, entries) => {
+    if (entries.length === 0) return true;
+
+    // Stare wpisy nie mają błonnika — jawne 0, bo w wielowierszowym insercie
+    // brakujące pole stałoby się NULL-em, a kolumna fiber jest NOT NULL.
+    const rows = entries.map(({ date, meal }) => ({
+        id: meal.id,
+        eaten_on: date,
+        eaten_at: toEatenAt(date, meal.time),
+        ...toSnapshotRow({ ...meal, fiber: meal.fiber ?? 0 }),
+    }));
+
+    const { error } = await supabase.from("meals").upsert(rows, { onConflict: "id", ignoreDuplicates: true });
+    if (error) console.error("Supabase meals (przeniesienie):", error);
+    return !error;
+};
+
 // Pobiera dziennik zalogowanego z bazy do localStorage (kształt { "RRRR-MM-DD": [wpisy] }).
 // Zwraca true, gdy lokalna kopia się zmieniła. Błąd sieci = zostajemy przy lokalnej.
 // Pobieramy całą historię — przy jednym użytkowniku to setki wierszy, nie miliony.
@@ -154,8 +186,8 @@ export const pullMealsFromServer = async () => {
         return false;
     }
 
-    // Pusta baza przy niepustej lokalnej kopii = dane sprzed konta. Nie kasujemy
-    // ich — przeniesienie do bazy to etap 6.
+    // Pusta baza: nie kasujemy lokalnej kopii. Dane gościa trafiają do bazy
+    // wcześniej, w accountMergeService (etap 6).
     const local = readState(MEALS_STORAGE_KEY);
     if (data.length === 0) return false;
 
