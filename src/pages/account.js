@@ -17,6 +17,7 @@ import { getUser } from "../services/userService.js";
 import { getAllMeals } from "../services/mealService.js";
 import { getCustomRecipes } from "../services/customRecipeService.js";
 import { clearLocalData } from "../services/localDataService.js";
+import { CONSENTS, rememberPendingConsents, clearPendingConsents } from "../services/consentService.js";
 
 // Trasy /konto (logowanie gościa albo strona konta) i /konto/rejestracja.
 // Wygląd: makieta "Keto Thai – makieta kont" (DESIGN.md).
@@ -245,7 +246,11 @@ const initSignInView = (root) => {
     const errorBox = root.querySelector("#account-error");
     bindPasswordToggle(root);
 
+    // Logowanie to nie rejestracja: zgoda zaznaczona wcześniej w tej karcie
+    // (np. porzucona rejestracja) nie może przejść na konto, na które ktoś
+    // się teraz loguje. Konto bez zgód zatrzyma bramka w main.js.
     root.querySelector("#account-google").addEventListener("click", async (event) => {
+        clearPendingConsents();
         const result = await runAction({
             button: event.currentTarget,
             busyLabel: "Łączę z Google…",
@@ -259,6 +264,7 @@ const initSignInView = (root) => {
         event.preventDefault();
         const data = new FormData(form);
 
+        clearPendingConsents();
         const result = await runAction({
             button: root.querySelector("#account-submit"),
             busyLabel: "Loguję…",
@@ -397,26 +403,29 @@ export const renderRegister = () => html`<div class="page-container account" id=
     </header>
 
     <div class="account__panel">
-        ${renderLocalDataCard()} ${renderGoogleButton("Kontynuuj z Google")}
-        <p class="account__or tag">albo e-mail</p>
+        ${renderLocalDataCard()}
+        <!-- Zgody NAD oboma przyciskami (PRAWO.md §14, warstwa A): dotyczą
+             i Google, i e-maila, więc czyta się je przed wyborem drogi.
+             Google siedzi w formularzu tylko po to, żeby stał pod zgodami —
+             type="button", więc formularza nie wysyła. -->
         <form class="account__form" id="account-form">
-            ${renderEmailField("signup-email")}
-            ${renderPasswordField("signup-password", "new-password", `Co najmniej ${PASSWORD_MIN_LENGTH} znaków.`)}
-
             <!-- TODO etap 7 (RODO): podlinkować regulamin i politykę prywatności, gdy powstaną. -->
-            <fieldset class="consent account__consent">
+            <fieldset class="consent">
                 <legend class="visually-hidden">Zgody</legend>
                 <label class="consent__check">
                     <input type="checkbox" name="terms" required />
-                    <span>Akceptuję regulamin i politykę prywatności.</span>
+                    <span>${CONSENTS.terms.label}</span>
                 </label>
                 <label class="consent__check">
                     <input type="checkbox" name="health" required />
-                    <span>
-                        Zgadzam się na przechowywanie na koncie danych o mojej wadze i diecie (to dane o zdrowiu).
-                    </span>
+                    <span>${CONSENTS.health.label}</span>
                 </label>
             </fieldset>
+
+            ${renderGoogleButton("Kontynuuj z Google")}
+            <p class="account__or tag">albo e-mail</p>
+            ${renderEmailField("signup-email")}
+            ${renderPasswordField("signup-password", "new-password", `Co najmniej ${PASSWORD_MIN_LENGTH} znaków.`)}
 
             <p class="form__error is-hidden" id="account-error" role="alert"></p>
             <button type="submit" class="btn btn--primary" id="account-submit"><span>Załóż konto</span></button>
@@ -440,22 +449,27 @@ export const initRegister = async () => {
     const errorBox = root.querySelector("#account-error");
     bindPasswordToggle(root);
 
+    // Zgodę zapamiętujemy PRZED logowaniem: Supabase ogłasza SIGNED_IN, zanim
+    // signUp() wróci, a bramka zgód w main.js rusza właśnie na to zdarzenie.
+    // Zapis do bazy robi bramka, gdy sesja już istnieje.
     const finish = (result) => {
+        if (result.error) clearPendingConsents(); // konta nie ma — zgoda nie ma czego dotyczyć
         if (result.error || result.redirecting) return;
         showToast({ stamp: "Gotowe", title: "Konto założone" });
         goAfterSignIn();
     };
 
     // Zgody dotyczą obu dróg. Formularz pilnuje ich sam (`required`), ale
-    // przycisk Google jest poza wysyłką formularza, więc sprawdzamy je ręcznie.
+    // przycisk Google formularza nie wysyła, więc sprawdzamy je ręcznie.
     root.querySelector("#account-google").addEventListener("click", async (event) => {
         if (!form.elements.terms.checked || !form.elements.health.checked) {
-            errorBox.textContent = "Zaznacz obie zgody pod formularzem, zanim założysz konto.";
+            errorBox.textContent = "Zaznacz obie zgody powyżej, zanim założysz konto.";
             errorBox.classList.remove("is-hidden");
             form.elements.terms.focus();
             return;
         }
 
+        rememberPendingConsents("google_signup");
         finish(
             await runAction({
                 button: event.currentTarget,
@@ -470,6 +484,7 @@ export const initRegister = async () => {
         event.preventDefault();
         const data = new FormData(form);
 
+        rememberPendingConsents("email_signup");
         finish(
             await runAction({
                 button: root.querySelector("#account-submit"),

@@ -1,14 +1,16 @@
 import { initRouter, refreshCurrentRoute } from "./router.js";
 import { syncWithAccountData } from "./services/accountMergeService.js";
+import { ensureConsents } from "./services/consentService.js";
 import { showConfirmModal } from "./components/confirmModal.js";
+import { askForConsents } from "./components/consentGate.js";
 import { getCurrentPath , getBase} from "./utils/env.js";
 import { initInstallPromptCapture } from "./utils/installPrompt.js";
 import { initInstallBanner } from "./components/installBanner.js";
 import { onCorruptedData } from "./state/store.js";
 import { showToast } from "./components/toast.js";
 import { updateAccountNav } from "./components/accountNav.js";
-import { onAuthChange } from "./services/authService.js";
-import { clearLocalData } from "./services/localDataService.js";
+import { onAuthChange, signOut } from "./services/authService.js";
+import { clearLocalData, getLocalOwner } from "./services/localDataService.js";
 
 // Rejestrujemy listener na `beforeinstallprompt` jak najwcześniej — event może
 // odpalić się zanim appka w ogóle zdąży wyrenderować pierwszą stronę.
@@ -145,6 +147,28 @@ const MERGE_MESSAGES = {
     },
 };
 
+// Odmowa zgód. Dwa przypadki: na urządzeniu była kartka gościa (zostaje),
+// albo kopia danych konta (znika z urządzenia, ale oryginał jest na koncie —
+// np. konto ze zgodą w starej wersji tekstu).
+const DECLINED_GUEST_DATA = {
+    stamp: "Wylogowano",
+    title: "Bez zgody nie zapisujemy danych na koncie",
+    note: "Dane z tego urządzenia zostały tutaj. Możesz dalej korzystać z aplikacji bez konta.",
+};
+const DECLINED_ACCOUNT_COPY = {
+    stamp: "Wylogowano",
+    title: "Bez zgody nie pokażemy danych z konta",
+    note: "Twoje dane zostały na koncie. Zaloguj się i zaakceptuj zgody, żeby do nich wrócić.",
+};
+
+// Bez odpowiedzi bazy nie wiemy, czy konto ma zgody — więc ani przenoszenia,
+// ani pobierania. Następny start (albo logowanie) sprawdzi ponownie.
+const CONSENT_CHECK_FAILED = {
+    stamp: "Uwaga",
+    title: "Nie udało się połączyć z kontem",
+    note: "Dane z tego urządzenia zostają tutaj. Spróbujemy ponownie przy następnym uruchomieniu.",
+};
+
 const showMergeResult = (result) => {
     if (MERGE_MESSAGES[result]) showToast(MERGE_MESSAGES[result]);
 };
@@ -170,13 +194,34 @@ document.addEventListener("DOMContentLoaded", () => {
         // nazwę zdarzenia, a NIE `!user`: gość też nie ma użytkownika, a jego
         // dane istnieją tylko lokalnie. Po "Wyloguj" tutaj czyścimy drugi raz —
         // bez szkody, usunięcie nieistniejącego klucza nic nie robi.
+        // Kasujemy tylko KOPIĘ danych konta (jest znacznik właściciela). Bez
+        // znacznika to kartka gościa, jeszcze nieprzeniesiona na konto — np. po
+        // odmowie zgód — i ona ma zostać na urządzeniu.
         if (event === "SIGNED_OUT") {
-            clearLocalData();
+            if (getLocalOwner()) clearLocalData();
             refreshCurrentRoute(); // zdejmuje dane z ekranu, guard odeśle z Trackera
             return;
         }
 
         if (!user || (event !== "INITIAL_SESSION" && event !== "SIGNED_IN")) return;
+
+        // Zgody przed czymkolwiek innym (PRAWO.md §14, warstwa B): bez zgody
+        // art. 9 dane o zdrowiu nie mogą trafić do bazy, więc etap 6 czeka.
+        const consent = await ensureConsents(askForConsents);
+        if (consent === "declined") {
+            // Sprawdzamy PRZED wylogowaniem — SIGNED_OUT skasuje kopię konta
+            // razem ze znacznikiem, a komunikat zależy od tego, czyje to dane.
+            const hadAccountCopy = getLocalOwner() !== null;
+            // "local": odmowa w tej przeglądarce nie wylogowuje innych urządzeń.
+            await signOut({ scope: "local" });
+            showToast(hadAccountCopy ? DECLINED_ACCOUNT_COPY : DECLINED_GUEST_DATA);
+            return;
+        }
+        if (consent !== "granted") {
+            showToast(CONSENT_CHECK_FAILED);
+            return;
+        }
+
         // Etap 6: najpierw dane gościa z tego urządzenia (przeniesienie albo
         // pytanie), dopiero potem pobranie z bazy — kolejność pilnuje serwis.
         const { changed, result } = await syncWithAccountData(askToMergeGuestData);

@@ -130,10 +130,13 @@ export const signInWithGoogle = async ({ redirectTo }) => {
     return { user: null, error: null, redirecting: true };
 };
 
-export const signOut = async () => {
+// scope: domyślnie "global" (wszystkie urządzenia, PLAN.md §1a). "local" kończy
+// sesję tylko w tej przeglądarce — np. po odmowie zgód nie ma powodu
+// wylogowywać kogoś z telefonu.
+export const signOut = async ({ scope } = {}) => {
     const supabase = await getSupabase();
     if (!supabase) return NOT_CONFIGURED;
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut(scope ? { scope } : undefined);
     if (error) return { user: null, error: toMessage(error) };
     return { user: null, error: null };
 };
