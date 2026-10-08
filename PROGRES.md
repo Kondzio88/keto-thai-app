@@ -541,16 +541,39 @@ Kod na komendę „Daj mi kod”, testy w Chrome robi Claude (logowanie klika au
 
 ---
 
-### ▶️ START NASTĘPNEJ SESJI: etap 6 — przeniesienie danych gościa do konta
+### Sesja 2026-10-08: etap 6 (dane gościa → konto), zgody RODO (wariant C), `PRAWO.md`
 
-1. **Decyzja na start (wyjaśnić, potem wybór autora):** wzorzec scalania (koszyk / pytanie / konto anonimowe, `PLAN.md` §1a etap 6); zamiana starych id (`Date.now()`, `user-…`) na uuid razem z aktualizacją `recipeId` we wpisach dziennika.
-2. Kod etapu 6 i test w Chrome (scenariusze: gość z danymi zakłada konto; gość z danymi loguje się na konto z danymi; wylogowanie po przeniesieniu).
-3. Testy autora do zrobienia: logowanie Google z `/recipes` (powrót na `/recipes`), wylogowanie globalne (okno zwykłe + incognito), „Usuń konto” na koncie `+kttest`.
-4. **Test autora z 07.10:** zalogowany nie widzi „Skasuj dane aplikacji” na Dashboardzie (możliwe mignięcie przy wejściu); kreator z nowymi produktami i miarami (np. „2 × ogórek średni”); przegląd treści r51–r100 (tatar, chlebek z kubka).
-5. **Z 07.10 do zrobienia:** zdjęcia CC0 dla r51–r100; limit 20 wyników ucina serki przy „ser” (`MAX_RESULTS`).
-6. Do rozważenia przy okazji: stan ładowania „Wczytuję dziennik…”, baner PWA zasłaniający Dashboard.
+Kod na komendę „Daj mi kod”, testy w Chrome robi Claude (logowanie i zgody klika autor). Commity: `4369bc4` (etap 6), `e7ebc6e` (zgody + `PRAWO.md`), wypchnięte na GitHub. Produkcja bez zmian dla użytkowników: konta nadal za `ACCOUNTS_ENABLED = DEV`.
 
-Artykuły `/knowledge` (wariant C) i chatbot keto (`PLAN.md` §6) czekają w kolejce. Pierwszy krok artykułów (router z parametrem ścieżki) można zrobić niezależnie od backendu.
+1. **Etap 6, decyzja: wariant 2 (pytanie), w S1 automatycznie.** S1 = konto bez żadnych danych → dane gościa przenoszone bez pytania; S2 = konto ma cokolwiek (sprawdzane w 4 tabelach, nie tylko profil) → okno „Dodać dane z tego urządzenia do konta?” [Dodaj do konta] / [Odrzuć]. Ustalenia: profil z konta wygrywa; [Odrzuć] kasuje od razu; waga z dnia, który konto ma → wygrywa konto; Esc / zamknięta karta → pytamy przy następnym starcie. Ryzyko w S1 (obce dane gościa przy rejestracji na wspólnym komputerze) świadomie zaakceptowane. Odrzucone: koszyk (cudze dane bez pytania), konto anonimowe (nie rozwiązuje S2, dane o zdrowiu w bazie przed zgodą).
+2. **`src/services/accountMergeService.js` (nowy):** kolejność zawsze „najpierw wyślij, potem pobierz” (pobranie nadpisuje lokalną kopię). Stare id (`Date.now()`, `user-…`) → uuid **lokalnie przed wysyłką**, z przepięciem `recipeId` we wpisach dziennika. Każdy krok bezpieczny do powtórzenia (`upsert` po id, profil `ignoreDuplicates`, waga tylko z brakujących dni). Blokada `running ??=` na dwa zdarzenia naraz. Serwisy dostały `pushGuest…ToServer()`; `confirmModal` dostał `onCancel`, `onDismiss`, `initialFocus`.
+3. **Znacznik właściciela `keto_owner`** (`localDataService.js`): kartka gościa i kopia danych konta wyglądają w `localStorage` identycznie, a nazwa zdarzenia nie wystarcza (`SIGNED_IN` też po powrocie do karty). Brak znacznika = gość; id = kopia konta; obce id = kasujemy. `SIGNED_OUT` kasuje dane tylko przy znaczniku.
+4. **Testy etapu 6 w Chrome ✅:** S2 + Esc / Dodaj / Odrzuć, ponowne pytanie po F5, brak okna u zalogowanego po F5, S1 na nowym koncie, wylogowanie i powrót, „Usuń konto” (zaległy test zrobiony). Dane testowe z głównego konta autora usunięte po id.
+5. **Luka nr 10 (kilka kart przy logowaniu) — ⏸️ odłożona:** dwie karty = dwa okna, przy dwóch [Dodaj] podwójne pomiary wagi. Warianty w `PLAN.md` §1a (`navigator.locks` / `unique (user_id, measured_on)` / znacznik w `sessionStorage`).
+6. **Otwarte decyzje zapisane w `PLAN.md`:** usypianie bazy Supabase po 7 dniach (ruch generują tylko zalogowani; warianty: ping, Pro, reagować na e-mail; mylący komunikat „Sprawdź internet” przy uśpionej bazie). Pytanie „dziennik tylko dla zarejestrowanych?” — **odłożone do startu na produkcji** (dziś konta są tylko na dev).
+7. **`PRAWO.md` (nowy):** mapa wymagań prawnych po researchu — RODO (art. 9 dane o zdrowiu, wyraźna zgoda i jej dowód, rejestr czynności **obowiązkowy**, DPA, transfery: Web3Forms to Indie/USA), Prawo komunikacji elektronicznej (`localStorage` bez banera, marketing = osobna zgoda), **regulamin obowiązkowy** (UŚUDE art. 8), prawo konsumenckie (Camp: 14 dni, „żądam rozpoczęcia”), czarna lista UOKiK („leczy choroby”, fikcyjna dostępność), MDR (aplikacja ma zostać lifestyle), projekt ustawy o zawodzie dietetyka, AI Act art. 50, dostępność (mikro — zwolnione), wizerunek dzieci, działalność nierejestrowana / KSeF. Lista 22 zadań, dziennik decyzji, pytania do prawnika.
+8. **Zgody, decyzja: wariant C (A + B).** A: checkboxy nad Google i e-mailem na rejestracji, zgoda pamiętana w `sessionStorage` (15 min) przez przekierowanie Google. B: bramka po każdym logowaniu — konto bez zgód w aktualnej wersji widzi ekran zgód (nie da się pominąć; „Wyloguj” = `signOut({ scope: "local" })`, dane gościa zostają). Etap 6 rusza dopiero po zgodzie. Sprostowanie: rejestracja przez Google sprawdzała checkboxy; furtką był „Zaloguj przez Google” na ekranie logowania.
+9. **Zgody w kodzie:** `supabase/003_consents.sql` (uruchomiony; dziennik tylko do dopisywania: kto, rodzaj, wersja tekstu, czas serwera, źródło), `consentService.js` (`CONSENTS` = jedno źródło treści i wersji), `components/consentGate.js`, `signOut({ scope })`. **Testy ✅:** stare konto → ekran, Esc nie zamyka, zapis `consent_screen`, F5 bez okna, rejestracja e-mailem → `email_signup` bez ekranu + S1, nowa wersja tekstu → pytamy ponownie, odmowa z kopią konta i z danymi gościa (nic do bazy). Poprawiony toast odmowy (inny tekst dla kopii konta). **Nie testowane:** „Zaloguj przez Google” nowym kontem Google (brak drugiego konta).
+10. **Wytłumaczone (do nietłumaczenia od zera):** wzorce scalania (koszyk / pytanie / anonimowe), idempotentne kroki, Web Locks API, unikalność w bazie jako siatka, polityka prywatności vs komplet dokumentów, wyraźna zgoda i dowód zgody, append-only log, `sessionStorage` vs `localStorage`.
+
+**Pytania sprawdzające bez odpowiedzi (autor nie znał, odpowiedzi do powtórki):**
+- *Dlaczego pomiary wagi nie pójdą do bazy drugi raz po przerwanym przenoszeniu?* — `findPending()` w `accountMergeService.js` odsiewa pomiary z dni, które baza już ma (`!server.weightDates.has(entry.date)`); udana wysyłka wagi = te dni są w bazie przy następnej próbie.
+- *Co, gdyby `checkConsents()` najpierw czytał tabelę, a potem zapisywał zgodę z `sessionStorage`?* — świeżo założone konto nie ma jeszcze wierszy, więc pokazałby się ekran zgód osobie, która przed chwilą je zaznaczyła (zgoda zebrana dwa razy).
+- Do zadania w NAUKA.md przy module 11 (sieć / baza).
+
+---
+
+### ▶️ START NASTĘPNEJ SESJI
+
+1. **Fonty i biblioteki u siebie zamiast z CDN** (`PRAWO.md` §2.10, zadanie 4): Google Fonts, Lucide (`lucide@latest`), Chart.js (bez wersji) → paczka Vite. Dotyczy wszystkich odwiedzających już dziś na produkcji (IP do Google i CDN bez podstawy prawnej; wyrok LG München). Przy okazji przypięte wersje (`RAPORT.md` #24).
+2. Kolejne z `PRAWO.md` §13: eksport danych („Pobierz moje dane”), decyzja „Cofnij zgodę” vs usunięcie konta, linki do polityki i regulaminu (gdy powstaną).
+3. **Autor przed prawnikiem (`PRAWO.md` §15):** forma działalności i dane administratora, e-mail do spraw danych, czy Camp płatny i jak; Web3Forms zostaje czy dostawca z UE; sprawdzić certyfikat Data Privacy Framework Supabase.
+4. Test do zrobienia: „Zaloguj przez Google” na ekranie logowania **nowym** kontem Google → ekran zgód (wymaga drugiego konta Google).
+5. **Zaległe testy autora:** logowanie Google z `/recipes` (powrót na `/recipes`), wylogowanie globalne (okno zwykłe + incognito); z 07.10: kreator z nowymi miarami, treść r51–r100 (tatar, chlebek z kubka), brak „Skasuj dane” u zalogowanego.
+6. **Z 07.10 do zrobienia:** zdjęcia CC0 dla r51–r100; `MAX_RESULTS` ucina serki przy „ser”.
+7. Decyzje otwarte w `PLAN.md`: usypianie bazy (przed startem kont), `signOut()` globalne vs lokalne (na domenie), luka nr 10 (⏸️).
+
+Etap 7 (domena → polityka prywatności → SMTP → „Confirm email” → weryfikacja marki Google) czeka na decyzję o zakupie domeny. Artykuły `/knowledge` i chatbot (`PLAN.md` §6) w kolejce.
 
 ---
 
