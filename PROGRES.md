@@ -563,15 +563,38 @@ Kod na komendę „Daj mi kod”, testy w Chrome robi Claude (logowanie i zgody 
 
 ---
 
+### Sesja 2026-10-09: zmiana danych planu, Dashboard (linia planu, kolumna „Plan”, pomiar pod wykresem), audyt kalkulatora
+
+Kod na komendę „Daj mi kod”, testy w Chrome (desktop 1440 px + ramka 390 px na stronie; prawdziwy telefon — autor). Konta nadal za `ACCOUNTS_ENABLED = DEV`.
+
+1. **Luka architektury znaleziona przez autora:** cel i aktywność ustawiało się tylko w onboardingu, zmiana = ponowny onboarding. **Decyzja: wariant A** — modal „Zmień dane planu” (cel, aktywność, wiek) otwierany przyciskiem pod bilansem. Odrzucone: B (pola wprost na Dashboardzie), C (osobna strona profilu). Waga zostaje poza modalem (własna historia, „Dodaj pomiar”).
+2. **`components/planFields.js` (nowy):** opcje celu i aktywności + opis aktywności wspólne dla onboardingu i modala (wcześniej tylko w `onboarding.js`). `AGE_LIMITS` obok `WEIGHT_LIMITS` w `userService.js`. Z onboardingu usunięty martwy import `generateDietPlan`.
+3. **`updatePlanSettings()` (`userService.js`):** zwraca nowy obiekt jak `addWeightEntry()`; zalogowany najpierw `upsert` pełnego wiersza do `profiles` (update przy braku wiersza po cichu nic nie robi), potem `localStorage`. Walidacja w modalu: wiek całkowity 18–99, znane cel i aktywność. **Testy ✅ (gość):** błędne wieki, zapis, F5, Esc, „Anuluj”, fokus. **Nie testowane:** zapis zalogowanego do Supabase.
+4. **Wiek — decyzja: zostaje liczba**, edytowalna w modalu. Luka (profil się nie starzeje, ok. 8 kcal na rok) i warianty (rok urodzenia, migracja `profiles.age`) zapisane w `PLAN.md`.
+5. **Dashboard:** linia „Redukcja · poziom aktywności: lekki · wiek: 41” pod „Bilans dnia” (pod nagłówkiem, DESIGN §4; `nowrap` na częściach — na telefonie łamie się tylko przy „·”; „wiek: 41” omija odmianę lat/lata). Kolumna „Cel” → **„Plan”** (słowo „cel” znaczyło dwie rzeczy). Przycisk „Zmień dane planu” obramowany, **nie czerwony** (czerwień na Dashboardzie = ostrzeżenia; DESIGN §6: wypełnienie `--red` tylko dla głównej akcji).
+6. **Wykres wagi:** daty na osi „DD.MM” bez obrotu (`formatDateKeyShort()` w `utils/date.js`, callback osi; `labels` zostają kluczami `RRRR-MM-DD`), pełna data z rokiem w podpowiedzi. Mały „+ Pomiar” z nagłówka panelu **przeniesiony** pod wykres jako duży „Dodaj pomiar” na całą szerokość (48 px, wygodny na telefonie). Wysokość wykresu bez zmian.
+7. **Audyt kalkulatora:** 485 520 kombinacji wejść onboardingu — zero wyjątków i `NaN`, makro sumują się do kcal, redukcja ≤ utrzymanie < masa zawsze, podłoga nigdy nieprzebita. Wyniki zgodne z UI w Chrome. **Decyzje autora:** tłuszcz < 60% kcal w 2,4% kombinacji (małe, starsze, siedzące osoby; stałe 50 g węgli) — **zostaje jak jest**; dwa pomiary jednego dnia = dwa punkty z tą samą datą — **dopisane do luki nr 10** w `PLAN.md`, odłożone.
+8. **Przegląd konkurencji (Carb Manager, MacroFactor, Cronometer, KetoDiet, Lose It) → wybrane do zaprojektowania:** postęp od startu, przełącznik dni, post przerywany; seria do przemyślenia. Szczegóły i odrzucone pomysły w `PLAN.md` (sekcja `/dashboard`).
+
+**Pytania sprawdzające bez odpowiedzi (do powtórki):**
+- Co pokaże wczorajszy dzień po zmianie aktywności? — `refreshDay()` woła `generateDietPlan(userProfile)` bez daty, więc plan zawsze z dzisiejszego profilu (ważne przy przełączniku dni).
+- Dlaczego callback osi wykresu to `function`, a nie strzałka? — `this` = oś wykresu; strzałka nie ma własnego `this`.
+- Dlaczego `updatePlanSettings()` tworzy nowy obiekt (`{ ...user, … }`) zamiast zmieniać przekazany? — `userProfile` w Dashboardzie to ten sam obiekt; przy błędzie Supabase UI pokazałby niezapisane zmiany.
+- Dlaczego linia planu może iść przez `innerHTML` bez `escapeHtml`, a tytuł posiłku nie? — tu tylko stałe etykiety i liczba; tytuł przepisu wpisuje użytkownik.
+
+---
+
 ### ▶️ START NASTĘPNEJ SESJI
 
-1. **Fonty i biblioteki u siebie zamiast z CDN** (`PRAWO.md` §2.10, zadanie 4): Google Fonts, Lucide (`lucide@latest`), Chart.js (bez wersji) → paczka Vite. Dotyczy wszystkich odwiedzających już dziś na produkcji (IP do Google i CDN bez podstawy prawnej; wyrok LG München). Przy okazji przypięte wersje (`RAPORT.md` #24).
-2. Kolejne z `PRAWO.md` §13: eksport danych („Pobierz moje dane”), decyzja „Cofnij zgodę” vs usunięcie konta, linki do polityki i regulaminu (gdy powstaną).
-3. **Autor przed prawnikiem (`PRAWO.md` §15):** forma działalności i dane administratora, e-mail do spraw danych, czy Camp płatny i jak; Web3Forms zostaje czy dostawca z UE; sprawdzić certyfikat Data Privacy Framework Supabase.
-4. Test do zrobienia: „Zaloguj przez Google” na ekranie logowania **nowym** kontem Google → ekran zgód (wymaga drugiego konta Google).
-5. **Zaległe testy autora:** logowanie Google z `/recipes` (powrót na `/recipes`), wylogowanie globalne (okno zwykłe + incognito); z 07.10: kreator z nowymi miarami, treść r51–r100 (tatar, chlebek z kubka), brak „Skasuj dane” u zalogowanego.
-6. **Z 07.10 do zrobienia:** zdjęcia CC0 dla r51–r100; `MAX_RESULTS` ucina serki przy „ser”.
-7. Decyzje otwarte w `PLAN.md`: usypianie bazy (przed startem kont), `signOut()` globalne vs lokalne (na domenie), luka nr 10 (⏸️).
+1. **Nowe funkcje Dashboardu (decyzja autora 2026-10-09): architektura, potem wdrożenie** — postęp od startu, przełącznik dni, post przerywany; seria do przemyślenia. Lista z uwagami w `PLAN.md` (sekcja `/dashboard`).
+2. **Test autora:** „Zmień dane planu” jako zalogowany (zapis, F5, wiersz w `profiles` w Supabase) i wygląd Dashboardu na telefonie (linia planu w 3 wierszach, „Dodaj pomiar” pod wykresem).
+3. **Fonty i biblioteki u siebie zamiast z CDN** (`PRAWO.md` §2.10, zadanie 4): Google Fonts, Lucide (`lucide@latest`), Chart.js (bez wersji) → paczka Vite. Dotyczy wszystkich odwiedzających już dziś na produkcji (IP do Google i CDN bez podstawy prawnej; wyrok LG München). Przy okazji przypięte wersje (`RAPORT.md` #24).
+4. Kolejne z `PRAWO.md` §13: eksport danych („Pobierz moje dane”), decyzja „Cofnij zgodę” vs usunięcie konta, linki do polityki i regulaminu (gdy powstaną).
+5. **Autor przed prawnikiem (`PRAWO.md` §15):** forma działalności i dane administratora, e-mail do spraw danych, czy Camp płatny i jak; Web3Forms zostaje czy dostawca z UE; sprawdzić certyfikat Data Privacy Framework Supabase.
+6. Test do zrobienia: „Zaloguj przez Google” na ekranie logowania **nowym** kontem Google → ekran zgód (wymaga drugiego konta Google).
+7. **Zaległe testy autora:** logowanie Google z `/recipes` (powrót na `/recipes`), wylogowanie globalne (okno zwykłe + incognito); z 07.10: kreator z nowymi miarami, treść r51–r100 (tatar, chlebek z kubka), brak „Skasuj dane” u zalogowanego.
+8. **Z 07.10 do zrobienia:** zdjęcia CC0 dla r51–r100; `MAX_RESULTS` ucina serki przy „ser”.
+9. Decyzje otwarte w `PLAN.md`: usypianie bazy (przed startem kont), `signOut()` globalne vs lokalne (na domenie), luka nr 10 (⏸️, teraz z dopiskiem o dwóch pomiarach jednego dnia).
 
 Etap 7 (domena → polityka prywatności → SMTP → „Confirm email” → weryfikacja marki Google) czeka na decyzję o zakupie domeny. Artykuły `/knowledge` i chatbot (`PLAN.md` §6) w kolejce.
 
