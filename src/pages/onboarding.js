@@ -1,45 +1,17 @@
 import { html } from "../utils/template.js";
-import { createProfile, WEIGHT_LIMITS } from "../services/userService.js";
+import { createProfile, WEIGHT_LIMITS, AGE_LIMITS } from "../services/userService.js";
 import { showToast } from "../components/toast.js";
-import { generateDietPlan } from "../services/calculatorService.js";
 import { navigateTo } from "../router.js";
 import { getDateKey } from "../utils/date.js";
 import { ACCOUNTS_ENABLED } from "../config.js";
 import { getSession } from "../services/authService.js";
-
-// Teksty poziomów aktywności — liczby (PAL, białko) są w calculatorService.js,
-// tu tylko to, co widzi użytkownik. Przedziały rozłączne: kto trenuje 3×,
-// ma dokładnie jedną pasującą odpowiedź.
-const ACTIVITY_OPTIONS = [
-    {
-        value: "sedentary",
-        label: "Siedzący",
-        description: "Praca przy biurku, treningi rzadziej niż raz w tygodniu.",
-    },
-    {
-        value: "light",
-        label: "Lekki",
-        description: "1–2 treningi w tygodniu albo dużo chodzenia na co dzień.",
-    },
-    {
-        value: "moderate",
-        label: "Umiarkowany",
-        description: "3–4 treningi w tygodniu, około 60 minut każdy.",
-    },
-    {
-        value: "active",
-        label: "Wysoki",
-        description: "5–6 treningów w tygodniu albo praca fizyczna i 3 treningi.",
-    },
-    {
-        value: "very_active",
-        label: "Bardzo wysoki",
-        description:
-            "Trening codziennie lub dwa razy dziennie (obóz, przygotowanie do walki) albo ciężka praca fizyczna i treningi.",
-    },
-];
-
-const ACTIVITY_HINT = "Liczy się to, co robisz w typowym tygodniu, nie w najlepszym.";
+import {
+    ACTIVITY_OPTIONS,
+    ACTIVITY_HINT,
+    GOAL_OPTIONS,
+    generateOptionsHTML,
+    bindActivityNote,
+} from "../components/planFields.js";
 
 export const renderOnboarding = () => {
     return html` <div class="page-container">
@@ -68,8 +40,8 @@ export const renderOnboarding = () => {
                     name="age"
                     id="age"
                     class="form__input"
-                    min="18"
-                    max="99"
+                    min="${AGE_LIMITS.min}"
+                    max="${AGE_LIMITS.max}"
                     required
                     aria-describedby="age-note"
                 />
@@ -97,9 +69,7 @@ export const renderOnboarding = () => {
                 <label for="activity" class="form__label ">Aktywność</label>
                 <select class="form__input" name="activity" id="activity" aria-describedby="activity-note" required>
                     <option value="" disabled selected>Wybierz poziom...</option>
-                    ${ACTIVITY_OPTIONS.map(
-                        (option) => `<option value="${option.value}">${option.label}</option>`,
-                    ).join("")}
+                    ${generateOptionsHTML(ACTIVITY_OPTIONS)}
                 </select>
                 <p class="form__note" id="activity-note">${ACTIVITY_HINT}</p>
             </div>
@@ -116,9 +86,7 @@ export const renderOnboarding = () => {
             <div class="form__group">
                 <label for="goal" class="form__label ">Twój cel</label>
                 <select class="form__input" name="goal" id="goal" required>
-                    <option value="reduction">Redukcja</option>
-                    <option value="still">Utrzymanie wagi</option>
-                    <option value="mass">Przybranie wagi</option>
+                    ${generateOptionsHTML(GOAL_OPTIONS)}
                 </select>
             </div>
             <!-- Przeciwwskazania dotyczą samej ketozy, nie tylko redukcji — blok
@@ -207,15 +175,10 @@ export const initOnboarding = () => {
         });
     }
 
-    // Opis pod polem pokazuje, co dokładnie oznacza wybrany poziom —
-    // w <option> się nie zmieści, a bez niego użytkownik wybiera na oko.
     const activitySelect = document.getElementById("activity");
     const activityNote = document.getElementById("activity-note");
 
     if (activitySelect && activityNote) {
-        activitySelect.addEventListener("change", () => {
-            const selected = ACTIVITY_OPTIONS.find((option) => option.value === activitySelect.value);
-            activityNote.textContent = selected ? selected.description : ACTIVITY_HINT;
-        });
+        bindActivityNote(activitySelect, activityNote);
     }
 };

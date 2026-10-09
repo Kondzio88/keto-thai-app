@@ -62,6 +62,17 @@
     outline-offset: 4px;
 }
 
+/* Dla jakiego celu liczy się plan — własny wiersz pod tytułem i datą
+   (flex-basis 100%), mono jak inne dane dziennika. */
+.journal__plan {
+    flex-basis: 100%;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    line-height: 1.5;
+    color: var(--ink-dim);
+}
+
 /* Przypomnienie o pomiarze — wpis w dzienniku, nie baner: ten sam papier,
    linia perforacji pod spodem oddziela go od tabeli bilansu (§5). */
 .weigh-in {
@@ -82,19 +93,22 @@
 }
 
 /* .btn-icon-text jest pod ciemne tło — na papierze atrament (jak w kreatorze) */
-.weigh-in__btn {
+.weigh-in__btn,
+.plan-settings__btn {
     min-height: 44px;
     color: var(--ink);
     border-color: var(--ink);
 }
 
-.weigh-in__btn:hover {
+.weigh-in__btn:hover,
+.plan-settings__btn:hover {
     color: var(--ink);
     border-color: var(--ink);
     background-color: color-mix(in srgb, var(--ink) 8%, transparent);
 }
 
-.weigh-in__btn:focus-visible {
+.weigh-in__btn:focus-visible,
+.plan-settings__btn:focus-visible {
     outline: 2px solid var(--ink);
     outline-offset: 2px;
 }
@@ -247,6 +261,39 @@
     color: var(--ink-dim);
 }
 
+/* "Zmień dane planu" — ten sam układ co przypomnienie o pomiarze (.weigh-in),
+   ale linia perforacji nad, bo zamyka bilans, a nie go otwiera. */
+.plan-settings {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px dashed var(--ink-faint);
+}
+
+.plan-settings__text {
+    flex: 1 1 14rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--ink);
+}
+
+/* Formularz w modalu: .modal__content centruje dzieci, pola mają mieć pełną szerokość.
+   Tło pól --ground jak .modal__input — --ground2 zlewałoby się z oknem. */
+.plan-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    width: 100%;
+}
+
+.plan-form .form__input {
+    width: 100%;
+    background-color: var(--ground);
+}
+
 /* Pieczątka ostrzeżenia — czerwień tylko w ramce, tekst w --ink (§3: kontrast) */
 .balance__alert {
     margin-top: var(--spacing-sm);
@@ -377,13 +424,6 @@
     padding: var(--spacing-md);
 }
 
-.trend__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-sm);
-}
-
 .trend__title {
     font-family: var(--font-mono);
     font-size: var(--font-size-tag);
@@ -391,4 +431,25 @@
     letter-spacing: var(--tracking-mono);
     text-transform: uppercase;
     color: var(--bone-dim);
+}
+
+/* Jedyny przycisk pomiaru w panelu: na całą szerokość, większy niż bazowy
+   .btn-icon-text (ten jest pod małe akcje w nagłówkach). Na telefonie panel
+   jest pod dziennikiem, więc pełna szerokość = łatwy cel dla kciuka. */
+.trend__add-weight {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    margin-top: var(--spacing-md);
+    gap: var(--spacing-xs);
+    font-size: 0.85rem;
+    color: var(--bone);
+    border-color: var(--bone-dim);
+}
+
+.trend__add-weight i,
+.trend__add-weight svg {
+    width: 16px;
+    height: 16px;
 }

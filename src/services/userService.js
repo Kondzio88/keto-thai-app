@@ -41,6 +41,10 @@ const isUsableProfile = (user) =>
 // na Dashboardzie. Dwie osobne pary liczb rozjechałyby się przy pierwszej zmianie.
 export const WEIGHT_LIMITS = { min: 35, max: 200 };
 
+// Wiek w latach — to samo dla onboardingu i "Zmień dane planu". Dolna granica
+// to pełnoletność (zastrzeżenia medyczne), nie ograniczenie wzoru.
+export const AGE_LIMITS = { min: 18, max: 99 };
+
 export const saveUser = (userData) => saveState(USER_STORAGE_KEY, userData);
 
 export const getUser = () => {
@@ -110,6 +114,29 @@ export const createProfile = async (user) => {
     }
 
     return saveUser(user) ? { error: null } : { error: "Nie udało się zapisać profilu w przeglądarce." };
+};
+
+// Dashboard, "Zmień dane planu": cel, aktywność i wiek. Waga ma osobną ścieżkę
+// (addWeightEntry), bo zmiana wagi to nowy pomiar w historii, a nie poprawka profilu.
+// Zwraca NOWY obiekt profilu, tak jak addWeightEntry — przy błędzie nic nie zmienia.
+export const updatePlanSettings = async (user, { age, activity, goal }) => {
+    const updated = { ...user, age, activity, goal };
+    const account = await getSignedInClient();
+
+    if (account) {
+        // upsert pełnego wiersza zamiast update trzech kolumn: działa też wtedy,
+        // gdy wiersza w bazie z jakiegoś powodu nie ma (update by po cichu nic nie zrobił).
+        const { error } = await account.supabase.from("profiles").upsert(toProfileRow(updated, account.userId));
+        if (error) {
+            console.error("Supabase profiles (zmiana planu):", error);
+            return { user, error: SAVE_FAILED };
+        }
+    }
+
+    if (!saveUser(updated)) {
+        return { user, error: "Nie udało się zapisać zmian — pamięć przeglądarki jest pełna albo zablokowana." };
+    }
+    return { user: updated, error: null };
 };
 
 // Dashboard: nowy pomiar wagi. Zwraca NOWY obiekt profilu — przekazanego nie

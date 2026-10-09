@@ -34,3 +34,14 @@ export const formatDateKey = (dateKey) => {
         year: "numeric",
     });
 };
+
+// Krótka wersja na oś wykresu — "2026-09-25" → "25.09". Bez roku, bo pełna data
+// nie mieści się poziomo i Chart.js obraca etykiety; rok zostaje w podpowiedzi.
+export const formatDateKeyShort = (dateKey) => {
+    const [year, month, day] = dateKey.split("-").map(Number);
+
+    return new Date(year, month - 1, day).toLocaleDateString("pl-PL", {
+        day: "2-digit",
+        month: "2-digit",
+    });
+};
