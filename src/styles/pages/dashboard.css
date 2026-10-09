@@ -35,7 +35,7 @@
 
 .journal__header {
     display: flex;
-    align-items: baseline;
+    align-items: center; /* nie baseline: strzałki dnia to przyciski 44 px z ikoną */
     flex-wrap: wrap;
     gap: var(--spacing-xs) var(--spacing-sm);
     padding-right: 3rem; /* miejsce na dziurki */
@@ -94,21 +94,24 @@
 
 /* .btn-icon-text jest pod ciemne tło — na papierze atrament (jak w kreatorze) */
 .weigh-in__btn,
-.plan-settings__btn {
+.plan-settings__btn,
+.day-nav__today {
     min-height: 44px;
     color: var(--ink);
     border-color: var(--ink);
 }
 
 .weigh-in__btn:hover,
-.plan-settings__btn:hover {
+.plan-settings__btn:hover,
+.day-nav__today:hover {
     color: var(--ink);
     border-color: var(--ink);
     background-color: color-mix(in srgb, var(--ink) 8%, transparent);
 }
 
 .weigh-in__btn:focus-visible,
-.plan-settings__btn:focus-visible {
+.plan-settings__btn:focus-visible,
+.day-nav__today:focus-visible {
     outline: 2px solid var(--ink);
     outline-offset: 2px;
 }
@@ -128,6 +131,231 @@
     margin-top: var(--spacing-md);
     margin-bottom: var(--spacing-sm);
     border-top: 1px dashed var(--ink-faint); /* perforacja */
+}
+
+/* --------------------------------------------------------------------------
+   PRZEŁĄCZNIK DNI — zakładki teczki nad kartką (DESIGN.md §6)
+   Oddzielone od bilansu nośnikiem, nie ramką: zakładka --paper-dim na macie,
+   wybrana ma kolor kartki i "przyrasta" do niej. Jedna elewacja na element.
+   -------------------------------------------------------------------------- */
+
+.day-tabs {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-inline-size: 0; /* fieldset domyślnie nie kurczy się poniżej treści — 7 zakładek wypchnęłoby stronę */
+}
+
+/* 7 zakładek na 390 px: ok. 46 px każda (tap target §8). Na desktopie
+   szerokość ograniczona, żeby wyglądały jak zakładki, a nie pasek przycisków.
+   Poniżej ok. 330 px (Mobile S, iPhone SE z powiększeniem ekranu) zakładki nie
+   kurczą się pod 44 px — wiersz przewija się w poziomie (wariant C, 2026-10-09).
+   position: relative zatrzymuje ukryte radio w środku przewijanego wiersza. */
+.day-tabs__row {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain; /* przesunięcie zakładek nie cofa strony gestem przeglądarki */
+    /* Bez paska: na desktopie w wąskim oknie wchodził między zakładki a kartkę.
+       Przewijają: palec, strzałki ‹ ›, klawiatura i revealSelectedTab() w dashboard.js;
+       ucięta zakładka przy krawędzi pokazuje, że jest coś dalej. */
+    scrollbar-width: none;
+}
+
+.day-tabs__row::-webkit-scrollbar {
+    display: none; /* Safari nie zna scrollbar-width */
+}
+
+.day-tabs__tab {
+    flex: 1 0 44px; /* rośnie do max-width, nigdy nie kurczy się pod 44 px */
+    max-width: 5.5rem;
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    padding: 6px 0 4px;
+    background-color: var(--paper-dim);
+    color: var(--ink);
+    border-radius: 2px 2px 0 0;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    user-select: none;
+}
+
+.day-tabs__tab:hover {
+    background-color: color-mix(in srgb, var(--paper-dim) 60%, var(--paper));
+}
+
+/* Wybrany dzień: kolor kartki + wyższa zakładka — łączy się z kartką pod spodem.
+   Wiersz ma stałą wysokość (zawsze jedna zakładka jest wybrana), więc nic nie skacze. */
+.day-tabs__input:checked + .day-tabs__tab {
+    background-color: var(--paper);
+    padding-top: 12px;
+    cursor: default;
+}
+
+/* Obrys do środka: przewijany wiersz obcina wszystko, co wystaje poza zakładkę.
+   Atrament, nie --amber — amber ginie na papierze (jak .journal__title). */
+.day-tabs__input:focus-visible + .day-tabs__tab {
+    outline: 2px solid var(--ink);
+    outline-offset: -4px;
+}
+
+/* Przed startem dziennika: bez papieru, sama przerywana linia — zakładki nie ma */
+.day-tabs__input:disabled + .day-tabs__tab {
+    background-color: transparent;
+    color: var(--bone-dim);
+    outline: 1px dashed var(--bone-faint);
+    outline-offset: -1px;
+    cursor: not-allowed;
+}
+
+.day-tabs__weekday {
+    font-size: var(--font-size-tag);
+    font-weight: 700;
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+}
+
+/* Dziś: czerwona kreska pod skrótem dnia — element nietekstowy (§3), tekst zostaje
+   atramentem. Ten sam język co aktywna zakładka nawigacji (§6). */
+.day-tabs__tab.is-today .day-tabs__weekday {
+    text-decoration: underline;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+}
+
+.day-tabs__number {
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Stała wysokość także bez znaku — zakładki w rzędzie mają równe linie */
+.day-tabs__mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 14px;
+}
+
+.day-tabs__mark svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.5;
+}
+
+/* Węgle przestrzelone: czerwień = ołówek trenera (ostrzeżenie). Sama --red na
+   --paper-dim ma ok. 2,9:1 — poniżej 3:1 dla znaków graficznych (WCAG 1.4.11,
+   DESIGN.md §8), więc obwódka atramentu niesie kontrast, a czerwień znaczenie. */
+.day-dot {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background-color: var(--red);
+    border: 1.5px solid var(--ink);
+}
+
+/* Strzałki ±1 dzień i "Wróć do dziś" — obok daty w nagłówku kartki */
+.day-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px var(--spacing-xs);
+}
+
+/* Wąski ekran: "‹ PT 09.10.2026 ›" we własnym wierszu na całą szerokość.
+   Miejsce na dziurki potrzebne jest tylko w wierszu tytułu — z marginesem
+   na cały nagłówek strzałka "›" spadała do osobnej linii (test 304 px). */
+@media (max-width: 479px) {
+    .journal__header {
+        padding-right: 0;
+    }
+
+    .journal__title {
+        padding-right: 3rem;
+    }
+
+    .day-nav {
+        flex-basis: 100%;
+    }
+}
+
+.day-nav__step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.day-nav__step:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.day-nav__step:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.day-nav__step:disabled {
+    color: var(--ink-faint);
+    cursor: default;
+}
+
+.day-nav__step:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: -2px;
+}
+
+.day-nav__step svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Klucz znaków pod kartką — na macie, drobnym drukiem jak legenda pod tabelą */
+.day-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs) var(--spacing-md);
+    margin-top: var(--spacing-sm);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    color: var(--bone-dim);
+}
+
+.day-key__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.day-key__mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    color: var(--bone);
+}
+
+.day-key__mark svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.5;
+}
+
+/* Na macie obwódka jasna — atrament zlałby się z tłem */
+.day-key .day-dot {
+    border-color: var(--bone);
 }
 
 /* --------------------------------------------------------------------------
@@ -452,4 +680,78 @@
 .trend__add-weight svg {
     width: 16px;
     height: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   KARTA WAŻENIA — osobna kartka papieru pod trendem (jedyna elewacja: --paper)
+   -------------------------------------------------------------------------- */
+
+.weigh-card {
+    position: relative;
+    padding: var(--spacing-md);
+}
+
+.weigh-card__holes {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    display: flex;
+    gap: 8px;
+}
+
+.weigh-card__title {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+    color: var(--ink);
+    padding-right: 3rem; /* miejsce na dziurki */
+    margin-bottom: var(--spacing-sm);
+}
+
+.weigh-card__list {
+    margin: 0;
+    font-family: var(--font-mono);
+    color: var(--ink);
+}
+
+/* Wiersze jak w formularzu ważenia: etykieta z lewej, wynik z prawej */
+.weigh-card__row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 2px var(--spacing-sm);
+    padding: var(--spacing-xs) 0;
+}
+
+.weigh-card__row + .weigh-card__row {
+    border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+}
+
+.weigh-card__row dt {
+    font-size: var(--font-size-tag);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--ink-dim);
+}
+
+.weigh-card__row dd {
+    margin: 0;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+/* Zmiana to wynik karty — waga i rozmiar, bez koloru (znak nie ocenia: patrz dashboard.js) */
+.weigh-card__row--key dd {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.weigh-card__empty {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--ink);
 }

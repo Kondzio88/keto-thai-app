@@ -15,12 +15,22 @@ import {
     getActivityNote,
     bindActivityNote,
 } from "../components/planFields.js";
-import { getTodayMeal, removeMeal, sumMacros } from "../services/mealService.js";
+import { getAllMeals, getMealsForDay, removeMeal, sumMacros } from "../services/mealService.js";
 import { getNetCarbs } from "../services/productService.js";
 import { clearLocalData } from "../services/localDataService.js";
 import { getSession } from "../services/authService.js";
-import { getDaysSince, formatDateKey, formatDateKeyShort } from "../utils/date.js";
-import { navigateTo } from "../router.js";
+import {
+    getDateKey,
+    getDaysSince,
+    getDaysBetween,
+    shiftDateKey,
+    isValidDateKey,
+    getWeekdayShort,
+    formatDateKey,
+    formatDateKeyLong,
+    formatDateKeyShort,
+} from "../utils/date.js";
+import { navigateTo, replaceQuery } from "../router.js";
 import { trapFocus } from "../utils/focusTrap.js";
 import { showConfirmModal } from "../components/confirmModal.js";
 import { showToast } from "../components/toast.js";
@@ -72,7 +82,99 @@ const generateMealIconHTML = (category) => {
     `;
 };
 
-const formatDate = (date) => date.toLocaleDateString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric" });
+// ---------- Przełącznik dni: zakładki tygodnia nad kartką ----------
+
+// Wybrany dzień żyje w adresie (/dashboard?dzien=2026-10-08), nie w zmiennej:
+// zalogowanemu strona przerysowuje się sama po pobraniu danych z bazy (main.js,
+// refreshCurrentRoute), a adres to przetrwa — zmienna wróciłaby na dziś.
+const DAY_PARAM = "dzien";
+const STRIP_DAYS = 7;
+
+// Najwcześniejszy dzień, w którym mogą być dane: start profilu albo najstarszy wpis
+// (profil sprzed historii wagi dostaje datę "dziś", a posiłki mogą być starsze).
+// Klucze "RRRR-MM-DD" porównują się poprawnie jako zwykłe napisy.
+const getFirstDayKey = (user) => [user.weightHistory[0].date, ...Object.keys(getAllMeals())].sort()[0];
+
+// null = dziś. Dziś nie trafia do adresu, więc po północy "dziś" przesuwa się samo.
+// Adres może wpisać każdy: zły, przyszły albo sprzed startu → dziś.
+const readDayFromUrl = (today, firstDay) => {
+    const value = new URLSearchParams(window.location.search).get(DAY_PARAM);
+    const isPastDay = isValidDateKey(value) && value >= firstDay && value < today;
+    if (value !== null && !isPastDay) replaceQuery({}); // sprzątamy zły parametr z adresu
+    return isPastDay ? value : null;
+};
+
+// 7 dni, ostatni po prawej. Bieżący tydzień kończy się dziś; starsze to pełne
+// siódemki wstecz od dziś, więc wybrany dzień zawsze jest w pokazanym tygodniu.
+const getStripDays = (selected, today) => {
+    const weeksBack = Math.floor(getDaysSince(selected) / STRIP_DAYS);
+    const lastDay = shiftDateKey(today, -weeksBack * STRIP_DAYS);
+    return Array.from({ length: STRIP_DAYS }, (_, index) => shiftDateKey(lastDay, index - (STRIP_DAYS - 1)));
+};
+
+// Zaliczony dzień = jest wpis i węgle netto w limicie (decyzja 2026-10-09).
+// Limit z OBECNEGO planu — przeszłe dni liczymy z dzisiejszych ustawień (wariant A).
+const getDayStatus = (meals, plan) => {
+    if (meals.length === 0) return "empty";
+    return sumMacros(meals).netCarbs <= plan.netCarbs ? "done" : "logged";
+};
+
+// Znak różni się KSZTAŁTEM, nie tylko kolorem (DESIGN.md §8): ptaszek vs kropka.
+// "open" = dziś: dzień w trakcie nie jest jeszcze zaliczony ani przestrzelony
+// (kolacja może zmienić wynik), więc znak pojawia się dopiero po północy.
+const DAY_MARKS = {
+    done: html`<i data-lucide="check"></i>`,
+    logged: html`<span class="day-dot"></span>`,
+    empty: "",
+    open: "",
+};
+
+const DAY_STATUS_TEXT = {
+    done: "dzień zamknięty w limicie węgli netto",
+    logged: "węgle netto ponad limit",
+    empty: "brak wpisu",
+    open: "dzień w trakcie",
+};
+
+const getTabStatus = (dateKey, { today, firstDay, plan }) => {
+    if (dateKey < firstDay) return "beforeStart";
+    if (dateKey === today) return "open";
+    return getDayStatus(getMealsForDay(dateKey), plan);
+};
+
+// Natywne radio zamiast własnych przycisków: strzałki, Tab i ogłaszanie
+// "zaznaczony, 3 z 7" daje przeglądarka. Widoczny skrót "Śr 08" jest ukryty
+// dla czytnika — ten czyta pełne zdanie z .visually-hidden.
+const generateDayTabsHTML = (days, { selected, today, firstDay, plan }) =>
+    days
+        .map((dateKey) => {
+            const status = getTabStatus(dateKey, { today, firstDay, plan });
+            const isBeforeStart = status === "beforeStart";
+            const isToday = dateKey === today;
+            const id = `day-${dateKey}`;
+
+            return html`
+                <input
+                    type="radio"
+                    class="day-tabs__input visually-hidden"
+                    name="day"
+                    id="${id}"
+                    value="${dateKey}"
+                    ${dateKey === selected ? "checked" : ""}
+                    ${isBeforeStart ? "disabled" : ""}
+                />
+                <label class="day-tabs__tab ${isToday ? "is-today" : ""}" for="${id}">
+                    <span class="day-tabs__weekday" aria-hidden="true">${getWeekdayShort(dateKey)}</span>
+                    <span class="day-tabs__number" aria-hidden="true">${dateKey.slice(8)}</span>
+                    <span class="day-tabs__mark" aria-hidden="true">${DAY_MARKS[status] ?? ""}</span>
+                    <span class="visually-hidden">
+                        ${formatDateKeyLong(dateKey)}${isToday ? ", dziś" : ""}:
+                        ${isBeforeStart ? "przed startem dziennika" : DAY_STATUS_TEXT[status]}
+                    </span>
+                </label>
+            `;
+        })
+        .join("");
 
 // Wyjaśnienie kolumny "Cel", gdy podłoga kaloryczna zmieniła redukcję.
 // Liczone przy każdym odświeżeniu, bo plan zależy od aktualnej wagi — ktoś,
@@ -138,8 +240,73 @@ const generateBalanceRowsHTML = (plan, eaten) => {
     }).join("");
 };
 
-const generateMealLogHTML = (meals) => {
+// ---------- Karta ważenia: start → ostatni pomiar ----------
+
+// Tempo dopiero po 2 tygodniach: z kilku dni to szum (sama woda daje ±1,5 kg).
+const MIN_DAYS_FOR_PACE = 14;
+
+// Zaokrąglenie PRZED znakiem: inaczej 75,3 − 75,3 z błędem liczb zmiennoprzecinkowych
+// (−0,0000001) dałoby "−0,0 kg".
+const roundKg = (value) => Math.round(value * 10) / 10;
+
+const formatKg = (value) =>
+    value.toLocaleString("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+// Prawdziwy minus (U+2212), nie łącznik — w kolumnie liczb ma szerokość plusa.
+const formatSignedKg = (value) => {
+    const rounded = roundKg(value);
+    const sign = rounded > 0 ? "+" : rounded < 0 ? "−" : "";
+    return `${sign}${formatKg(Math.abs(rounded))}`;
+};
+
+// Start = pierwszy pomiar w ogóle (wariant 1, 2026-10-09). Znak zmiany bez oceny:
+// −2 kg to sukces przy redukcji, a porażka przy masie, więc nie kolorujemy.
+// HTML tylko z dat i liczb, więc bez escapeHtml.
+const generateWeighCardHTML = (weightHistory) => {
+    const start = weightHistory[0];
+    const last = weightHistory[weightHistory.length - 1];
+
+    if (weightHistory.length < 2) {
+        return html`<p class="weigh-card__empty">
+            Jeden pomiar: ${formatDateKeyShort(start.date)} · ${formatKg(start.weight)} kg.
+            Postęp pokażemy po drugim ważeniu.
+        </p>`;
+    }
+
+    const change = last.weight - start.weight;
+    const days = getDaysBetween(start.date, last.date);
+    const pace =
+        days >= MIN_DAYS_FOR_PACE
+            ? `${formatSignedKg(change / (days / 7))} kg/tydz.`
+            : `po ${MIN_DAYS_FOR_PACE} dniach pomiarów`;
+
+    return html`
+        <dl class="weigh-card__list">
+            <div class="weigh-card__row">
+                <dt>Start</dt>
+                <dd>${formatDateKey(start.date)} · ${formatKg(start.weight)} kg</dd>
+            </div>
+            <div class="weigh-card__row">
+                <dt>Ostatnio</dt>
+                <dd>${formatDateKey(last.date)} · ${formatKg(last.weight)} kg</dd>
+            </div>
+            <div class="weigh-card__row weigh-card__row--key">
+                <dt>Zmiana</dt>
+                <dd>${formatSignedKg(change)} kg</dd>
+            </div>
+            <div class="weigh-card__row">
+                <dt>Tempo</dt>
+                <dd>${pace}</dd>
+            </div>
+        </dl>
+    `;
+};
+
+// readOnly: miniony dzień — bez "Usuń" (przeszłości nie edytujemy, a removeMeal()
+// i tak usuwa tylko z dzisiaj) i bez zachęty do dodania dania.
+const generateMealLogHTML = (meals, { readOnly = false } = {}) => {
     if (meals.length === 0) {
+        if (readOnly) return html`<p class="meal-log__empty">Tego dnia nic nie wpisano.</p>`;
         return html`
             <p class="meal-log__empty">
                 Nic dziś jeszcze nie wpisano. Wybierz danie w
@@ -163,15 +330,17 @@ const generateMealLogHTML = (meals) => {
                                 <span class="nowrap">T ${meal.fats}</span> ·
                                 <span class="nowrap">W netto ${getNetCarbs(meal)}</span>
                             </span>
-                            <button
-                                type="button"
-                                class="meal-log__remove"
-                                data-meal-id="${meal.id}"
-                                aria-label="Usuń: ${escapeHtml(meal.title)}"
-                            >
-                                <i data-lucide="x" aria-hidden="true"></i>
-                                <span>Usuń</span>
-                            </button>
+                            ${readOnly
+                                ? ""
+                                : html`<button
+                                      type="button"
+                                      class="meal-log__remove"
+                                      data-meal-id="${meal.id}"
+                                      aria-label="Usuń: ${escapeHtml(meal.title)}"
+                                  >
+                                      <i data-lucide="x" aria-hidden="true"></i>
+                                      <span>Usuń</span>
+                                  </button>`}
                         </li>
                     `,
                 )
@@ -183,72 +352,108 @@ const generateMealLogHTML = (meals) => {
 export const renderDashboard = () => {
     return html`
         <div class="page-container">
+            <!-- Teksty nagłówka zależą od wybranego dnia — ustawia je refreshDay(). -->
             <header class="page-header">
-                <h1 class="page-header__title">Dziś w dzienniku</h1>
-                <p class="page-header__desc">Twój cel Keto — wpis dnia</p>
+                <h1 class="page-header__title" id="day-heading">Dziś w dzienniku</h1>
+                <p class="page-header__desc" id="day-desc">Twój cel Keto — wpis dnia</p>
             </header>
 
             <div class="dashboard">
-                <section class="paper journal" aria-labelledby="journal-title">
-                    <div class="journal__holes" aria-hidden="true">
-                        <span class="hole"></span>
-                        <span class="hole"></span>
-                    </div>
+                <div class="journal-wrap">
+                    <!-- Zakładki teczki przyklejone do górnej krawędzi kartki (DESIGN.md §6):
+                         oddzielone od bilansu, ale widać, którą stronę dziennika otwierają. -->
+                    <fieldset class="day-tabs">
+                        <legend class="visually-hidden">Dzień w dzienniku</legend>
+                        <div class="day-tabs__row" id="day-tabs-row"></div>
+                    </fieldset>
 
-                    <div class="journal__header">
-                        <h2 class="journal__title" id="journal-title" tabindex="-1">Bilans dnia</h2>
-                        <span class="tag journal__date">${formatDate(new Date())}</span>
-                        <!-- Pod nagłówkiem, nie nad nim (DESIGN.md §4). Treść z refreshDay(),
-                             bo zmienia się po "Zmień dane planu". -->
-                        <p class="journal__plan" id="plan-summary"></p>
-                    </div>
+                    <section class="paper journal" aria-labelledby="journal-title">
+                        <div class="journal__holes" aria-hidden="true">
+                            <span class="hole"></span>
+                            <span class="hole"></span>
+                        </div>
 
-                    <!-- Przypomnienie o pomiarze: wpis w dzienniku nad bilansem, nie baner
-                         w kolumnie wykresu (na telefonie był pod całym dziennikiem). -->
-                    <div class="weigh-in is-hidden" id="weigh-in-reminder">
-                        <p class="weigh-in__text" id="weigh-in-text"></p>
-                        <button type="button" class="btn-icon-text weigh-in__btn" id="btn-weigh-in">
-                            <i data-lucide="plus" aria-hidden="true"></i>
-                            Dodaj pomiar
-                        </button>
-                    </div>
+                        <div class="journal__header">
+                            <h2 class="journal__title" id="journal-title" tabindex="-1">Bilans dnia</h2>
+                            <!-- Strzałki o jeden dzień: jedyna droga do tygodni starszych niż
+                                 te na zakładkach. Chevron to znak oczywisty, nazwa w aria-label. -->
+                            <div class="day-nav">
+                                <button type="button" class="day-nav__step" id="btn-prev-day" aria-label="Poprzedni dzień">
+                                    <i data-lucide="chevron-left" aria-hidden="true"></i>
+                                </button>
+                                <span class="tag journal__date" id="journal-date"></span>
+                                <button type="button" class="day-nav__step" id="btn-next-day" aria-label="Następny dzień">
+                                    <i data-lucide="chevron-right" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn-icon-text day-nav__today is-hidden" id="btn-today">
+                                    Wróć do dziś
+                                </button>
+                            </div>
+                            <!-- Pod nagłówkiem, nie nad nim (DESIGN.md §4). Treść z refreshDay(),
+                                 bo zmienia się po "Zmień dane planu". -->
+                            <p class="journal__plan" id="plan-summary"></p>
+                        </div>
 
-                    <!-- Kolumna "Plan", nie "Cel": "cel" to redukcja / utrzymanie / masa
-                         z linii nad tabelą, a tu jest liczba na dziś. -->
-                    <table class="balance" aria-label="Plan, spożycie i pozostały limit na dziś">
-                        <thead>
-                            <tr>
-                                <th scope="col">Makro</th>
-                                <th scope="col">Plan</th>
-                                <th scope="col">Zjedzone</th>
-                                <th scope="col">Zostało</th>
-                            </tr>
-                        </thead>
-                        <tbody id="balance-body"></tbody>
-                    </table>
+                        <!-- Przypomnienie o pomiarze: wpis w dzienniku nad bilansem, nie baner
+                             w kolumnie wykresu (na telefonie był pod całym dziennikiem). -->
+                        <div class="weigh-in is-hidden" id="weigh-in-reminder">
+                            <p class="weigh-in__text" id="weigh-in-text"></p>
+                            <button type="button" class="btn-icon-text weigh-in__btn" id="btn-weigh-in">
+                                <i data-lucide="plus" aria-hidden="true"></i>
+                                Dodaj pomiar
+                            </button>
+                        </div>
 
-                    <p class="plan-note is-hidden" id="plan-note"></p>
-                    <p class="balance__note" id="balance-note"></p>
+                        <!-- Kolumna "Plan", nie "Cel": "cel" to redukcja / utrzymanie / masa
+                             z linii nad tabelą, a tu jest liczba na dziś. -->
+                        <table class="balance" id="balance-table" aria-label="Plan, spożycie i pozostały limit na dziś">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Makro</th>
+                                    <th scope="col">Plan</th>
+                                    <th scope="col">Zjedzone</th>
+                                    <th scope="col">Zostało</th>
+                                </tr>
+                            </thead>
+                            <tbody id="balance-body"></tbody>
+                        </table>
 
-                    <p class="stamp balance__alert is-hidden" id="carbs-alert" role="status">
-                        Limit węgli przekroczony
-                    </p>
+                        <p class="plan-note is-hidden" id="plan-note"></p>
+                        <p class="balance__note" id="balance-note"></p>
 
-                    <!-- Jedyne miejsce zmiany celu bez ponownego onboardingu. Zdanie mówi,
-                         z czego liczy się kolumna "Cel" — przycisk sam mówi, co robi. -->
-                    <div class="plan-settings">
-                        <p class="plan-settings__text">
-                            Plan liczymy z Twojego celu, aktywności i wieku. Coś się zmieniło?
+                        <p class="stamp balance__alert is-hidden" id="carbs-alert" role="status">
+                            Limit węgli przekroczony
                         </p>
-                        <button type="button" class="btn-icon-text plan-settings__btn" id="btn-plan-settings">
-                            <i data-lucide="sliders-horizontal" aria-hidden="true"></i>
-                            Zmień dane planu
-                        </button>
-                    </div>
 
-                    <h3 class="journal__section-title">Posiłki dziś</h3>
-                    <div id="meal-log"></div>
-                </section>
+                        <!-- Jedyne miejsce zmiany celu bez ponownego onboardingu. Zdanie mówi,
+                             z czego liczy się kolumna "Cel" — przycisk sam mówi, co robi. -->
+                        <!-- Miniony dzień: zdanie mówi, skąd kolumna "Plan" (obecne ustawienia),
+                             a przycisku nie ma — przeszłość jest tylko do odczytu. -->
+                        <div class="plan-settings">
+                            <p class="plan-settings__text" id="plan-settings-text"></p>
+                            <button type="button" class="btn-icon-text plan-settings__btn" id="btn-plan-settings">
+                                <i data-lucide="sliders-horizontal" aria-hidden="true"></i>
+                                Zmień dane planu
+                            </button>
+                        </div>
+
+                        <h3 class="journal__section-title" id="meal-log-title">Posiłki dziś</h3>
+                        <div id="meal-log"></div>
+                    </section>
+
+                    <!-- Klucz znaków z zakładek — pod kartką, na macie, jak legenda pod tabelą. -->
+                    <p class="day-key">
+                        <span class="day-key__item">
+                            <span class="day-key__mark" aria-hidden="true"><i data-lucide="check"></i></span>
+                            dzień zamknięty w limicie węgli netto
+                        </span>
+                        <span class="day-key__item">
+                            <span class="day-key__mark" aria-hidden="true"><span class="day-dot"></span></span>
+                            węgle netto ponad limit
+                        </span>
+                        <span class="day-key__item">dziś: znak po północy</span>
+                    </p>
+                </div>
 
                 <aside class="trend" aria-label="Trend wagi">
                     <section class="trend__panel">
@@ -266,6 +471,17 @@ export const renderDashboard = () => {
                             <i data-lucide="plus" aria-hidden="true"></i>
                             Dodaj pomiar
                         </button>
+                    </section>
+
+                    <!-- Osobna kartka (wariant C): papier jak karta zawodnika przy ważeniu,
+                         w kolumnie "teczki", bo dotyczy całego okresu, a nie jednego dnia. -->
+                    <section class="paper weigh-card" aria-labelledby="weigh-card-title">
+                        <div class="weigh-card__holes" aria-hidden="true">
+                            <span class="hole"></span>
+                            <span class="hole"></span>
+                        </div>
+                        <h2 class="weigh-card__title" id="weigh-card-title">Karta ważenia</h2>
+                        <div id="weigh-card-body"></div>
                     </section>
                 </aside>
             </div>
@@ -386,15 +602,84 @@ export const initDashboard = () => {
     const planNote = document.getElementById("plan-note");
     const mealLog = document.getElementById("meal-log");
     const planSummary = document.getElementById("plan-summary");
+    const dayHeading = document.getElementById("day-heading");
+    const dayDesc = document.getElementById("day-desc");
+    const dayTabsRow = document.getElementById("day-tabs-row");
+    const journalDate = document.getElementById("journal-date");
+    const prevDayButton = document.getElementById("btn-prev-day");
+    const nextDayButton = document.getElementById("btn-next-day");
+    const todayButton = document.getElementById("btn-today");
+    const weighInRow = document.getElementById("weigh-in-reminder");
+    const balanceTable = document.getElementById("balance-table");
+    const planSettingsText = document.getElementById("plan-settings-text");
+    const planSettingsButton = document.getElementById("btn-plan-settings");
+    const mealLogTitle = document.getElementById("meal-log-title");
+
+    const weighCardBody = document.getElementById("weigh-card-body");
+
+    // Na wąskim ekranie (np. 320 px) 7 zakładek po 44 px się nie mieści i wiersz
+    // przewija się w poziomie (wariant C). Bez tego dziś — skrajnie z prawej —
+    // startowałoby schowane za krawędzią. Przesuwamy tylko tyle, ile trzeba,
+    // i tylko wiersz: scrollIntoView() przewinąłby też całą stronę w pionie.
+    const revealSelectedTab = () => {
+        const tab = dayTabsRow.querySelector(".day-tabs__input:checked + .day-tabs__tab");
+        if (!tab) return;
+        const rowBox = dayTabsRow.getBoundingClientRect();
+        const tabBox = tab.getBoundingClientRect();
+        if (tabBox.right > rowBox.right) dayTabsRow.scrollLeft += tabBox.right - rowBox.right;
+        else if (tabBox.left < rowBox.left) dayTabsRow.scrollLeft -= rowBox.left - tabBox.left;
+    };
+
+    // Karta ważenia zależy tylko od historii wagi, nie od wybranego dnia,
+    // więc rysuje się przy wejściu i po każdym pomiarze, a nie w refreshDay().
+    const renderWeighCard = () => {
+        weighCardBody.innerHTML = generateWeighCardHTML(userProfile.weightHistory);
+    };
+    renderWeighCard();
+
+    // Oglądany dzień: null = dziś (patrz readDayFromUrl).
+    let selectedDay = readDayFromUrl(getDateKey(), getFirstDayKey(userProfile));
 
     // JEDNO miejsce, które rysuje stan dnia. Każda zmiana danych (waga, posiłek)
-    // woła tylko tę funkcję — "zostało" nigdy nie jest zapisywane, zawsze liczone.
+    // i każda zmiana dnia woła tylko tę funkcję — "zostało" nigdy nie jest
+    // zapisywane, zawsze liczone. "Dziś" liczone przy każdym wywołaniu, nie raz
+    // przy wejściu: Dashboard otwarty przez północ przesuwa się na nowy dzień.
     const refreshDay = () => {
+        const today = getDateKey();
+        const firstDay = getFirstDayKey(userProfile);
+        const day = selectedDay ?? today;
+        const isToday = day === today;
         const plan = generateDietPlan(userProfile);
-        const meals = getTodayMeal();
+        const meals = getMealsForDay(day);
         const eaten = sumMacros(meals);
+        const dayWord = isToday ? "dziś" : "tego dnia";
+
+        // Zakładki i strzałki są przerysowywane albo wyłączane — element z fokusem
+        // może zniknąć spod palca klawiatury. Zapamiętujemy, gdzie był fokus.
+        const focused = document.activeElement;
+        const focusWasInTabs = dayTabsRow.contains(focused);
+
+        dayHeading.textContent = isToday ? "Dziś w dzienniku" : `Wpis z ${formatDateKeyShort(day)}`;
+        dayDesc.textContent = isToday ? "Twój cel Keto — wpis dnia" : "Miniony dzień — tylko do odczytu.";
+        journalDate.textContent = `${getWeekdayShort(day)} ${formatDateKey(day)}`;
+        dayTabsRow.innerHTML = generateDayTabsHTML(getStripDays(day, today), { selected: day, today, firstDay, plan });
+        prevDayButton.disabled = day <= firstDay;
+        nextDayButton.disabled = isToday;
+        todayButton.classList.toggle("is-hidden", isToday);
+
+        // Przypomnienie o ważeniu dotyczy dzisiejszego planu — w przeszłości nie ma sensu.
+        const daysSinceWeighIn = getDaysSinceLastWeighIn(userProfile);
+        const showWeighIn = isToday && daysSinceWeighIn >= WEIGH_IN_INTERVAL_DAYS;
+        if (showWeighIn) {
+            // Liczba dni + skutek: sam "minęło 7 dni!" nie mówi, po co ważyć się znowu.
+            // Zawsze >= 7, więc forma "dni" jest poprawna bez odmiany.
+            document.getElementById("weigh-in-text").textContent =
+                `Ostatni pomiar wagi: ${daysSinceWeighIn} dni temu — cel na dziś liczony jest z tej wagi.`;
+        }
+        weighInRow.classList.toggle("is-hidden", !showWeighIn);
 
         planSummary.innerHTML = getPlanSummaryHTML(userProfile);
+        balanceTable.setAttribute("aria-label", `Plan, spożycie i pozostały limit — ${formatDateKeyLong(day)}`);
         balanceBody.innerHTML = generateBalanceRowsHTML(plan, eaten);
         carbsAlert.classList.toggle("is-hidden", eaten.netCarbs <= plan.netCarbs);
         const planNoteHTML = getPlanNoteHTML(plan);
@@ -402,14 +687,48 @@ export const initDashboard = () => {
         planNote.classList.toggle("is-hidden", !planNoteHTML);
         // Błonnik informacyjnie, bez celu — mówi, skąd się bierze "netto".
         // Dwie nierozdzielne części: linia łamie się tylko między nimi, nie w środku zdania.
-        balanceNote.innerHTML = html`<span class="nowrap">Błonnik dziś: ${eaten.fiber} g</span>
+        balanceNote.innerHTML = html`<span class="nowrap">Błonnik ${dayWord}: ${eaten.fiber} g</span>
             <span class="nowrap">— odjęty od węgli netto.</span>`;
-        mealLog.innerHTML = generateMealLogHTML(meals);
+
+        // Wariant A (2026-10-09): plan minionego dnia liczony z obecnych ustawień —
+        // mówimy to wprost, bo po zmianie celu przeszłość wyglądałaby inaczej niż wtedy.
+        planSettingsText.textContent = isToday
+            ? "Plan liczymy z Twojego celu, aktywności i wieku. Coś się zmieniło?"
+            : "Kolumna „Plan” liczona z obecnych ustawień — zmiany planu nie działają wstecz.";
+        planSettingsButton.classList.toggle("is-hidden", !isToday);
+
+        mealLogTitle.textContent = isToday ? "Posiłki dziś" : "Posiłki tego dnia";
+        mealLog.innerHTML = generateMealLogHTML(meals, { readOnly: !isToday });
 
         window.lucide?.createIcons();
+        revealSelectedTab();
+
+        // Fokus wraca na zaznaczoną zakładkę, gdy był w zakładkach (przerysowane)
+        // albo na przycisku, który właśnie zniknął lub się wyłączył (np. "›" na dziś).
+        if (focusWasInTabs || focused?.disabled || focused?.closest(".is-hidden")) {
+            dayTabsRow.querySelector("input:checked")?.focus();
+        }
+    };
+
+    // Jedyna droga zmiany dnia: adres + przerysowanie kartki (bez wykresu wagi,
+    // który od dnia nie zależy). Przyszłość i dni sprzed startu są niedostępne.
+    const selectDay = (dateKey) => {
+        const today = getDateKey();
+        if (!isValidDateKey(dateKey) || dateKey < getFirstDayKey(userProfile)) return;
+
+        selectedDay = dateKey >= today ? null : dateKey;
+        replaceQuery(selectedDay ? { [DAY_PARAM]: selectedDay } : {});
+        refreshDay();
     };
 
     refreshDay();
+
+    // Delegacja: zakładki są przerysowywane, wiersz zostaje ten sam.
+    // "change" zamiast "click" — działa też dla strzałek klawiatury w grupie radio.
+    dayTabsRow.addEventListener("change", (event) => selectDay(event.target.value));
+    prevDayButton.addEventListener("click", () => selectDay(shiftDateKey(selectedDay ?? getDateKey(), -1)));
+    nextDayButton.addEventListener("click", () => selectDay(shiftDateKey(selectedDay ?? getDateKey(), 1)));
+    todayButton.addEventListener("click", () => selectDay(getDateKey()));
 
     // Delegacja zdarzeń: lista jest przerysowywana, kontener zostaje ten sam.
     mealLog.addEventListener("click", async (event) => {
@@ -426,15 +745,6 @@ export const initDashboard = () => {
         refreshDay();
     });
 
-    const weighInRow = document.getElementById("weigh-in-reminder");
-    const daysSinceWeighIn = getDaysSinceLastWeighIn(userProfile);
-    if (daysSinceWeighIn >= WEIGH_IN_INTERVAL_DAYS) {
-        // Liczba dni + skutek: sam "minęło 7 dni!" nie mówi, po co ważyć się znowu.
-        // Zawsze >= 7, więc forma "dni" jest poprawna bez odmiany.
-        document.getElementById("weigh-in-text").textContent =
-            `Ostatni pomiar wagi: ${daysSinceWeighIn} dni temu — cel na dziś liczony jest z tej wagi.`;
-        weighInRow.classList.remove("is-hidden");
-    }
 
     weightChartInstance = new Chart(document.getElementById("weight-chart"), {
         type: "line",
@@ -535,10 +845,11 @@ export const initDashboard = () => {
         weightChartInstance.data.labels.push(today);
         weightChartInstance.data.datasets[0].data.push(newWeight);
         weightChartInstance.update();
+        renderWeighCard();
 
-        refreshDay(); // nowa waga = nowy cel = nowy bilans
-        // Pomiar z dowolnego miejsca (przypomnienie w dzienniku albo przycisk pod wykresem) spełnia przypomnienie.
-        weighInRow.classList.add("is-hidden");
+        // Nowa waga = nowy cel = nowy bilans. Przypomnienie znika też tutaj: pomiar
+        // z dowolnego miejsca (przypomnienie albo przycisk pod wykresem) je spełnia.
+        refreshDay();
         return true;
     };
 

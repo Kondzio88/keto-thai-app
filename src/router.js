@@ -72,6 +72,16 @@ const renderContent = () => {
 // profilu wylądował na /onboarding, a po pobraniu profilu trafi na /dashboard.
 export const refreshCurrentRoute = () => renderContent();
 
+// Zmiana samego query bez przerysowania strony (np. wybrany dzień na Dashboardzie).
+// Wpis historii podmieniony, nie dołożony: "Wstecz" wychodzi ze strony, a nie
+// cofa się dzień po dniu. renderedAddress idzie za adresem — inaczej następny
+// popstate (np. klik w kotwicę) uznałby, że to inna strona, i przerysował ją od zera.
+export const replaceQuery = (params) => {
+    const query = new URLSearchParams(params).toString();
+    window.history.replaceState(null, null, getBase() + getCurrentPath() + (query ? `?${query}` : ""));
+    renderedAddress = getPageAddress();
+};
+
 // replace: true podmienia bieżący wpis historii zamiast dokładać nowy —
 // dla przekierowań, do których „Wstecz” nie powinno wracać.
 export const navigateTo = (url, { replace = false } = {}) => {

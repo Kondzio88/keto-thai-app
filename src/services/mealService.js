@@ -113,12 +113,10 @@ export const updateTodayMealsFromRecipe = async (recipe) => {
     return saveMeals(meals) ? { error: null } : { error: LOCAL_SAVE_FAILED };
 };
 
-export const getTodayMeal = () => {
-    const meals = getAllMeals();
-    const today = getDateKey();
+// Wpisy z dowolnego dnia "RRRR-MM-DD" — przełącznik dni na Dashboardzie czyta też przeszłość.
+export const getMealsForDay = (dateKey) => getAllMeals()[dateKey] ?? [];
 
-    return meals[today] ? meals[today] : [];
-};
+export const getTodayMeal = () => getMealsForDay(getDateKey());
 
 export const removeMeal = async (mealId) => {
     const account = await getSignedInClient();
