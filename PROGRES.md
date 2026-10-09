@@ -584,17 +584,43 @@ Kod na komendę „Daj mi kod”, testy w Chrome (desktop 1440 px + ramka 390 px
 
 ---
 
+### Sesja 2026-10-09 (cz. 2): przełącznik dni (zakładki teczki), znaki serii, karta ważenia, luka nr 11
+
+Planowanie UI/UX nowych funkcji Dashboardu, potem kod na „Daj mi kod”, testy w Chrome (ramka/okno 304–390 px, desktop, sesja zalogowanego autora na Supabase). Commity: `e575087` (feat), `63644a4` (docs).
+
+1. **Zasada układu Dashboardu:** „kartka dnia” (to, co dotyczy jednego dnia: przełącznik, bilans, posiłki) vs „teczka” w kolumnie bocznej (długi czas: trend wagi, karta ważenia). Kolejność funkcji: postęp → przełącznik dni → seria → post przerywany (post odłożony; pomysł autora: osobna karta postu).
+2. **Decyzje przełącznika dni:** plan minionego dnia liczony z obecnych ustawień i podpisany wprost (wariant A); przeszłość **tylko do odczytu** (bez „Usuń”, bez „Zmień dane planu”); 7 zakładek, **dziś zawsze skrajnie z prawej** (wariant C, środek odrzucony — 3 martwe komórki z przyszłością); **zakładki teczki** przyklejone do kartki (wariant A oddzielenia: wybrany dzień w kolorze `--paper` „przyrasta” do kartki, reszta `--paper-dim`). Strzałki ‹ › (±1 dzień) przy dacie w nagłówku kartki — jedyna droga do starszych tygodni; „Wróć do dziś” tylko na minionym dniu.
+3. **Wybrany dzień w adresie** (`/dashboard?dzien=RRRR-MM-DD`), decyzja Claude'a na prośbę autora. Dowód: `main.js` po synchronizacji z bazą woła `refreshCurrentRoute()`, więc zmienna w `initDashboard` wróciłaby na dziś. `replaceQuery()` w `router.js` (`replaceState` + aktualizacja `renderedAddress`: „Wstecz” wychodzi z Dashboardu, nie cofa się dzień po dniu). Dziś = `null` (nie trafia do adresu, po północy przesuwa się samo). Zły / przyszły / sprzed startu parametr → dziś i czyszczenie adresu.
+4. **Znaki serii (zaliczony dzień = wpis + węgle netto w limicie):** ptaszek = dzień zamknięty w limicie, **czerwona kropka z obwódką atramentu** = węgle ponad limit (sama `--red` na `--paper-dim` ma ok. 2,9:1 < 3:1, WCAG 1.4.11), pusto = brak wpisu, **dziś bez znaku do północy**. Objaśnienie pod kartką. Dni sprzed startu dziennika wyłączone.
+5. **Mobile S (320 px):** 7 × 44 px się nie mieści (kontener 288 px). Decyzja: **wiersz przewijany w poziomie** (wariant C), zakładki nigdy poniżej 44 px, pasek przewijania ukryty, `revealSelectedTab()` odsłania wybrany dzień. Na wąskich ekranach `‹ data ›` we własnym wierszu.
+6. **Karta ważenia** (wariant C: osobna kartka papieru pod trendem wagi; start = **pierwszy pomiar w ogóle**, wariant 1): Start / Ostatnio / Zmiana / Tempo. Tempo dopiero po 14 dniach, jeden pomiar → „Postęp pokażemy po drugim ważeniu”. Zmiana bez koloru (−2 kg to sukces przy redukcji, porażka przy masie). „Ostatnio” zamiast „Teraz” (pomiar mógł być dawno).
+7. **Kod:** `utils/date.js` (`shiftDateKey`, `isValidDateKey`, `getDaysBetween`, `getWeekdayShort`, `formatDateKeyLong`), `mealService.getMealsForDay()`, zakładki jako **natywne radio** (strzałki klawiatury i ogłaszanie „3 z 7” od przeglądarki), przywracanie fokusu po przerysowaniu, przypomnienie o ważeniu przeniesione do `refreshDay()`.
+8. **Test na koncie autora (Supabase):** lokalna kopia = baza 1:1, `eaten_on` zgodne z zakładką, dni sprzed startu konta wyłączone, wybrany dzień przetrwa przerysowanie po synchronizacji. **Znaleziona luka nr 11 (stara, nie z zakładek):** przy dwóch kartach aplikacji jedna synchronizuje się pierwsza, druga dostaje `changed: false` i pokazuje „Zjedzone 0” do F5 — `changed` mówi o kopii w `localStorage`, nie o ekranie. Zapisana w `PLAN.md` §1a z hipotezą do potwierdzenia (incognito, jedna karta).
+9. **Odrzucone / wyjaśnione:** alert „wyjście z ketozy” (aplikacja nie mierzy ketozy, interpretacja stanu ciała = ryzyko; pieczątka przekroczenia już jest przy bilansie). Wygładzony trend wagi odłożony (przy ważeniu raz w tygodniu średnia krocząca nie ma z czego liczyć).
+
+**Pytania sprawdzające bez odpowiedzi (do powtórki):**
+- `pushState` zamiast `replaceState` przy zmianie dnia: ile razy „Wstecz”, żeby wrócić do przepisów po przeklikaniu 5 dni?
+- Dlaczego `selectedDay` dla dziś to `null`, a nie data? (Dashboard otwarty przez północ.)
+- Dlaczego wystarczyła druga karta, żeby ekran był nieaktualny? (Co karty dzielą: `localStorage`; czego nie: ekran.)
+- Dlaczego obrys fokusa zakładki ma `outline-offset: -4px`? (`overflow-x: auto` obcina to, co wystaje.)
+- Mikro-ćwiczenie na później (post): licznik przez `setInterval` +1 s vs zapisany moment startu — co pokaże każdy po 3 h zamkniętej aplikacji?
+
+---
+
 ### ▶️ START NASTĘPNEJ SESJI
 
-1. **Nowe funkcje Dashboardu (decyzja autora 2026-10-09): architektura, potem wdrożenie** — postęp od startu, przełącznik dni, post przerywany; seria do przemyślenia. Lista z uwagami w `PLAN.md` (sekcja `/dashboard`).
-2. **Test autora:** „Zmień dane planu” jako zalogowany (zapis, F5, wiersz w `profiles` w Supabase) i wygląd Dashboardu na telefonie (linia planu w 3 wierszach, „Dodaj pomiar” pod wykresem).
-3. **Fonty i biblioteki u siebie zamiast z CDN** (`PRAWO.md` §2.10, zadanie 4): Google Fonts, Lucide (`lucide@latest`), Chart.js (bez wersji) → paczka Vite. Dotyczy wszystkich odwiedzających już dziś na produkcji (IP do Google i CDN bez podstawy prawnej; wyrok LG München). Przy okazji przypięte wersje (`RAPORT.md` #24).
-4. Kolejne z `PRAWO.md` §13: eksport danych („Pobierz moje dane”), decyzja „Cofnij zgodę” vs usunięcie konta, linki do polityki i regulaminu (gdy powstaną).
-5. **Autor przed prawnikiem (`PRAWO.md` §15):** forma działalności i dane administratora, e-mail do spraw danych, czy Camp płatny i jak; Web3Forms zostaje czy dostawca z UE; sprawdzić certyfikat Data Privacy Framework Supabase.
-6. Test do zrobienia: „Zaloguj przez Google” na ekranie logowania **nowym** kontem Google → ekran zgód (wymaga drugiego konta Google).
-7. **Zaległe testy autora:** logowanie Google z `/recipes` (powrót na `/recipes`), wylogowanie globalne (okno zwykłe + incognito); z 07.10: kreator z nowymi miarami, treść r51–r100 (tatar, chlebek z kubka), brak „Skasuj dane” u zalogowanego.
-8. **Z 07.10 do zrobienia:** zdjęcia CC0 dla r51–r100; `MAX_RESULTS` ucina serki przy „ser”.
-9. Decyzje otwarte w `PLAN.md`: usypianie bazy (przed startem kont), `signOut()` globalne vs lokalne (na domenie), luka nr 10 (⏸️, teraz z dopiskiem o dwóch pomiarach jednego dnia).
+1. **Test autora na telefonie:** zakładki dni (przewijanie na wąskim ekranie, kropka, ptaszki), karta ważenia, nagłówek minionego dnia; potwierdzenie luki nr 11 (incognito, jedna karta).
+2. **Seria:** czy znaki na zakładkach wystarczą? Jeśli tak — mockup „SERIA” na `/` (`home.js`, punkt 23 listy niżej) podmienić na prawdziwe zakładki albo usunąć. Opcjonalnie karta obecności 4 tygodni w „teczce”.
+3. **Nowe zadanie:** nagłówki tabeli bilansu zlewają się na ~304–320 px („PLANZJEDZONEZOSTAŁO”).
+4. Post przerywany (osobna karta) — na koniec listy funkcji Dashboardu; nowe dane, tabela w Supabase, `PRAWO.md`.
+5. **Test autora:** „Zmień dane planu” jako zalogowany (zapis, F5, wiersz w `profiles` w Supabase).
+6. **Fonty i biblioteki u siebie zamiast z CDN** (`PRAWO.md` §2.10, zadanie 4): Google Fonts, Lucide (`lucide@latest`), Chart.js (bez wersji) → paczka Vite. Dotyczy wszystkich odwiedzających już dziś na produkcji (IP do Google i CDN bez podstawy prawnej; wyrok LG München). Przy okazji przypięte wersje (`RAPORT.md` #24).
+7. Kolejne z `PRAWO.md` §13: eksport danych („Pobierz moje dane”), decyzja „Cofnij zgodę” vs usunięcie konta, linki do polityki i regulaminu (gdy powstaną).
+8. **Autor przed prawnikiem (`PRAWO.md` §15):** forma działalności i dane administratora, e-mail do spraw danych, czy Camp płatny i jak; Web3Forms zostaje czy dostawca z UE; sprawdzić certyfikat Data Privacy Framework Supabase.
+9. Test do zrobienia: „Zaloguj przez Google” na ekranie logowania **nowym** kontem Google → ekran zgód (wymaga drugiego konta Google).
+10. **Zaległe testy autora:** logowanie Google z `/recipes` (powrót na `/recipes`), wylogowanie globalne (okno zwykłe + incognito); z 07.10: kreator z nowymi miarami, treść r51–r100 (tatar, chlebek z kubka), brak „Skasuj dane” u zalogowanego.
+11. **Z 07.10 do zrobienia:** zdjęcia CC0 dla r51–r100; `MAX_RESULTS` ucina serki przy „ser”.
+12. Decyzje otwarte w `PLAN.md`: usypianie bazy (przed startem kont), `signOut()` globalne vs lokalne (na domenie), luka nr 10 (⏸️, teraz z dopiskiem o dwóch pomiarach jednego dnia).
 
 Etap 7 (domena → polityka prywatności → SMTP → „Confirm email” → weryfikacja marki Google) czeka na decyzję o zakupie domeny. Artykuły `/knowledge` i chatbot (`PLAN.md` §6) w kolejce.
 

@@ -130,9 +130,12 @@ Natywne technologie webowe, bez frameworka.
 - **Trend wagi:** wykres liniowy Chart.js + modal pomiaru z walidacją przy polu.
 - „Skasuj dane aplikacji”.
 - ❌ Porzucone: wykres kołowy makro (pokazywał niezmienny plan), moduł nawodnienia.
-- 📋 Przełącznik dni (`getDateKey(date)` przyjmuje już dowolną datę), wejście do `/camp` (`RAPORT.md` #30), stałe miejsce zaproszenia do konta (§1a).
+- ✅ **Przełącznik dni (2026-10-09, `e575087`):** zakładki teczki nad kartką (7 dni, dziś z prawej, przewijane na wąskich ekranach), strzałki ±1 dzień, dzień w adresie `?dzien=RRRR-MM-DD`, przeszłość tylko do odczytu, plan minionego dnia z obecnych ustawień. Znaki: ptaszek = dzień zamknięty w limicie węgli netto, czerwona kropka = ponad limit, dziś bez znaku do północy.
+- ✅ **Karta ważenia (2026-10-09):** osobna kartka pod trendem; Start (pierwszy pomiar) / Ostatnio / Zmiana / Tempo (po 14 dniach).
+- 📋 Wejście do `/camp` (`RAPORT.md` #30), stałe miejsce zaproszenia do konta (§1a).
 - ✅ **„Zmień dane planu” (2026-10-09, wariant A):** modal z celem, aktywnością i wiekiem, otwierany przyciskiem pod bilansem z jednym zdaniem informacji („Plan liczymy z Twojego celu, aktywności i wieku…”). Waga zostaje poza modalem (własna historia, „+ Pomiar”). Zapis: `updatePlanSettings()` w `userService.js` (zalogowany: `upsert` do `profiles`). Opcje celu i aktywności wspólne z onboardingiem: `components/planFields.js`. Odrzucone: pola wprost na Dashboardzie (B), osobna strona profilu (C). **Nie testowane:** ścieżka zalogowanego (zapis do Supabase).
 - 📋 **Nowe funkcje do zaprojektowania (przegląd konkurencji 2026-10-09: Carb Manager, MacroFactor, Cronometer, KetoDiet, Lose It).** Wybrane przez autora, architektura i wdrożenie od następnej sesji:
+    - **Stan 2026-10-09 cz. 2:** 1 ✅ (karta ważenia), 2 ✅ (zakładki), 4 częściowo (znaki na zakładkach — czy wystarczą, do decyzji), 3 odłożony (pomysł: osobna karta postu).
     1. **Postęp od startu:** „Start 92,4 kg → teraz 85 kg (−7,4 kg), średnio X kg/tydz.” — z `weightHistory`, bez nowego zapisu. Do rozważenia przy okazji: wygładzony trend wagi (średnia krocząca jak w MacroFactor; ważne przy ścinaniu wagi przed walką).
     2. **Przełącznik dni** (punkt wyżej): dane z poprzednich dni są zapisane, UI pokazuje tylko dziś. Do ustalenia: plan dnia z przeszłości (dziś `refreshDay()` liczy plan z bieżącego profilu, bez daty).
     3. **Post przerywany (timer):** nowy zapis (start/koniec postu) → nowa tabela w Supabase przy kontach; ostrożnie z obietnicami zdrowotnymi (`PRAWO.md`, UOKiK).
